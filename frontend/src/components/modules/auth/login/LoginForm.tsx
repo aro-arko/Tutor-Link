@@ -17,7 +17,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginValidation } from "../loginValidation";
 import { toast } from "sonner";
 import Link from "next/link";
-import { loginUser } from "@/services/AuthService";
+import { loginUser, reCaptchaTokenVerification } from "@/services/AuthService";
+import ReCAPTCHA from "react-google-recaptcha";
+import { useState } from "react";
 
 const LoginForm = () => {
   const form = useForm({
@@ -27,6 +29,19 @@ const LoginForm = () => {
   const {
     formState: { isSubmitting },
   } = form;
+
+  const [reCaptchaStatus, setReCaptchaStatus] = useState(false);
+
+  const handleReCaptcha = async (value: string | null) => {
+    try {
+      const res = await reCaptchaTokenVerification(value!);
+      if (res?.success) {
+        setReCaptchaStatus(true);
+      }
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
@@ -85,7 +100,6 @@ const LoginForm = () => {
                   </FormItem>
                 )}
               />
-
               {/* Password Field */}
               <FormField
                 control={form.control}
@@ -106,9 +120,13 @@ const LoginForm = () => {
                   </FormItem>
                 )}
               />
-
-              {/* Submit Button */}
+              <ReCAPTCHA
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_CLIENT_KEY || ""}
+                onChange={handleReCaptcha}
+              />
+              , {/* Submit Button */}
               <Button
+                disabled={!reCaptchaStatus}
                 type="submit"
                 className="w-full bg-red-600 hover:bg-red-700"
               >
@@ -122,7 +140,7 @@ const LoginForm = () => {
             <p className="text-gray-600">
               Don&apos;t have an account?{" "}
               <Link
-                href="/register"
+                href="/register-student"
                 className="text-red-600 hover:underline font-semibold"
               >
                 Sign Up
