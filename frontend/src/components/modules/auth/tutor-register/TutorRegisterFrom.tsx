@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import studentsImage from "@/app/assets/images/students.png";
+import tutorImage from "@/app/assets/images/tutor.avif";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,7 +19,7 @@ import { registerStudent } from "@/services/AuthService";
 import { toast } from "sonner";
 import Link from "next/link";
 
-const StudentRegisterForm = () => {
+const TutorRegisterForm = () => {
   const form = useForm({
     resolver: zodResolver(registrationValidation),
   });
@@ -50,8 +50,8 @@ const StudentRegisterForm = () => {
       <div className="max-w-7xl w-full flex flex-col md:flex-row items-center gap-8 bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="hidden md:block flex-1">
           <Image
-            src={studentsImage}
-            alt="Students"
+            src={tutorImage}
+            alt="Tutor"
             className="w-full h-full object-cover"
             priority
           />
@@ -60,10 +60,10 @@ const StudentRegisterForm = () => {
         {/* Form Section */}
         <div className="flex-1 p-8 max-w-3xl">
           <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">
-            Student Registration 🎓
+            Tutor Registration 🎓
           </h2>
           <p className="text-gray-500 text-center mb-6">
-            Join TutorLink and start your learning journey today!
+            Join TutorLink and start sharing your knowledge today!
           </p>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -169,15 +169,15 @@ const StudentRegisterForm = () => {
             </form>
           </Form>
 
-          {/* Tutor Registration Prompt */}
+          {/* Student Registration Prompt */}
           <div className="mt-6 text-center">
             <p className="text-gray-600">
-              Interested in sharing your knowledge?{" "}
+              Interested in learning?{" "}
               <Link
-                href="/register-tutor"
+                href="/register-student"
                 className="text-red-600 hover:underline font-semibold"
               >
-                Register as a Tutor
+                Register as a Student
               </Link>
             </p>
           </div>
@@ -199,4 +199,4 @@ const StudentRegisterForm = () => {
   );
 };
 
-export default StudentRegisterForm;
+export default TutorRegisterForm;

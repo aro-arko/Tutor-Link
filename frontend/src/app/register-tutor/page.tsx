@@ -1,9 +1,11 @@
-const page = () => {
+import TutorRegisterForm from "@/components/modules/auth/tutor-register/TutorRegisterFrom";
+
+const StudentRegisterPage = () => {
   return (
     <div>
-      <h1>This is page component</h1>
+      <TutorRegisterForm />
     </div>
   );
 };
 
-export default page;
+export default StudentRegisterPage;
