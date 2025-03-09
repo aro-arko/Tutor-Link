@@ -1,6 +1,8 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
+import { jwtDecode } from "jwt-decode";
 
 export const registerStudent = async (studentData: FieldValues) => {
   try {
@@ -47,9 +49,25 @@ export const loginUser = async (userData: FieldValues) => {
       },
       body: JSON.stringify(userData),
     });
-    return res.json();
+    const result = await res.json();
+
+    if (result.success) {
+      (await cookies()).set("accessToken", result.data.accessToken);
+    }
+    return result;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return Error(error);
+  }
+};
+
+export const getCurrentUser = async () => {
+  const accessToken = (await cookies()).get("accessToken")!.value;
+  let decodedData = null;
+
+  if (accessToken) {
+    decodedData = await jwtDecode(accessToken);
+    return decodedData;
   }
 };
