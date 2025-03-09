@@ -20,7 +20,7 @@ const createTutor = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: 201,
     success: true,
-    message: 'Student registered successfully',
+    message: 'Tutor registered successfully',
     data: result,
   });
 });

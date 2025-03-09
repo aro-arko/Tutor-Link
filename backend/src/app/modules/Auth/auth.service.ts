@@ -110,7 +110,7 @@ const loginUser = async (payLoad: Partial<TUser>) => {
     config.jwt_access_secret as string,
     config.jwt_access_expires_in as string,
   );
-  return accessToken;
+  return { accessToken: accessToken };
 };
 
 export const authServices = {
