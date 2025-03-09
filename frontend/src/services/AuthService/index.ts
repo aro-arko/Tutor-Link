@@ -20,3 +20,21 @@ export const registerStudent = async (studentData: FieldValues) => {
     return Error(error);
   }
 };
+export const registerTutor = async (tutorData: FieldValues) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/auth/register/tutor`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(tutorData),
+      }
+    );
+    return res.json();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return Error(error);
+  }
+};

@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registrationValidation } from "../registerValidation";
-import { registerStudent } from "@/services/AuthService";
+import { registerTutor } from "@/services/AuthService";
 import { toast } from "sonner";
 import Link from "next/link";
 
@@ -33,7 +33,7 @@ const TutorRegisterForm = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
-      const res = await registerStudent(data);
+      const res = await registerTutor(data);
       if (res?.success) {
         toast.success(res?.message);
       } else {
