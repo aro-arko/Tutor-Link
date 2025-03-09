@@ -10,12 +10,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import studentsImage from "../../../../app/assets/images/students.png";
+import studentsImage from "@/app/assets/images/students.png";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registrationValidation } from "../registerValidation";
 
 const StudentRegisterForm = () => {
-  const form = useForm();
+  const form = useForm({
+    resolver: zodResolver(registrationValidation),
+  });
+
+  const password = form.watch("password");
+  const passwordConfirm = form.watch("passwordConfirm");
+  console.log(password, passwordConfirm);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log(data);
@@ -55,6 +63,7 @@ const StudentRegisterForm = () => {
                     <FormControl>
                       <Input
                         {...field}
+                        value={field.value || ""}
                         placeholder="Enter your full name"
                         className="w-full"
                       />
@@ -74,6 +83,7 @@ const StudentRegisterForm = () => {
                     <FormControl>
                       <Input
                         {...field}
+                        value={field.value || ""}
                         type="email"
                         placeholder="Enter your email"
                         className="w-full"
@@ -94,12 +104,40 @@ const StudentRegisterForm = () => {
                     <FormControl>
                       <Input
                         {...field}
+                        value={field.value || ""}
                         type="password"
                         placeholder="Enter your password"
                         className="w-full"
                       />
                     </FormControl>
                     <FormMessage className="text-red-600" />
+                  </FormItem>
+                )}
+              />
+              {/* Confirm Password Field */}
+              <FormField
+                control={form.control}
+                name="passwordConfirm"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700">Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        value={field.value || ""}
+                        type="password"
+                        placeholder="Confirm your password"
+                        className="w-full"
+                      />
+                    </FormControl>
+
+                    {passwordConfirm && password !== passwordConfirm ? (
+                      <FormMessage className="text-red-600">
+                        Password does not match
+                      </FormMessage>
+                    ) : (
+                      <FormMessage className="text-red-600" />
+                    )}
                   </FormItem>
                 )}
               />
