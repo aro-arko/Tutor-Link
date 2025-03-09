@@ -10,30 +10,28 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import studentsImage from "@/app/assets/images/students.png";
+import loginImage from "@/app/assets/images/login.png";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registrationValidation } from "../registerValidation";
-import { registerStudent } from "@/services/AuthService";
+import { loginValidation } from "../loginValidation";
 import { toast } from "sonner";
 import Link from "next/link";
+import { loginUser } from "@/services/AuthService";
 
-const StudentRegisterForm = () => {
+const LoginForm = () => {
   const form = useForm({
-    resolver: zodResolver(registrationValidation),
+    resolver: zodResolver(loginValidation),
   });
 
   const {
     formState: { isSubmitting },
   } = form;
 
-  const password = form.watch("password");
-  const passwordConfirm = form.watch("passwordConfirm");
-
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
-      const res = await registerStudent(data);
+      const res = await loginUser(data);
+      console.log(res);
       if (res?.success) {
         toast.success(res?.message);
       } else {
@@ -50,8 +48,8 @@ const StudentRegisterForm = () => {
       <div className="max-w-7xl w-full flex flex-col md:flex-row items-center gap-8 bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="hidden md:block flex-1 p-10">
           <Image
-            src={studentsImage}
-            alt="Students"
+            src={loginImage}
+            alt="Login"
             className="w-full h-full object-cover"
             priority
           />
@@ -60,33 +58,13 @@ const StudentRegisterForm = () => {
         {/* Form Section */}
         <div className="flex-1 p-8 max-w-3xl">
           <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">
-            Student Registration 🎓
+            Welcome Back! 👋
           </h2>
           <p className="text-gray-500 text-center mb-6">
-            Join TutorLink and start your learning journey today!
+            Log in to your TutorLink account and continue your learning journey.
           </p>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Name Field */}
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-gray-700">Full Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        value={field.value || ""}
-                        placeholder="Enter your full name"
-                        className="w-full"
-                      />
-                    </FormControl>
-                    <FormMessage className="text-red-600" />
-                  </FormItem>
-                )}
-              />
-
               {/* Email Field */}
               <FormField
                 control={form.control}
@@ -129,67 +107,25 @@ const StudentRegisterForm = () => {
                 )}
               />
 
-              {/* Confirm Password Field */}
-              <FormField
-                control={form.control}
-                name="passwordConfirm"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-gray-700">
-                      Confirm Password
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        value={field.value || ""}
-                        type="password"
-                        placeholder="Confirm your password"
-                        className="w-full"
-                      />
-                    </FormControl>
-
-                    {passwordConfirm && password !== passwordConfirm ? (
-                      <FormMessage className="text-red-600">
-                        Password does not match
-                      </FormMessage>
-                    ) : (
-                      <FormMessage className="text-red-600" />
-                    )}
-                  </FormItem>
-                )}
-              />
-
               {/* Submit Button */}
               <Button
                 type="submit"
                 className="w-full bg-red-600 hover:bg-red-700"
               >
-                {isSubmitting ? "Registering..." : "Register"}
+                {isSubmitting ? "Logging in..." : "Log In"}
               </Button>
             </form>
           </Form>
 
-          {/* Tutor Registration Prompt */}
+          {/* Registration Prompt */}
           <div className="mt-6 text-center">
             <p className="text-gray-600">
-              Interested in sharing your knowledge?{" "}
+              Don&apos;t have an account?{" "}
               <Link
-                href="/register-tutor"
+                href="/register"
                 className="text-red-600 hover:underline font-semibold"
               >
-                Register as a Tutor
-              </Link>
-            </p>
-          </div>
-          {/* Login Prompt */}
-          <div className="mt-4 text-center">
-            <p className="text-gray-600">
-              Already have an account?{" "}
-              <Link
-                href="/login"
-                className="text-red-600 hover:underline font-semibold"
-              >
-                Log In
+                Sign Up
               </Link>
             </p>
           </div>
@@ -199,4 +135,4 @@ const StudentRegisterForm = () => {
   );
 };
 
-export default StudentRegisterForm;
+export default LoginForm;

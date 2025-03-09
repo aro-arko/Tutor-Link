@@ -48,7 +48,7 @@ const TutorRegisterForm = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl w-full flex flex-col md:flex-row items-center gap-8 bg-white shadow-lg rounded-lg overflow-hidden">
-        <div className="hidden md:block flex-1">
+        <div className="hidden md:block flex-1 p-10">
           <Image
             src={tutorImage}
             alt="Tutor"
