@@ -15,25 +15,39 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registrationValidation } from "../registerValidation";
+import { registerStudent } from "@/services/AuthService";
+import { toast } from "sonner";
 
 const StudentRegisterForm = () => {
   const form = useForm({
     resolver: zodResolver(registrationValidation),
   });
 
+  const {
+    formState: { isSubmitting },
+  } = form;
+
   const password = form.watch("password");
   const passwordConfirm = form.watch("passwordConfirm");
   console.log(password, passwordConfirm);
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    try {
+      const res = await registerStudent(data);
+      if (res?.success) {
+        toast.success(res?.message);
+      } else {
+        toast.error(res?.message);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error(error);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      {/* Container for Form and Image */}
       <div className="max-w-7xl w-full flex flex-col md:flex-row items-center gap-8 bg-white shadow-lg rounded-lg overflow-hidden">
-        {/* Image Section (Hidden on Mobile) */}
         <div className="hidden md:block flex-1">
           <Image
             src={studentsImage}
@@ -147,7 +161,7 @@ const StudentRegisterForm = () => {
                 type="submit"
                 className="w-full bg-red-600 hover:bg-red-700"
               >
-                Register
+                {isSubmitting ? "Registering..." : "Register"}
               </Button>
             </form>
           </Form>
