@@ -2,7 +2,7 @@
 
 import { Star, Users, Globe, BookOpen } from "lucide-react";
 import Image from "next/image";
-import AboutMission from "@/app/assets/images/about-mission.png";
+import AboutMission from "@/app/assets/images/about-mission.jpg";
 
 const About = () => {
   const team = [
