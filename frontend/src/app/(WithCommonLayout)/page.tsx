@@ -2,6 +2,7 @@
 import Banner from "@/components/modules/home/banner/Banner";
 import Features from "@/components/modules/home/features/Features";
 import Sponsors from "@/components/modules/home/sponsors/Sponsors";
+import SuccessStories from "@/components/modules/home/successStories/SuccessStories";
 import { useUser } from "@/context/UserContext";
 
 const HomePage = () => {
@@ -12,6 +13,7 @@ const HomePage = () => {
       <Banner />
       <Sponsors />
       <Features />
+      <SuccessStories />
     </div>
   );
 };
