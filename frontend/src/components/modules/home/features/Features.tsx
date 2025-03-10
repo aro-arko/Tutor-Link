@@ -29,11 +29,11 @@ const features = [
 
 const Features = () => {
   return (
-    <section className="pt-12 bg-gray-50">
+    <section className="py-4 bg-gray-50">
       <div className="py-8">
         <div className="max-w-7xl mx-auto px-6 text-center">
           {/* Section Title */}
-          <h2 className="text-4xl font-extrabold text-gray-900 mb-12">
+          <h2 className="text-3xl font-extrabold text-gray-900 mb-12">
             Why Choose Us?
           </h2>
           {/* Features Grid */}

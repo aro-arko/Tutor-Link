@@ -12,7 +12,7 @@ const FeaturedTutors = () => {
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-8">
-          <h2 className="text-4xl font-extrabold text-gray-900">
+          <h2 className="text-3xl font-extrabold text-gray-900">
             Featured Tutors
           </h2>
           <p className="text-gray-600 mt-2">
