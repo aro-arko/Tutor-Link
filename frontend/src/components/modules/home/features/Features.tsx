@@ -29,7 +29,7 @@ const features = [
 
 const Features = () => {
   return (
-    <section className="pt-12">
+    <section className="pt-12 bg-gray-50">
       <div className="py-8">
         <div className="max-w-7xl mx-auto px-6 text-center">
           {/* Section Title */}
