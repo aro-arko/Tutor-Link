@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const FeaturedTutors = () => {
   // Show a max of 8 tutors
-  const displayedTutors = tutorsData.slice(0, 8);
+  const displayedTutors = tutorsData.slice(0, 6);
 
   return (
     <section className="py-16">
@@ -21,7 +21,7 @@ const FeaturedTutors = () => {
         </div>
 
         {/* Tutors Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
           {displayedTutors.map((tutor) => (
             <FeaturedTutorsCard key={tutor.id} tutor={tutor} />
           ))}

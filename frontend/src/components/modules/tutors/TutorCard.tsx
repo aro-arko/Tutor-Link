@@ -21,7 +21,7 @@ interface Tutor {
   availability: { day: string; timeSlots: string[] }[];
 }
 
-const FeaturedTutorsCard = ({ tutor }: { tutor: Tutor }) => {
+const TutorCard = ({ tutor }: { tutor: Tutor }) => {
   return (
     <div className="bg-white shadow-md rounded-lg p-4 border border-gray-300 hover:shadow-lg transition duration-300">
       {/* Cover Image */}
@@ -109,4 +109,4 @@ const FeaturedTutorsCard = ({ tutor }: { tutor: Tutor }) => {
   );
 };
 
-export default FeaturedTutorsCard;
+export default TutorCard;

@@ -3,120 +3,240 @@
     "id": "1",
     "tutorImage": "https://randomuser.me/api/portraits/men/10.jpg",
     "name": "John Doe",
+    "bio": "Passionate about teaching and helping students excel in their studies.",
     "address": "New York, USA",
     "hourlyRate": "$25.90",
     "phone": "+1 123-456-7890",
     "qualification": "M.Sc Mathematics",
     "rating": 4.9,
     "reviews": 4521,
-    "coverImage": "https://plus.unsplash.com/premium_photo-1672256330854-98c717493128?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWF0aHN8ZW58MHx8MHx8fDA%3D"
+    "coverImage": "https://plus.unsplash.com/premium_photo-1672256330854-98c717493128?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWF0aHN8ZW58MHx8MHx8fDA%3D",
+    "subject": ["Biology", "Math", "English"],
+    "availability": [
+      {
+        "day": "Monday",
+        "timeSlots": ["9:00 AM - 11:00 AM", "2:00 PM - 4:00 PM"]
+      },
+      {
+        "day": "Wednesday",
+        "timeSlots": ["10:00 AM - 12:00 PM", "3:00 PM - 5:00 PM"]
+      }
+    ]
   },
   {
     "id": "2",
     "tutorImage": "https://randomuser.me/api/portraits/women/15.jpg",
     "name": "Emma Johnson",
+    "bio": "Dedicated to providing the best learning experience for my students.",
     "address": "London, UK",
     "hourlyRate": "$30.00",
     "phone": "+44 7894-567-123",
     "qualification": "B.Tech Computer Science",
     "rating": 4.8,
     "reviews": 3890,
-    "coverImage": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGVhcm5pbmd8ZW58MHx8MHx8fDA%3D"
+    "coverImage": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGVhcm5pbmd8ZW58MHx8MHx8fDA%3D",
+    "subject": ["Chemistry", "English"],
+    "availability": [
+      {
+        "day": "Tuesday",
+        "timeSlots": ["8:00 AM - 10:00 AM", "1:00 PM - 3:00 PM"]
+      },
+      {
+        "day": "Thursday",
+        "timeSlots": ["9:00 AM - 11:00 AM", "4:00 PM - 6:00 PM"]
+      }
+    ]
   },
   {
     "id": "3",
     "tutorImage": "https://randomuser.me/api/portraits/men/20.jpg",
     "name": "Robert Brown",
+    "bio": "Experienced tutor with a passion for science and education.",
     "address": "Toronto, Canada",
     "hourlyRate": "$22.50",
     "phone": "+1 647-555-3456",
     "qualification": "PhD Physics",
     "rating": 4.7,
     "reviews": 2897,
-    "coverImage": "https://plus.unsplash.com/premium_photo-1661952153063-bf131589ee05?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGVkdWNhdGlvbiUyMHRlYWNoZXJ8ZW58MHx8MHx8fDA%3D"
+    "coverImage": "https://plus.unsplash.com/premium_photo-1661952153063-bf131589ee05?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGVkdWNhdGlvbiUyMHRlYWNoZXJ8ZW58MHx8MHx8fDA%3D",
+    "subject": ["Biology", "Chemistry"],
+    "availability": [
+      {
+        "day": "Monday",
+        "timeSlots": ["11:00 AM - 1:00 PM", "3:00 PM - 5:00 PM"]
+      },
+      {
+        "day": "Friday",
+        "timeSlots": ["9:00 AM - 11:00 AM", "2:00 PM - 4:00 PM"]
+      }
+    ]
   },
   {
     "id": "4",
     "tutorImage": "https://randomuser.me/api/portraits/women/25.jpg",
     "name": "Sophia Williams",
+    "bio": "Committed to helping students achieve their academic goals.",
     "address": "Sydney, Australia",
     "hourlyRate": "$28.90",
     "phone": "+61 401-789-234",
     "qualification": "B.E Electrical Engineering",
     "rating": 4.9,
     "reviews": 5050,
-    "coverImage": "https://plus.unsplash.com/premium_photo-1661963085061-5068e4e73cc6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDV8fHVuaXZlcnNpdHklMjBjbGFzc3Jvb218ZW58MHx8MHx8fDA%3D"
+    "coverImage": "https://plus.unsplash.com/premium_photo-1661963085061-5068e4e73cc6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDV8fHVuaXZlcnNpdHklMjBjbGFzc3Jvb218ZW58MHx8MHx8fDA%3D",
+    "subject": ["Math", "English"],
+    "availability": [
+      {
+        "day": "Wednesday",
+        "timeSlots": ["10:00 AM - 12:00 PM", "1:00 PM - 3:00 PM"]
+      },
+      {
+        "day": "Saturday",
+        "timeSlots": ["9:00 AM - 11:00 AM", "2:00 PM - 4:00 PM"]
+      }
+    ]
   },
   {
     "id": "5",
     "tutorImage": "https://randomuser.me/api/portraits/men/30.jpg",
     "name": "Michael Smith",
+    "bio": "Enthusiastic about making learning fun and engaging.",
     "address": "Los Angeles, USA",
     "hourlyRate": "$27.50",
     "phone": "+1 323-678-7890",
     "qualification": "M.A English Literature",
     "rating": 4.8,
     "reviews": 3120,
-    "coverImage": "https://plus.unsplash.com/premium_photo-1664299728921-02e66e6146b4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8dW5pdmVyc2l0eSUyMGNsYXNzcm9vbXxlbnwwfHwwfHx8MA%3D%3D"
+    "coverImage": "https://plus.unsplash.com/premium_photo-1664299728921-02e66e6146b4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8dW5pdmVyc2l0eSUyMGNsYXNzcm9vbXxlbnwwfHwwfHx8MA%3D%3D",
+    "subject": ["Biology", "Chemistry", "Math"],
+    "availability": [
+      {
+        "day": "Tuesday",
+        "timeSlots": ["8:00 AM - 10:00 AM", "1:00 PM - 3:00 PM"]
+      },
+      {
+        "day": "Thursday",
+        "timeSlots": ["9:00 AM - 11:00 AM", "4:00 PM - 6:00 PM"]
+      }
+    ]
   },
   {
     "id": "6",
     "tutorImage": "https://randomuser.me/api/portraits/women/35.jpg",
     "name": "Isabella Garcia",
+    "bio": "Dedicated to fostering a positive and productive learning environment.",
     "address": "Madrid, Spain",
     "hourlyRate": "$23.75",
     "phone": "+34 654-321-987",
     "qualification": "B.Sc Biology",
     "rating": 4.6,
     "reviews": 1987,
-    "coverImage": "https://plus.unsplash.com/premium_photo-1681505302254-8424c4883480?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8c2NpZW5jZSUyMGxhYm9yYXRvcnl8ZW58MHx8MHx8fDA%3D"
+    "coverImage": "https://plus.unsplash.com/premium_photo-1681505302254-8424c4883480?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8c2NpZW5jZSUyMGxhYm9yYXRvcnl8ZW58MHx8MHx8fDA%3D",
+    "subject": ["Biology", "Chemistry"],
+    "availability": [
+      {
+        "day": "Monday",
+        "timeSlots": ["9:00 AM - 11:00 AM", "2:00 PM - 4:00 PM"]
+      },
+      {
+        "day": "Wednesday",
+        "timeSlots": ["10:00 AM - 12:00 PM", "3:00 PM - 5:00 PM"]
+      }
+    ]
   },
   {
     "id": "7",
     "tutorImage": "https://randomuser.me/api/portraits/men/40.jpg",
     "name": "Daniel Martinez",
+    "bio": "Passionate about helping students understand complex concepts.",
     "address": "Berlin, Germany",
     "hourlyRate": "$29.90",
     "phone": "+49 151-654-9876",
     "qualification": "M.Sc Chemistry",
     "rating": 4.9,
     "reviews": 5542,
-    "coverImage": "https://images.unsplash.com/photo-1561089489-f13d5e730d72?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGNsYXNzcm9vbSUyMGJsYWNrYm9hcmR8ZW58MHx8MHx8fDA%3D"
+    "coverImage": "https://images.unsplash.com/photo-1561089489-f13d5e730d72?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGNsYXNzcm9vbSUyMGJsYWNrYm9hcmR8ZW58MHx8MHx8fDA%3D",
+    "subject": ["Math", "English"],
+    "availability": [
+      {
+        "day": "Tuesday",
+        "timeSlots": ["8:00 AM - 10:00 AM", "1:00 PM - 3:00 PM"]
+      },
+      {
+        "day": "Thursday",
+        "timeSlots": ["9:00 AM - 11:00 AM", "4:00 PM - 6:00 PM"]
+      }
+    ]
   },
   {
     "id": "8",
     "tutorImage": "https://randomuser.me/api/portraits/women/45.jpg",
     "name": "Olivia Taylor",
+    "bio": "Striving to make learning enjoyable and effective.",
     "address": "Paris, France",
     "hourlyRate": "$26.00",
     "phone": "+33 601-234-567",
     "qualification": "B.A French Literature",
     "rating": 4.8,
     "reviews": 4291,
-    "coverImage": "https://plus.unsplash.com/premium_photo-1683120887619-8e6eca48afcb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bGlicmFyeSUyMHJlYWRpbmd8ZW58MHx8MHx8fDA%3D"
+    "coverImage": "https://plus.unsplash.com/premium_photo-1683120887619-8e6eca48afcb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bGlicmFyeSUyMHJlYWRpbmd8ZW58MHx8MHx8fDA%3D",
+    "subject": ["Biology", "Chemistry"],
+    "availability": [
+      {
+        "day": "Monday",
+        "timeSlots": ["9:00 AM - 11:00 AM", "2:00 PM - 4:00 PM"]
+      },
+      {
+        "day": "Wednesday",
+        "timeSlots": ["10:00 AM - 12:00 PM", "3:00 PM - 5:00 PM"]
+      }
+    ]
   },
   {
     "id": "9",
     "tutorImage": "https://randomuser.me/api/portraits/men/50.jpg",
     "name": "James Wilson",
+    "bio": "Focused on helping students achieve their full potential.",
     "address": "Dublin, Ireland",
     "hourlyRate": "$24.50",
     "phone": "+353 876-543-210",
     "qualification": "PhD History",
     "rating": 4.7,
     "reviews": 3129,
-    "coverImage": "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y29sbGVnZSUyMGVkdWNhdGlvbnxlbnwwfHwwfHx8MA%3D%3D"
+    "coverImage": "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y29sbGVnZSUyMGVkdWNhdGlvbnxlbnwwfHwwfHx8MA%3D%3D",
+    "subject": ["Math", "English"],
+    "availability": [
+      {
+        "day": "Tuesday",
+        "timeSlots": ["8:00 AM - 10:00 AM", "1:00 PM - 3:00 PM"]
+      },
+      {
+        "day": "Thursday",
+        "timeSlots": ["9:00 AM - 11:00 AM", "4:00 PM - 6:00 PM"]
+      }
+    ]
   },
   {
     "id": "10",
     "tutorImage": "https://randomuser.me/api/portraits/women/55.jpg",
     "name": "Mia Davis",
+    "bio": "Dedicated to providing personalized and effective tutoring.",
     "address": "Tokyo, Japan",
     "hourlyRate": "$32.00",
     "phone": "+81 90-1234-5678",
     "qualification": "B.Tech Mechanical Engineering",
     "rating": 4.9,
     "reviews": 4890,
-    "coverImage": "https://plus.unsplash.com/premium_photo-1658506755963-1c62ca3f745f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    "coverImage": "https://plus.unsplash.com/premium_photo-1658506755963-1c62ca3f745f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "subject": ["Biology", "Chemistry", "Math"],
+    "availability": [
+      {
+        "day": "Monday",
+        "timeSlots": ["9:00 AM - 11:00 AM", "2:00 PM - 4:00 PM"]
+      },
+      {
+        "day": "Wednesday",
+        "timeSlots": ["10:00 AM - 12:00 PM", "3:00 PM - 5:00 PM"]
+      }
+    ]
   }
 ]
