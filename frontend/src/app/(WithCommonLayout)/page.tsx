@@ -1,5 +1,6 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import Banner from "@/components/modules/home/banner/Banner";
+import Sponsors from "@/components/modules/home/sponsors/Sponsors";
 import { useUser } from "@/context/UserContext";
 
 const HomePage = () => {
@@ -7,7 +8,8 @@ const HomePage = () => {
   console.log(user);
   return (
     <div>
-      <Button>Click Me</Button>
+      <Banner />
+      <Sponsors />
     </div>
   );
 };
