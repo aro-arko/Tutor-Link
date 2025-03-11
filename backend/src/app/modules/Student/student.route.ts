@@ -6,6 +6,6 @@ import { studentController } from './student.controller';
 const router = express.Router();
 
 router.get('/me', auth(USER_ROLE.student), studentController.getMe);
-router.patch('/update', auth(USER_ROLE.student));
+router.patch('/update', auth(USER_ROLE.student), studentController.updateMe);
 
 export const StudentRoutes = router;

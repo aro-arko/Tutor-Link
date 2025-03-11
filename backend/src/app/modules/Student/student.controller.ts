@@ -15,6 +15,19 @@ const getMe = catchAsync(async (req, res) => {
   });
 });
 
+const updateMe = catchAsync(async (req, res) => {
+  const user = req.user;
+  const result = await studentService.updateMe(user, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Student data updated successfully',
+    data: result,
+  });
+});
+
 export const studentController = {
   getMe,
+  updateMe,
 };
