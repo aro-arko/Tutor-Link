@@ -17,6 +17,7 @@ const studentSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      immutable: true,
       trim: true,
     },
     educationLevel: {
