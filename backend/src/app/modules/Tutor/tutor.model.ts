@@ -4,7 +4,7 @@ import { TTutor } from './tutor.interface';
 const tutorSchema = new Schema<TTutor>({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   name: { type: String, required: true },
-  email: { type: String, required: true },
+  email: { type: String, required: true, immutable: true, unique: true },
   bio: { type: String, default: '' },
   address: { type: String, default: '' },
   hourlyRate: { type: Number, default: 0 },
