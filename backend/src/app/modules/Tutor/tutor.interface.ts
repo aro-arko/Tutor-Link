@@ -9,7 +9,7 @@ export type TTutor = {
   hourlyRate: number;
   tutorImage: string;
   phone: string;
-  subject: string[];
+  subject: Types.ObjectId[];
   qualification?: string;
   rating: number;
   reviews: number;

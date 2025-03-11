@@ -10,7 +10,7 @@ const tutorSchema = new Schema<TTutor>({
   hourlyRate: { type: Number, default: 0 },
   tutorImage: { type: String, default: '' },
   phone: { type: String, default: '' },
-  subject: { type: [String], default: [] },
+  subject: { type: [Schema.Types.ObjectId], ref: 'Subject', default: [] },
   qualification: { type: String, default: '' },
   rating: { type: Number, default: 0 },
   reviews: { type: Number, default: 0 },
