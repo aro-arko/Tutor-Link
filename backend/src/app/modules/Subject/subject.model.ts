@@ -6,6 +6,7 @@ const SubjectSchema = new Schema<TSubject>(
     name: {
       type: String,
       required: true,
+      unique: true,
       trim: true,
     },
     description: {

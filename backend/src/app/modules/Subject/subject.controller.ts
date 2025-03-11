@@ -15,6 +15,17 @@ const createSubject = catchAsync(async (req, res) => {
   });
 });
 
+const getSubjects = catchAsync(async (req, res) => {
+  const subjects = await subjectService.getSubjects();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    data: subjects,
+  });
+});
+
 export const subjectController = {
   createSubject,
+  getSubjects,
 };

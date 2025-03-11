@@ -10,8 +10,8 @@ const subjectCreateValidationSchema = z.object({
       .string()
       .min(10, 'Description must be at least 10 characters long')
       .max(500, 'Description must not exceed 500 characters'),
-    gradeLevel: z.string().optional(), // Optional field
-    category: z.string().optional(), // Optional field
+    gradeLevel: z.string().optional(),
+    category: z.string().optional(),
   }),
 });
 
