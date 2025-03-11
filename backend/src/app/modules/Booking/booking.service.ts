@@ -1,11 +1,11 @@
 import { JwtPayload } from 'jsonwebtoken';
 import { TBooking } from './booking.interface';
 import { Booking } from './booking.model';
-import User from '../User/user.model';
 import Tutor from '../Tutor/tutor.model';
+import Student from '../Student/student.model';
 
 const createBooking = async (user: JwtPayload, bookingData: TBooking) => {
-  const userData = await User.findOne({ email: user.email });
+  const userData = await Student.findOne({ email: user.email });
 
   if (!userData) {
     throw new Error('User not found');
@@ -74,6 +74,48 @@ const createBooking = async (user: JwtPayload, bookingData: TBooking) => {
   return booking;
 };
 
+const tutorBookingList = async (user: JwtPayload) => {
+  const userData = await Tutor.findOne({ email: user.email });
+  const bookings = await Booking.find({ tutorId: userData!._id });
+  return bookings;
+};
+
+const updateBookingStatus = async (
+  user: JwtPayload,
+  bookingId: string,
+  status: 'pending' | 'confirmed' | 'completed' | 'canceled',
+) => {
+  // Update booking status
+  const userData = await Tutor.findOne({ email: user.email });
+
+  if (!userData) {
+    throw new Error('User not found');
+  }
+
+  const ownReceivedBooking = await Booking.findOne({
+    tutorId: userData._id,
+    _id: bookingId,
+  });
+
+  if (!ownReceivedBooking) {
+    throw new Error('Booking not found');
+  }
+
+  ownReceivedBooking.status = status;
+  await ownReceivedBooking.save();
+
+  return ownReceivedBooking;
+};
+
+const studentBookingList = async (user: JwtPayload) => {
+  const userData = await Student.findOne({ email: user.email });
+  const bookings = await Booking.find({ studentId: userData!._id });
+  return bookings;
+};
+
 export const bookingService = {
   createBooking,
+  tutorBookingList,
+  updateBookingStatus,
+  studentBookingList,
 };

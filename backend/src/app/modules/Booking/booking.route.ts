@@ -14,4 +14,21 @@ router.post(
   bookingController.createBooking,
 );
 
+// student bookings
+router.get('/', auth(USER_ROLE.student), bookingController.studentBookingList);
+
+// tutor's booking list
+router.get(
+  '/bookings',
+  auth(USER_ROLE.tutor),
+  bookingController.tutorBookingList,
+);
+
+// tutor approve or decline booking
+router.put(
+  '/:bookingId',
+  auth(USER_ROLE.tutor),
+  bookingController.updateBookingStatus,
+);
+
 export const BookingRoutes = router;
