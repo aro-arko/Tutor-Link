@@ -18,4 +18,11 @@ router.get('/', subjectController.getSubjects);
 
 router.get('/:id', subjectController.getSubjectById);
 
+router.patch(
+  '/:id',
+  auth(USER_ROLE.admin, USER_ROLE.tutor),
+  validateRequest(subjectValidation.updateSubjectValidationSchema),
+  subjectController.updateSubject,
+);
+
 export const SubjectRoutes = router;

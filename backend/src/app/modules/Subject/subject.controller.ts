@@ -4,8 +4,10 @@ import { subjectService } from './subject.service';
 import httpStatus from 'http-status';
 
 const createSubject = catchAsync(async (req, res) => {
+  const user = req.user;
+  console.log(user);
   const subjectData = req.body;
-  const subject = await subjectService.createSubject(subjectData);
+  const subject = await subjectService.createSubject(subjectData, user);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -36,8 +38,28 @@ const getSubjectById = catchAsync(async (req, res) => {
   });
 });
 
+const updateSubject = catchAsync(async (req, res) => {
+  const user = req.user;
+  // console.log(user);
+  const subjectData = req.body;
+  const { id } = req.params;
+  const updatedSubject = await subjectService.updateSubject(
+    user,
+    id,
+    subjectData,
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Subject updated successfully',
+    data: updatedSubject,
+  });
+});
+
 export const subjectController = {
   createSubject,
   getSubjects,
   getSubjectById,
+  updateSubject,
 };
