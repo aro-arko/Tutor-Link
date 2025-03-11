@@ -15,4 +15,11 @@ router.post(
   studentController.reviewTutor,
 );
 
+// update review
+router.patch(
+  '/review/:reviewId',
+  auth(USER_ROLE.student),
+  studentController.updateReview,
+);
+
 export const StudentRoutes = router;

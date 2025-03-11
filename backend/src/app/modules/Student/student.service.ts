@@ -2,6 +2,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import User from '../User/user.model';
 import Student from './student.model';
 import mongoose from 'mongoose';
+const ObjectId = mongoose.Types.ObjectId;
 import { TStudent } from './student.interface';
 import Tutor from '../Tutor/tutor.model';
 import { Booking } from '../Booking/booking.model';
@@ -88,6 +89,7 @@ const reviewTutor = async (
 
   // Update the tutor's reviews and rating
   tutor.reviews.push({
+    _id: new ObjectId(),
     studentId: student._id,
     review: body.review,
     rating: body.rating,
@@ -107,8 +109,59 @@ const reviewTutor = async (
   return tutor;
 };
 
+const updateReview = async (
+  user: JwtPayload,
+  reviewId: string,
+  body: { rating: number; review: string },
+) => {
+  const student = await Student.findOne({ email: user.email });
+
+  if (!student) {
+    throw new Error('Student not found');
+  }
+
+  const tutor = await Tutor.findOne({ 'reviews._id': reviewId });
+
+  if (!tutor) {
+    throw new Error('Review not found');
+  }
+
+  const review = tutor.reviews.find(
+    (review) => review._id.toString() === reviewId,
+  );
+
+  if (!review) {
+    throw new Error('Review not found');
+  }
+
+  if (review.studentId.toString() !== student._id.toString()) {
+    throw new Error('You can only update your own reviews');
+  }
+
+  // Ensure studentId is correctly cast to ObjectId
+  review.studentId = new ObjectId(review.studentId);
+
+  // Update the review with valid data
+  review.rating = body.rating;
+  review.review = body.review;
+
+  // Recalculate the average rating
+  const totalRatings = tutor.reviews.reduce(
+    (sum, review) =>
+      sum + (typeof review.rating === 'number' ? review.rating : 0),
+    0,
+  );
+
+  tutor.rating = totalRatings / tutor.reviews.length;
+
+  await tutor.save();
+
+  return tutor;
+};
+
 export const studentService = {
   getMe,
   updateMe,
   reviewTutor,
+  updateReview,
 };

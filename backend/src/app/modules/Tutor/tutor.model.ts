@@ -15,9 +15,13 @@ const tutorSchema = new Schema<TTutor>({
   rating: { type: Number, default: 0 },
   reviews: [
     {
-      studentId: { type: Schema.Types.ObjectId, ref: 'Student', default: '' },
+      studentId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Student',
+        required: true,
+      }, // Ensure this is ObjectId, not String
       review: { type: String, default: '' },
-      rating: { type: Number, default: 0 }, // Change default to 0, not empty string
+      rating: { type: Number, default: 0 },
     },
   ],
   experience: { type: Number, default: 0 },

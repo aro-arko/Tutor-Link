@@ -13,6 +13,7 @@ export type TTutor = {
   qualification?: string;
   rating: number;
   reviews: {
+    _id: Types.ObjectId;
     studentId: Types.ObjectId;
     review: string;
     rating: number;
