@@ -25,7 +25,19 @@ const getSubjects = catchAsync(async (req, res) => {
   });
 });
 
+const getSubjectById = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const subject = await subjectService.getSubjectById(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    data: subject,
+  });
+});
+
 export const subjectController = {
   createSubject,
   getSubjects,
+  getSubjectById,
 };

@@ -16,4 +16,6 @@ router.post(
 
 router.get('/', subjectController.getSubjects);
 
+router.get('/:id', subjectController.getSubjectById);
+
 export const SubjectRoutes = router;

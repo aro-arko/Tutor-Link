@@ -18,7 +18,16 @@ const getSubjects = async () => {
   return subjects;
 };
 
+const getSubjectById = async (id: string) => {
+  const subject = await Subject.findById(id);
+  if (!subject) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Subject not found');
+  }
+  return subject;
+};
+
 export const subjectService = {
   createSubject,
   getSubjects,
+  getSubjectById,
 };
