@@ -1,38 +1,31 @@
 import { model, Schema } from 'mongoose';
 import { TTutor } from './tutor.interface';
 
-const tutorSchema = new Schema({
+const tutorSchema = new Schema<TTutor>({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   name: { type: String, required: true },
   email: { type: String, required: true },
   bio: { type: String, default: '' },
-  subjects: { type: [String], default: [] },
-  degree: { type: String, default: '' },
-  experience: { type: Number, default: 0 },
-  age: { type: Number, default: 0 },
-  phoneNumber: { type: String, default: '' },
   address: { type: String, default: '' },
   hourlyRate: { type: Number, default: 0 },
-  availability: {
-    type: [
-      {
-        day: { type: String, default: '' },
-        timeSlots: { type: [String], default: [] },
-      },
-    ],
-    default: [],
-  },
+  tutorImage: { type: String, default: '' },
+  phone: { type: String, default: '' },
+  subject: { type: [String], default: [] },
+  qualification: { type: String, default: '' },
+  rating: { type: Number, default: 0 },
+  reviews: { type: Number, default: 0 },
+  experience: { type: Number, default: 0 },
+  age: { type: Number, default: 0 },
   bookedStudents: {
     type: [Schema.Types.ObjectId],
     ref: 'Student',
     default: [],
   },
-  paymentHistory: {
+  availability: {
     type: [
       {
-        amount: { type: Number, default: 0 },
-        date: { type: Date, default: Date.now },
-        method: { type: String, enum: ['SSLCommerz'], default: 'SSLCommerz' },
+        day: { type: String, default: '' },
+        timeSlots: { type: [String], default: [] },
       },
     ],
     default: [],
