@@ -12,7 +12,11 @@ export type TTutor = {
   subject: Types.ObjectId[];
   qualification?: string;
   rating: number;
-  reviews: number;
+  reviews: {
+    studentId: Types.ObjectId;
+    review: string;
+    rating: number;
+  }[];
   experience: number;
   age: number;
   bookedStudents?: Types.ObjectId[];

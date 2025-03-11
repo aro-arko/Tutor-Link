@@ -3,6 +3,7 @@ import { TBooking } from './booking.interface';
 import { Booking } from './booking.model';
 import Tutor from '../Tutor/tutor.model';
 import Student from '../Student/student.model';
+import mongoose from 'mongoose';
 
 const createBooking = async (user: JwtPayload, bookingData: TBooking) => {
   const userData = await Student.findOne({ email: user.email });
@@ -123,26 +124,46 @@ const updateBookingStatus = async (
   bookingId: string,
   status: 'pending' | 'confirmed' | 'completed' | 'canceled',
 ) => {
-  // Update booking status
-  const userData = await Tutor.findOne({ email: user.email });
+  const session = await mongoose.startSession();
 
-  if (!userData) {
-    throw new Error('User not found');
+  try {
+    session.startTransaction();
+    const userData = await Tutor.findOne({ email: user.email });
+
+    if (!userData) {
+      throw new Error('User not found');
+    }
+
+    const ownReceivedBooking = await Booking.findOne({
+      tutorId: userData._id,
+      _id: bookingId,
+    }).session(session);
+
+    if (!ownReceivedBooking) {
+      throw new Error('Booking not found');
+    }
+
+    ownReceivedBooking.status = status;
+    await ownReceivedBooking.save({ session });
+
+    // Add student ID to bookedStudents in Tutor collection if status is confirmed
+    if (status === 'confirmed') {
+      await Tutor.findByIdAndUpdate(
+        userData._id,
+        { $addToSet: { bookedStudents: ownReceivedBooking.studentId } },
+        { session },
+      );
+    }
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return ownReceivedBooking;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
   }
-
-  const ownReceivedBooking = await Booking.findOne({
-    tutorId: userData._id,
-    _id: bookingId,
-  });
-
-  if (!ownReceivedBooking) {
-    throw new Error('Booking not found');
-  }
-
-  ownReceivedBooking.status = status;
-  await ownReceivedBooking.save();
-
-  return ownReceivedBooking;
 };
 
 export const bookingService = {

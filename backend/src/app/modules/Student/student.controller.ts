@@ -27,7 +27,21 @@ const updateMe = catchAsync(async (req, res) => {
   });
 });
 
+const reviewTutor = catchAsync(async (req, res) => {
+  const user = req.user;
+  const tutorId = req.params.tutorId;
+  const result = await studentService.reviewTutor(user, tutorId, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Review added successfully',
+    data: result,
+  });
+});
+
 export const studentController = {
   getMe,
   updateMe,
+  reviewTutor,
 };

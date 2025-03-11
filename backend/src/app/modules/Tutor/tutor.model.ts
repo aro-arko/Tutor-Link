@@ -13,7 +13,13 @@ const tutorSchema = new Schema<TTutor>({
   subject: { type: [Schema.Types.ObjectId], ref: 'Subject', default: [] },
   qualification: { type: String, default: '' },
   rating: { type: Number, default: 0 },
-  reviews: { type: Number, default: 0 },
+  reviews: [
+    {
+      studentId: { type: Schema.Types.ObjectId, ref: 'Student', default: '' },
+      review: { type: String, default: '' },
+      rating: { type: Number, default: 0 }, // Change default to 0, not empty string
+    },
+  ],
   experience: { type: Number, default: 0 },
   age: { type: Number, default: 0 },
   bookedStudents: {
