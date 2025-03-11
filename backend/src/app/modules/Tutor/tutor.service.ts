@@ -12,9 +12,9 @@ const getMe = async (user: JwtPayload) => {
 
 const updateTutor = async (user: JwtPayload, body: Partial<TTutor>) => {
   const session = await mongoose.startSession();
-  session.startTransaction();
 
   try {
+    session.startTransaction();
     // Validate subject field if it exists in the body
     if (body.subject) {
       const subjects = await Subject.find({ _id: { $in: body.subject } });

@@ -18,6 +18,6 @@ export type TTutor = {
   bookedStudents?: Types.ObjectId[];
   availability: {
     day: string;
-    timeSlots: string[];
+    timeSlots: string;
   }[];
 };

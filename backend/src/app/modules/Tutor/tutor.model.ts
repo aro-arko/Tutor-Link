@@ -25,7 +25,7 @@ const tutorSchema = new Schema<TTutor>({
     type: [
       {
         day: { type: String, default: '' },
-        timeSlots: { type: [String], default: [] },
+        timeSlots: { type: String, default: '' },
       },
     ],
     default: [],
