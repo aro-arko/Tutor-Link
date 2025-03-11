@@ -5,8 +5,10 @@ const bookingSchema = new Schema<TBooking>(
   {
     studentId: { type: Schema.Types.ObjectId, ref: 'Student', required: true },
     tutorId: { type: Schema.Types.ObjectId, ref: 'Tutor', required: true },
-    subject: { type: String, required: true },
-    sessionDate: { type: Date, required: true },
+    subject: { type: Schema.Types.ObjectId, ref: 'Subject', required: true },
+    timeSlotId: { type: Schema.Types.ObjectId, ref: 'Tutor', required: true }, // Added timeSlotId
+    sessionStartDate: { type: Date, required: true },
+    sessionEndDate: { type: Date, required: true },
     duration: { type: Number, required: true },
     status: {
       type: String,

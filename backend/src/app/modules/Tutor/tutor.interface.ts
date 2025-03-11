@@ -17,6 +17,7 @@ export type TTutor = {
   age: number;
   bookedStudents?: Types.ObjectId[];
   availability: {
+    _id: Types.ObjectId;
     day: string;
     timeSlots: string;
   }[];
