@@ -16,6 +16,31 @@ const createBooking = catchAsync(async (req, res) => {
   });
 });
 
+const studentBookingList = catchAsync(async (req, res) => {
+  const user = req.user;
+  const result = await bookingService.studentBookingList(user);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Student booking list fetched successfully',
+    data: result,
+  });
+});
+
+const cancelBooking = catchAsync(async (req, res) => {
+  const user = req.user;
+  const bookingId = req.params.bookingId;
+  const result = await bookingService.cancelBooking(user, bookingId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Booking canceled successfully',
+    data: result,
+  });
+});
+
 const tutorBookingList = catchAsync(async (req, res) => {
   const user = req.user;
   const result = await bookingService.tutorBookingList(user);
@@ -46,21 +71,10 @@ const updateBookingStatus = catchAsync(async (req, res) => {
   });
 });
 
-const studentBookingList = catchAsync(async (req, res) => {
-  const user = req.user;
-  const result = await bookingService.studentBookingList(user);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Student booking list fetched successfully',
-    data: result,
-  });
-});
-
 export const bookingController = {
   createBooking,
+  studentBookingList,
+  cancelBooking,
   tutorBookingList,
   updateBookingStatus,
-  studentBookingList,
 };

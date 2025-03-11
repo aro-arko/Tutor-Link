@@ -7,16 +7,24 @@ import { bookingController } from './booking.controller';
 
 const router = express.Router();
 
+// student
+// create booking
 router.post(
   '/',
   auth(USER_ROLE.student),
   validateRequest(bookingValidation.bookingCreateValidationSchema),
   bookingController.createBooking,
 );
-
 // student bookings
 router.get('/', auth(USER_ROLE.student), bookingController.studentBookingList);
 
+router.put(
+  '/cancel/:bookingId',
+  auth(USER_ROLE.student),
+  bookingController.cancelBooking,
+);
+
+// tutor
 // tutor's booking list
 router.get(
   '/bookings',

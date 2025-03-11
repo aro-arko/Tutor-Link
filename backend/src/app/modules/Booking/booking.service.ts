@@ -62,16 +62,54 @@ const createBooking = async (user: JwtPayload, bookingData: TBooking) => {
 
   const totalDuration = sessionDuration * occurrences;
 
+  if (totalDuration === 0) {
+    throw new Error('No available slots within the specified date range');
+  }
+
   const bookingDataWithUserId = {
     ...bookingData,
     studentId: userData._id,
     duration: totalDuration,
     price: tutorData.hourlyRate * totalDuration,
-    status: 'pending',
+    status: 'pending', // Default status
   };
 
   const booking = await Booking.create(bookingDataWithUserId);
   return booking;
+};
+
+const studentBookingList = async (user: JwtPayload) => {
+  const userData = await Student.findOne({ email: user.email });
+  const bookings = await Booking.find({ studentId: userData!._id });
+  return bookings;
+};
+
+const cancelBooking = async (user: JwtPayload, bookingId: string) => {
+  const userData = await Student.findOne({ email: user.email });
+
+  if (!userData) {
+    throw new Error('User not found');
+  }
+
+  const ownBooking = await Booking.findOne({
+    studentId: userData._id,
+    _id: bookingId,
+  });
+
+  if (!ownBooking) {
+    throw new Error('Sorry you cannot cancel this booking');
+  }
+
+  if (ownBooking.paymentStatus !== 'unpaid') {
+    throw new Error(
+      'Cannot cancel a booking with paid status please contact support',
+    );
+  }
+
+  ownBooking.status = 'canceled';
+  await ownBooking.save();
+
+  return ownBooking;
 };
 
 const tutorBookingList = async (user: JwtPayload) => {
@@ -107,15 +145,10 @@ const updateBookingStatus = async (
   return ownReceivedBooking;
 };
 
-const studentBookingList = async (user: JwtPayload) => {
-  const userData = await Student.findOne({ email: user.email });
-  const bookings = await Booking.find({ studentId: userData!._id });
-  return bookings;
-};
-
 export const bookingService = {
   createBooking,
   tutorBookingList,
+  cancelBooking,
   updateBookingStatus,
   studentBookingList,
 };
