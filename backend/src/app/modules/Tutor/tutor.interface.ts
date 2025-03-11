@@ -2,14 +2,17 @@ export type TTutor = {
   name: string;
   email: string;
   bio?: string;
-  subjects?: string[];
-  degree?: string;
+  address?: string;
+  hourlyRate?: number;
+  tutorImage?: string;
+  phone?: string;
+  subject?: string[];
+  qualification?: string;
+  rating?: number;
+  reviews?: number;
   experience?: number;
   age?: number;
-  phoneNumber?: string;
-  address?: string;
   bookedStudents?: string[];
-  hourlyRate?: number;
   availability?: {
     day: string;
     timeSlots: string[];
