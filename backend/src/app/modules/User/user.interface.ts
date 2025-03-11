@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { USER_ROLES } from './user.constant';
+import { USER_ROLE } from './user.constant';
 
 export type TUser = {
   name: string;
@@ -21,4 +21,4 @@ export interface UserModel extends Model<TUser> {
   ): Promise<boolean>;
 }
 
-export type TUserRole = keyof typeof USER_ROLES;
+export type TUserRole = keyof typeof USER_ROLE;
