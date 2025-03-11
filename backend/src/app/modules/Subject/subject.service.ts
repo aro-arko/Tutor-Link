@@ -69,9 +69,15 @@ const updateSubject = async (
   return updatedSubject;
 };
 
+const deleteSubject = async (id: string) => {
+  const subject = await Subject.findByIdAndDelete(id);
+  return subject;
+};
+
 export const subjectService = {
   createSubject,
   getSubjects,
   getSubjectById,
   updateSubject,
+  deleteSubject,
 };

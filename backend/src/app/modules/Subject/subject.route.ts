@@ -25,4 +25,6 @@ router.patch(
   subjectController.updateSubject,
 );
 
+router.delete('/:id', auth(USER_ROLE.admin), subjectController.deleteSubject);
+
 export const SubjectRoutes = router;

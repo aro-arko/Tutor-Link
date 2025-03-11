@@ -57,9 +57,22 @@ const updateSubject = catchAsync(async (req, res) => {
   });
 });
 
+const deleteSubject = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const deletedSubject = await subjectService.deleteSubject(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Subject deleted successfully',
+    data: deletedSubject,
+  });
+});
+
 export const subjectController = {
   createSubject,
   getSubjects,
   getSubjectById,
   updateSubject,
+  deleteSubject,
 };
