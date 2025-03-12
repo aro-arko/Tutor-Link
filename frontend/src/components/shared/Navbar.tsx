@@ -1,20 +1,37 @@
 "use client";
-import Link from "next/link";
-import { usePathname } from "next/navigation"; // Import usePathname
+import { useState } from "react";
+import { useUser } from "@/context/UserContext";
 import { Button } from "../ui/button";
-import { Menu, X } from "lucide-react"; // Import hamburger and close icons
-import { useState } from "react"; // Import useState for mobile menu toggle
+import { Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation";
+
+import { logout } from "@/services/AuthService";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import Link from "next/link";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function Navbar() {
-  const pathname = usePathname(); // Get the current route
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
+  const { user, setIsLoading } = useUser();
+  const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Define a function to check if a link is active
   const isActive = (path: string) => pathname === path;
 
-  // Toggle mobile menu
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsLoading(true);
+    //   if (protectedRoutes.some((route) => pathname.match(route))) {
+    //   router.push("/");
+    // }
   };
 
   return (
@@ -72,11 +89,55 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop Login Button */}
+          {/* User/Log In Button */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button asChild>
-              <Link href="/login">Login</Link>
-            </Button>
+            {user ? (
+              // If the user is logged in, show the user icon with dropdown menu
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <FaUserCircle className="text-gray-600 cursor-pointer h-6 w-6" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200">
+                  <DropdownMenuItem>
+                    <Link
+                      href="/profile"
+                      className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
+                    >
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link
+                      href="/dashboard"
+                      className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
+                    >
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link
+                      href="/change-password"
+                      className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
+                    >
+                      Change Password
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full px-4 py-2 text-gray-600 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              // If the user is not logged in, show the login button
+              <Button asChild>
+                <Link href="/login">Login</Link>
+              </Button>
+            )}
           </div>
 
           {/* Mobile Menu Toggle Button */}
