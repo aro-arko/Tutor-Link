@@ -18,6 +18,8 @@ import { protectedRoutes } from "@/constants";
 
 export default function Navbar() {
   const { user, setIsLoading } = useUser();
+  const role = user?.role;
+  console.log(role);
   const pathname = usePathname();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -110,7 +112,7 @@ export default function Navbar() {
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Link
-                      href="/dashboard"
+                      href={`/${role}/dashboard`}
                       className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
                     >
                       Dashboard
