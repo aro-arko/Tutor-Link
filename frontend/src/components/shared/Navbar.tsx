@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useUser } from "@/context/UserContext";
 import { Button } from "../ui/button";
 import { Menu, X } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { logout } from "@/services/AuthService";
 import {
@@ -14,10 +14,12 @@ import {
 } from "../ui/dropdown-menu";
 import Link from "next/link";
 import { FaUserCircle } from "react-icons/fa";
+import { protectedRoutes } from "@/constants";
 
 export default function Navbar() {
   const { user, setIsLoading } = useUser();
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isActive = (path: string) => pathname === path;
@@ -29,9 +31,9 @@ export default function Navbar() {
   const handleLogout = () => {
     logout();
     setIsLoading(true);
-    //   if (protectedRoutes.some((route) => pathname.match(route))) {
-    //   router.push("/");
-    // }
+    if (protectedRoutes.some((route) => pathname.match(route))) {
+      router.push("/");
+    }
   };
 
   return (
