@@ -53,9 +53,21 @@ const updateReview = catchAsync(async (req, res) => {
   });
 });
 
+const searchTutors = catchAsync(async (req, res) => {
+  const result = await studentService.searchTutors(req.query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Tutors retrieved successfully',
+    data: result,
+  });
+});
+
 export const studentController = {
   getMe,
   updateMe,
   reviewTutor,
   updateReview,
+  searchTutors,
 };

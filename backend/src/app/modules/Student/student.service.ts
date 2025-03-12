@@ -6,6 +6,8 @@ const ObjectId = mongoose.Types.ObjectId;
 import { TStudent } from './student.interface';
 import Tutor from '../Tutor/tutor.model';
 import { Booking } from '../Booking/booking.model';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { Subject } from '../Subject/subject.model';
 
 const getMe = async (user: JwtPayload) => {
   const userData = await User.findOne({ email: user.email });
@@ -159,9 +161,34 @@ const updateReview = async (
   return tutor;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const searchTutors = async (query: any) => {
+  const searchableFields = ['name', 'subject'];
+
+  // Check if the search term is for a subject
+  let subjectDetails;
+  if (query.subject) {
+    subjectDetails = await Subject.findOne({ name: query.subject });
+  }
+  query.subject = subjectDetails?._id;
+
+  // console.log(subjectDetails);
+
+  const queryBuilder = new QueryBuilder(Tutor.find(), query)
+    .search(searchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const tutors = await queryBuilder.modelQuery;
+  return tutors;
+};
+
 export const studentService = {
   getMe,
   updateMe,
   reviewTutor,
   updateReview,
+  searchTutors,
 };

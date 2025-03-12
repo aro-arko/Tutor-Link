@@ -22,4 +22,7 @@ router.patch(
   studentController.updateReview,
 );
 
+// search for tutors by query
+router.get('/search', studentController.searchTutors);
+
 export const StudentRoutes = router;
