@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 
-const tutorInfo = async () => {
+export const tutorInfo = async () => {
   const token = (await cookies()).get("accessToken")?.value;
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/tutor/me`, {
@@ -25,4 +25,77 @@ const tutorInfo = async () => {
   }
 };
 
-export default tutorInfo;
+export const activeSessions = async () => {
+  const token = (await cookies()).get("accessToken")?.value;
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/tutor/active-sessions`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch active sessions:", error);
+    throw error;
+  }
+};
+
+export const getStudentById = async (studentId: string) => {
+  const token = (await cookies()).get("accessToken")?.value;
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/student/${studentId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch student info:", error);
+    throw error;
+  }
+};
+
+export const tutorPersonalInfo = async () => {
+  const token = (await cookies()).get("accessToken")?.value;
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/tutor/me`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch tutor info:", error);
+    throw error;
+  }
+};

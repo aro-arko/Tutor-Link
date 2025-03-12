@@ -11,9 +11,8 @@ import {
 } from "@/components/ui/sidebar";
 import { NavMain } from "./nav-main";
 import { useUser } from "@/context/UserContext";
-import tutorInfo from "@/services/TutorService";
-
 import { NavUser } from "./nav-user";
+import { tutorInfo } from "@/services/TutorService";
 
 const getSidebarItems = (role: "student" | "tutor" | "admin" | "guest") => {
   const commonItems = [
@@ -52,11 +51,25 @@ const getSidebarItems = (role: "student" | "tutor" | "admin" | "guest") => {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useUser();
-  const role = user?.role as "student" | "tutor" | "admin";
+  const { user, setIsLoading } = useUser();
+  const role = user?.role as "student" | "tutor" | "admin" | "guest";
   const [tutorDetails, setTutorDetails] = React.useState<any>(null);
+  const [sidebarItems, setSidebarItems] = React.useState(
+    getSidebarItems("guest")
+  );
 
-  // Fetch tutor details if the role is "tutor"
+  // ✅ Prevents multiple calls to setIsLoading
+  const loadingSet = React.useRef(false);
+
+  // ✅ Call setIsLoading(true) only once if user is null
+  React.useEffect(() => {
+    if (!user && !loadingSet.current) {
+      setIsLoading(true);
+      loadingSet.current = true; // Mark as called
+    }
+  }, [user, setIsLoading]);
+
+  // ✅ Fetch tutor details if the role is "tutor"
   React.useEffect(() => {
     if (role === "tutor") {
       tutorInfo()
@@ -65,15 +78,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }
   }, [role]);
 
+  // ✅ Update sidebar items when user role changes
+  React.useEffect(() => {
+    setSidebarItems(getSidebarItems(role || "guest"));
+  }, [role]);
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarContent>
-        <NavMain items={getSidebarItems(role)} />
+        <NavMain items={sidebarItems} />
       </SidebarContent>
 
       {/* Footer: User Info & Logout */}
       <SidebarFooter>
-        {role == "tutor" ? (
+        {role === "tutor" ? (
           <NavUser userDetails={tutorDetails} />
         ) : (
           // @ts-ignore
