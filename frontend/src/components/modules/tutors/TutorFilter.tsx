@@ -1,3 +1,5 @@
+"use client";
+
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,11 +10,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Dispatch, SetStateAction } from "react";
+import { getAllSubjects } from "@/services/Subjects";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Button } from "@/components/ui/button"; // Import the Button component
 
 interface Filters {
   search: string;
-  subjects: string[];
+  subjects: string[]; // Should store subject IDs
   rating: string;
   hourlyRate: number;
   availability: string;
@@ -21,44 +25,60 @@ interface Filters {
 
 interface TutorFilterProps {
   filters: Filters;
-  setFilters: Dispatch<
-    SetStateAction<{
-      search: string;
-      subjects: string[];
-      rating: string;
-      hourlyRate: number;
-      availability: string;
-      location: string;
-    }>
-  >;
-  handleSubjectChange: (subject: string) => void;
+  setFilters: Dispatch<SetStateAction<Filters>>;
+  handleSubjectChange: (subjectId: string) => void;
 }
+
+const initialFilters: Filters = {
+  search: "",
+  subjects: [],
+  rating: "",
+  hourlyRate: 50, // Default hourly rate
+  availability: "",
+  location: "",
+};
 
 const TutorFilter: React.FC<TutorFilterProps> = ({
   filters,
   setFilters,
   handleSubjectChange,
 }) => {
+  const [subs, setSubs] = useState<{ _id: string; name: string }[]>([]);
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const res = await getAllSubjects();
+        setSubs(res.data);
+      } catch (error) {
+        console.error("Failed to fetch subjects:", error);
+      }
+    };
+    fetchSubjects();
+  }, []);
+
+  const handleResetFilters = () => {
+    setFilters(initialFilters);
+  };
+
   return (
     <div className="space-y-4 p-4 bg-white rounded-lg shadow-md">
       {/* Subject Filter */}
       <div>
         <h4 className="text-lg font-semibold">Subjects</h4>
         <div className="flex flex-wrap gap-3 mt-2">
-          {["Math", "Physics", "Chemistry", "Biology", "English"].map(
-            (subject) => (
-              <div key={subject} className="flex items-center gap-2">
-                <Checkbox
-                  id={subject}
-                  checked={filters.subjects.includes(subject)}
-                  onCheckedChange={() => handleSubjectChange(subject)}
-                />
-                <label htmlFor={subject} className="text-sm">
-                  {subject}
-                </label>
-              </div>
-            )
-          )}
+          {subs.map((subject) => (
+            <div key={subject._id} className="flex items-center gap-2">
+              <Checkbox
+                id={subject._id}
+                checked={filters.subjects.includes(subject._id)}
+                onCheckedChange={() => handleSubjectChange(subject._id)}
+              />
+              <label htmlFor={subject._id} className="text-sm">
+                {subject.name}
+              </label>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -67,9 +87,7 @@ const TutorFilter: React.FC<TutorFilterProps> = ({
         <h4 className="text-lg font-semibold">Rating</h4>
         <Select
           value={filters.rating}
-          onValueChange={(value) =>
-            setFilters({ ...filters, rating: value, search: filters.search })
-          }
+          onValueChange={(value) => setFilters({ ...filters, rating: value })}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select Rating" />
@@ -77,6 +95,8 @@ const TutorFilter: React.FC<TutorFilterProps> = ({
           <SelectContent>
             <SelectItem value="4">4+ Stars</SelectItem>
             <SelectItem value="3">3+ Stars</SelectItem>
+            <SelectItem value="2">2+ Stars</SelectItem>
+            <SelectItem value="1">1+ Stars</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -89,11 +109,7 @@ const TutorFilter: React.FC<TutorFilterProps> = ({
           max={100}
           step={1}
           onValueChange={(value) =>
-            setFilters({
-              ...filters,
-              hourlyRate: value[0],
-              search: filters.search,
-            })
+            setFilters({ ...filters, hourlyRate: value[0] })
           }
         />
         <p className="text-sm mt-2">Up to ${filters.hourlyRate}/hr</p>
@@ -105,11 +121,7 @@ const TutorFilter: React.FC<TutorFilterProps> = ({
         <Select
           value={filters.availability}
           onValueChange={(value) =>
-            setFilters({
-              ...filters,
-              availability: value,
-              search: filters.search,
-            })
+            setFilters({ ...filters, availability: value })
           }
         >
           <SelectTrigger className="w-full">
@@ -133,14 +145,19 @@ const TutorFilter: React.FC<TutorFilterProps> = ({
           type="text"
           placeholder="Enter location..."
           value={filters.location}
-          onChange={(e) =>
-            setFilters({
-              ...filters,
-              location: e.target.value,
-              search: filters.search,
-            })
-          }
+          onChange={(e) => setFilters({ ...filters, location: e.target.value })}
         />
+      </div>
+
+      {/* Reset Filters Button */}
+      <div className="flex justify-end">
+        <Button
+          variant="outline"
+          onClick={handleResetFilters}
+          className="bg-red-500 text-white hover:bg-red-600"
+        >
+          Reset Filters
+        </Button>
       </div>
     </div>
   );

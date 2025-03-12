@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import tutorData from "@/fakeData/tutorsData.json";
+import { useEffect, useState } from "react";
+// import tutorData from "@/fakeData/tutorsData.json";
 import TutorCard from "./TutorCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -15,10 +15,27 @@ import {
 
 import { Filter, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import TutorFilter from "./TutorFilter";
+import { getAllTutors } from "@/services/TutorService";
 
 const ITEMS_PER_PAGE = 9; // Maximum tutors per page
 
 const AllTutors = () => {
+  const [tutorData, setTutorData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchTutors = async () => {
+      try {
+        const response = await getAllTutors();
+        // console.log("Fetched Tutors:", response);
+        setTutorData(response.data);
+      } catch (error) {
+        console.error("Failed to fetch tutors:", error);
+      }
+    };
+
+    fetchTutors();
+  }, []);
+
   const [filters, setFilters] = useState({
     search: "",
     subjects: [] as string[],
@@ -51,10 +68,10 @@ const AllTutors = () => {
         : true) &&
       (filters.rating ? tutor.rating >= parseFloat(filters.rating) : true) &&
       (filters.hourlyRate
-        ? parseFloat(tutor.hourlyRate.replace("$", "")) <= filters.hourlyRate
+        ? parseFloat(tutor.hourlyRate) <= filters.hourlyRate
         : true) &&
       (filters.availability
-        ? tutor.availability.some((slot) =>
+        ? tutor.availability.some((slot: { day: string }) =>
             slot.day.toLowerCase().includes(filters.availability.toLowerCase())
           )
         : true) &&
@@ -141,7 +158,7 @@ const AllTutors = () => {
         <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {paginatedTutors.length > 0 ? (
             paginatedTutors.map((tutor) => (
-              <TutorCard key={tutor.id} tutor={tutor} />
+              <TutorCard key={tutor._id} tutor={tutor} />
             ))
           ) : (
             <p className="text-center text-gray-600 col-span-full">

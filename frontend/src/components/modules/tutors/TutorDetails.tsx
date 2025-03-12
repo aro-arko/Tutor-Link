@@ -2,36 +2,51 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import tutorData from "@/fakeData/tutorsData.json";
 import { Button } from "@/components/ui/button";
-import { Star, PhoneCall, MapPin } from "lucide-react";
+import { Star, MapPin, Calendar } from "lucide-react";
 import Image from "next/image";
-
-interface Tutor {
-  id: string;
-  tutorImage: string;
-  name: string;
-  bio: string;
-  address: string;
-  hourlyRate: string;
-  phone: string;
-  qualification: string;
-  rating: number;
-  reviews: number;
-  coverImage: string;
-  subject: string[];
-  availability: { day: string; timeSlots: string[] }[];
-}
+import { getTutorById } from "@/services/TutorService";
+import { getSubjectById } from "@/services/Subjects";
+import Link from "next/link";
+import { ITutor } from "@/types";
 
 const TutorDetails = () => {
-  const { id } = useParams(); // Get the ID from the URL
-  const [tutor, setTutor] = useState<Tutor | null>(null);
+  const { id } = useParams() as { id: string };
+  const [tutor, setTutor] = useState<ITutor | null>(null);
+  const [subjectNames, setSubjectNames] = useState<string[]>([]);
 
   useEffect(() => {
-    // Find the tutor based on the ID
-    const foundTutor = tutorData.find((t) => t.id === id);
-    setTutor(foundTutor || null);
+    const fetchTutor = async () => {
+      try {
+        const res = await getTutorById(id);
+        setTutor(res.data);
+      } catch (error) {
+        console.error("Failed to fetch tutor info:", error);
+      }
+    };
+
+    fetchTutor();
   }, [id]);
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      if (tutor) {
+        try {
+          const subjectNames = await Promise.all(
+            tutor.subject.map(async (subjectId: string) => {
+              const res = await getSubjectById(subjectId);
+              return res.data.name;
+            })
+          );
+          setSubjectNames(subjectNames);
+        } catch (error) {
+          console.error("Failed to fetch subjects:", error);
+        }
+      }
+    };
+
+    fetchSubjects();
+  }, [tutor]);
 
   if (!tutor) {
     return <p className="text-center text-gray-600">Tutor not found.</p>;
@@ -45,7 +60,7 @@ const TutorDetails = () => {
         <div className="lg:w-1/2">
           <div className="relative w-full h-96 rounded-lg overflow-hidden shadow-lg">
             <Image
-              src={tutor.coverImage}
+              src={tutor.backgroundImage}
               alt={tutor.name}
               layout="fill"
               objectFit="cover"
@@ -106,12 +121,12 @@ const TutorDetails = () => {
           <div className="mt-6">
             <h3 className="text-lg font-semibold">📚 Subjects:</h3>
             <div className="flex flex-wrap gap-2 mt-1">
-              {tutor.subject.map((subject, index) => (
+              {subjectNames.map((subjectName, index) => (
                 <span
                   key={index}
                   className="bg-gray-200 text-gray-700 text-sm px-3 py-1 rounded-full"
                 >
-                  {subject}
+                  {subjectName}
                 </span>
               ))}
             </div>
@@ -122,22 +137,25 @@ const TutorDetails = () => {
             <h3 className="text-lg font-semibold">🕒 Availability:</h3>
             <div className="mt-2">
               {tutor.availability.map((slot, index) => (
-                <div key={index} className="p-3 bg-gray-100 rounded-md mb-2">
-                  <strong>{slot.day}:</strong>{" "}
-                  <span className="text-gray-700">
-                    {slot.timeSlots.join(", ")}
-                  </span>
-                </div>
+                <li key={index} className="mt-1">
+                  <span className="font-medium text-gray-700">{slot.day}:</span>{" "}
+                  {/* Ensure timeSlots is treated as an array */}
+                  {Array.isArray(slot.timeSlots)
+                    ? slot.timeSlots.join(", ")
+                    : slot.timeSlots}
+                </li>
               ))}
             </div>
           </div>
 
           {/* Contact Button */}
           <div className="mt-6">
-            <Button className="w-full bg-red-600 text-white py-2 hover:bg-red-700 transition flex items-center gap-2">
-              <PhoneCall className="h-5 w-5" />
-              Contact {tutor.name}
-            </Button>
+            <Link href={`/booking?tutorId=${tutor._id}`}>
+              <Button className="w-full bg-red-600 text-white py-2 hover:bg-red-700 transition flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                Request a Booking
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

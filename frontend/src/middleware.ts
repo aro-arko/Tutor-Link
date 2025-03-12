@@ -6,7 +6,7 @@ type Role = keyof typeof roleBasedPrivateRoutes;
 const authRoutes = ["/login", "/register"];
 const roleBasedPrivateRoutes = {
   tutor: [/^\/tutor/],
-  student: [/^\/student/],
+  student: [/^\/student/, /^\/booking/],
 };
 
 export const middleware = async (request: NextRequest) => {
@@ -35,5 +35,13 @@ export const middleware = async (request: NextRequest) => {
 };
 
 export const config = {
-  matcher: ["/login", "/tutor", "/tutor/:page", "/student", "/student/:page"],
+  matcher: [
+    "/login",
+    "/tutor",
+    "/tutor/:page",
+    "/student",
+    "/student/:page",
+    "/booking",
+    "/booking/:page",
+  ],
 };
