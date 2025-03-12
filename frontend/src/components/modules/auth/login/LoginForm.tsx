@@ -17,7 +17,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginValidation } from "../loginValidation";
 import { toast } from "sonner";
 import Link from "next/link";
-import { loginUser, reCaptchaTokenVerification } from "@/services/AuthService";
+import {
+  getCurrentUser,
+  loginUser,
+  reCaptchaTokenVerification,
+} from "@/services/AuthService";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -57,12 +61,12 @@ const LoginForm = () => {
         if (redirect) {
           router.push(redirect);
         } else {
-          router.push("/profile");
+          const user = await getCurrentUser();
+          router.push(`/${user.role}/dashboard`);
         }
       } else {
         toast.error(res?.message);
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(error);
     }
@@ -134,7 +138,7 @@ const LoginForm = () => {
                 sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_CLIENT_KEY || ""}
                 onChange={handleReCaptcha}
               />
-              , {/* Submit Button */}
+              {/* Submit Button */}
               <Button
                 disabled={!reCaptchaStatus}
                 type="submit"
