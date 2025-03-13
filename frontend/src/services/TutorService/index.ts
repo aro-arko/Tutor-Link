@@ -147,3 +147,29 @@ export const tutorPersonalInfo = async () => {
     throw error;
   }
 };
+
+export const bookingRequest = async () => {
+  const token = (await cookies()).get("accessToken")?.value;
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/tutor/booking-requests`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch booking requests:", error);
+    throw error;
+  }
+};
