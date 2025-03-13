@@ -1,7 +1,9 @@
+import PaymentVerify from "@/components/modules/payment/PaymentVerify";
+
 const PaymentPage = () => {
   return (
     <div>
-      <h1>This is PaymentPage component</h1>
+      <PaymentVerify />
     </div>
   );
 };

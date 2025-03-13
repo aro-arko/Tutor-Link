@@ -86,3 +86,30 @@ export const studentCancelBooking = async (bookingId: string) => {
     throw error;
   }
 };
+
+export const verifyPayment = async (order_id: string) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/booking/verify?order_id=${order_id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status} ${res.statusText}`);
+    }
+
+    const booking = await res.json();
+    return booking;
+  } catch (error) {
+    console.error("Failed to verify payment:", error);
+    throw error;
+  }
+};
