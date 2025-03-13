@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getTutorById } from "@/services/TutorService";
 import { getSubjectById } from "@/services/Subjects";
@@ -28,6 +28,7 @@ import { toast } from "sonner";
 
 const Booking = () => {
   const searchParams = useSearchParams();
+  const router = useRouter(); // Add useRouter hook
   const tutorId = searchParams.get("tutorId") as string; // Retrieve `tutorId` from URL
   const [tutor, setTutor] = useState<ITutor | null>(null);
   const [subjects, setSubjects] = useState<{ id: string; name: string }[]>([]);
@@ -104,6 +105,9 @@ const Booking = () => {
       const res = await createBooking(bookingData);
       console.log("Booking created:", res);
       toast.success("Booking created successfully!");
+
+      // Redirect to /booking/lists after successful booking
+      router.push("/booking/lists");
     } catch (error) {
       console.error("Failed to create booking:", error);
       toast.error("Invalid date range. Please try again.");

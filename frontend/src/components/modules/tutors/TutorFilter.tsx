@@ -13,6 +13,7 @@ import { Slider } from "@/components/ui/slider";
 import { getAllSubjects } from "@/services/Subjects";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button"; // Import the Button component
+import { useRouter } from "next/navigation"; // Import useRouter
 
 interface Filters {
   search: string;
@@ -44,6 +45,7 @@ const TutorFilter: React.FC<TutorFilterProps> = ({
   handleSubjectChange,
 }) => {
   const [subs, setSubs] = useState<{ _id: string; name: string }[]>([]);
+  const router = useRouter(); // Initialize useRouter
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -59,6 +61,7 @@ const TutorFilter: React.FC<TutorFilterProps> = ({
 
   const handleResetFilters = () => {
     setFilters(initialFilters);
+    router.push("/tutors");
   };
 
   return (

@@ -4,10 +4,33 @@ import banner from "@/app/assets/images/banner-img.png";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Banner = () => {
+  const router = useRouter();
+  const [searchType, setSearchType] = useState<"name" | "subject">("name"); // Default to "name"
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = () => {
+    if (!searchQuery.trim()) {
+      alert("Please enter a search term.");
+      return;
+    }
+
+    // Redirect to /tutors with the appropriate query parameter
+    const queryParam = searchType === "name" ? "name" : "subject";
+    router.push(`/tutors?${queryParam}=${encodeURIComponent(searchQuery)}`);
+  };
+
   return (
     <div className="min-h-[80vh] w-full max-w-7xl mx-auto flex items-center justify-center bg-white py-12 px-4 sm:px-6 lg:px-8 pt-20 md:pt-12">
       {/* Main Container */}
@@ -21,14 +44,40 @@ const Banner = () => {
             Book expert tutors for personalized learning.
           </p>
 
-          {/* Search Bar */}
-          <div className="relative max-w-lg">
-            <Input
-              type="text"
-              placeholder="Search by subject, grade, or name..."
-              className="w-full pl-10 pr-4 py-6 rounded-lg border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200"
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+          {/* Search Bar with Integrated Dropdown and Button */}
+          <div className="flex items-center gap-2 max-w-lg">
+            <div className="relative flex-1">
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                <Select
+                  value={searchType}
+                  onValueChange={(value: "name" | "subject") =>
+                    setSearchType(value)
+                  }
+                >
+                  <SelectTrigger className="w-[100px] h-8 bg-transparent border-none focus:ring-0 p-0">
+                    <SelectValue placeholder="Search by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">Name</SelectItem>
+                    <SelectItem value="subject">Subject</SelectItem>
+                  </SelectContent>
+                </Select>
+                <div className="h-5 w-px bg-gray-300"></div>
+              </div>
+              <Input
+                type="text"
+                placeholder="Search by name or subject..."
+                className="w-full pl-32 pr-4 py-6 rounded-lg border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <Button
+              onClick={handleSearch}
+              className="bg-red-600 hover:bg-red-700 text-white py-6 px-8 text-lg rounded-lg"
+            >
+              Search
+            </Button>
           </div>
 
           {/* Call-to-Action Buttons */}

@@ -35,3 +35,54 @@ export const createBooking = async (data: BookingData) => {
     throw error;
   }
 };
+
+export const studentBookings = async () => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/booking`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status} ${res.statusText}`);
+    }
+
+    const bookings = await res.json();
+    return bookings;
+  } catch (error) {
+    console.error("Failed to fetch bookings:", error);
+    throw error;
+  }
+};
+
+export const studentCancelBooking = async (bookingId: string) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/booking/cancel/${bookingId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status} ${res.statusText}`);
+    }
+
+    const booking = await res.json();
+    return booking;
+  } catch (error) {
+    console.error("Failed to cancel booking:", error);
+    throw error;
+  }
+};

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-// import tutorData from "@/fakeData/tutorsData.json";
 import TutorCard from "./TutorCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,40 +11,54 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
 import { Filter, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import TutorFilter from "./TutorFilter";
 import { getAllTutors } from "@/services/TutorService";
+import { useSearchParams } from "next/navigation";
+import { searchTutors } from "@/services/StudentService";
 
 const ITEMS_PER_PAGE = 9; // Maximum tutors per page
 
 const AllTutors = () => {
   const [tutorData, setTutorData] = useState<any[]>([]);
+  const searchParams = useSearchParams(); // Hook to access query parameters
+  const [filters, setFilters] = useState({
+    search: "",
+    subjects: [] as string[],
+    rating: "",
+    hourlyRate: 50,
+    availability: "",
+    location: "",
+  });
+  const [currentPage, setCurrentPage] = useState(1);
 
+  // Fetch tutors based on query parameters
   useEffect(() => {
     const fetchTutors = async () => {
       try {
-        const response = await getAllTutors();
-        // console.log("Fetched Tutors:", response);
-        setTutorData(response.data);
+        const name = searchParams.get("name");
+        const subject = searchParams.get("subject");
+
+        if (name) {
+          // If there's a name query parameter, call searchTutors with name
+          const response = await searchTutors("name", name);
+          setTutorData(response.data);
+        } else if (subject) {
+          // If there's a subject query parameter, call searchTutors with subject
+          const response = await searchTutors("subject", subject);
+          setTutorData(response.data);
+        } else {
+          // Otherwise, fetch all tutors
+          const response = await getAllTutors();
+          setTutorData(response.data);
+        }
       } catch (error) {
         console.error("Failed to fetch tutors:", error);
       }
     };
 
     fetchTutors();
-  }, []);
-
-  const [filters, setFilters] = useState({
-    search: "",
-    subjects: [] as string[],
-    rating: "",
-    hourlyRate: 50, // Default max range
-    availability: "",
-    location: "",
-  });
-
-  const [currentPage, setCurrentPage] = useState(1);
+  }, [searchParams]); // Re-run when query parameters change
 
   // Handle subject selection
   const handleSubjectChange = (subject: string) => {
