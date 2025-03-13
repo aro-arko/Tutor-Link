@@ -11,4 +11,7 @@ const tutor_controller_1 = require("./tutor.controller");
 const router = express_1.default.Router();
 router.get('/me', (0, auth_1.default)(user_constant_1.USER_ROLE.tutor), tutor_controller_1.tutorController.getMe);
 router.patch('/update', (0, auth_1.default)(user_constant_1.USER_ROLE.tutor), tutor_controller_1.tutorController.updateTutor);
+router.get('/active-sessions', (0, auth_1.default)(user_constant_1.USER_ROLE.tutor), tutor_controller_1.tutorController.activeSessions);
+router.get('/booking-requests', (0, auth_1.default)(user_constant_1.USER_ROLE.tutor), tutor_controller_1.tutorController.bookingRequests);
+router.get('/student/:id', (0, auth_1.default)(user_constant_1.USER_ROLE.tutor), tutor_controller_1.tutorController.getStudent);
 exports.TutorRoutes = router;

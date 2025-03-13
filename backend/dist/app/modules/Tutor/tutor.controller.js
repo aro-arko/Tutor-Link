@@ -38,7 +38,41 @@ const updateTutor = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         data: result,
     });
 }));
+const activeSessions = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const result = yield tutor_service_1.tutorService.activeSessions(user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Active sessions fetched successfully',
+        data: result,
+    });
+}));
+const bookingRequests = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const result = yield tutor_service_1.tutorService.bookingRequests(user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Booking requests fetched successfully',
+        data: result,
+    });
+}));
+const getStudent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const { id } = req.params;
+    const result = yield tutor_service_1.tutorService.getStudent(user, id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Student fetched successfully',
+        data: result,
+    });
+}));
 exports.tutorController = {
     getMe,
     updateTutor,
+    activeSessions,
+    bookingRequests,
+    getStudent,
 };

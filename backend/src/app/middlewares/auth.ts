@@ -15,7 +15,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized!!');
     }
 
     const token = authHeader;

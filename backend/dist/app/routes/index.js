@@ -6,6 +6,7 @@ const subject_route_1 = require("../modules/Subject/subject.route");
 const booking_route_1 = require("../modules/Booking/booking.route");
 const tutor_route_1 = require("../modules/Tutor/tutor.route");
 const student_route_1 = require("../modules/Student/student.route");
+const user_route_1 = require("../modules/User/user.route");
 const router = (0, express_1.Router)();
 const moduleRoutes = [
     {
@@ -27,6 +28,10 @@ const moduleRoutes = [
     {
         path: '/student',
         route: student_route_1.StudentRoutes,
+    },
+    {
+        path: '/user',
+        route: user_route_1.userRoutes,
     },
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

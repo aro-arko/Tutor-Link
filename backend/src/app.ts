@@ -25,7 +25,7 @@ app.use('/api/v1', router);
 
 // Root endpoint
 app.get('/', (req: Request, res: Response) => {
-  res.send('Welcome to BookShop backend server!');
+  res.send('Welcome to TutorLink backend server!');
 });
 
 app.use(notFound);

@@ -8,6 +8,7 @@ export type TTutor = {
   address: string;
   hourlyRate: number;
   tutorImage: string;
+  backgroundImage: string;
   phone: string;
   subject: Types.ObjectId[];
   qualification?: string;

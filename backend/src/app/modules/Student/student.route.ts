@@ -5,6 +5,9 @@ import { studentController } from './student.controller';
 
 const router = express.Router();
 
+// search for tutors by query
+router.get('/search', studentController.searchTutors);
+
 router.get('/me', auth(USER_ROLE.student), studentController.getMe);
 router.patch('/update', auth(USER_ROLE.student), studentController.updateMe);
 
@@ -22,7 +25,10 @@ router.patch(
   studentController.updateReview,
 );
 
-// search for tutors by query
-router.get('/search', studentController.searchTutors);
+router.get(
+  '/:email',
+  auth(USER_ROLE.student),
+  studentController.getStudentByEmail,
+);
 
 export const StudentRoutes = router;

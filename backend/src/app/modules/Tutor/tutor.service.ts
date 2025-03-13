@@ -4,6 +4,8 @@ import { TTutor } from './tutor.interface';
 import User from '../User/user.model';
 import mongoose from 'mongoose';
 import { Subject } from '../Subject/subject.model';
+import { Booking } from '../Booking/booking.model';
+import Student from '../Student/student.model';
 
 const getMe = async (user: JwtPayload) => {
   const tutor = await Tutor.findOne({ email: user.email }).populate('subject');
@@ -48,7 +50,66 @@ const updateTutor = async (user: JwtPayload, body: Partial<TTutor>) => {
   }
 };
 
+const activeSessions = async (user: JwtPayload) => {
+  const tutorData = await Tutor.findOne({ email: user.email });
+
+  if (!tutorData) {
+    throw new Error('Tutor not found');
+  }
+
+  const bookings = await Booking.find({
+    tutorId: tutorData._id,
+    status: 'confirmed',
+  });
+
+  return bookings;
+};
+const bookingRequests = async (user: JwtPayload) => {
+  const tutorData = await Tutor.findOne({ email: user.email });
+
+  if (!tutorData) {
+    throw new Error('Tutor not found');
+  }
+
+  const bookings = await Booking.find({
+    tutorId: tutorData._id,
+    status: 'pending',
+  });
+
+  return bookings;
+};
+
+const getStudent = async (user: JwtPayload, id: string) => {
+  const tutor = await Tutor.findOne({ email: user.email });
+  if (!tutor || !tutor.bookedStudents) {
+    throw new Error('Tutor or booked students not found');
+  }
+  const studentIdExists = tutor.bookedStudents.includes(
+    new mongoose.Types.ObjectId(id),
+  );
+  if (!studentIdExists) {
+    throw new Error('Student not found');
+  }
+  const student = await Student.findById(id);
+  return student;
+};
+
+const getAllTutors = async () => {
+  const tutors = await Tutor.find();
+  return tutors;
+};
+
+const getTutorById = async (id: string) => {
+  const tutor = await Tutor.findById(id);
+  return tutor;
+};
+
 export const tutorService = {
   getMe,
   updateTutor,
+  activeSessions,
+  bookingRequests,
+  getStudent,
+  getAllTutors,
+  getTutorById,
 };

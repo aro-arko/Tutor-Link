@@ -17,6 +17,8 @@ const tutor_model_1 = __importDefault(require("./tutor.model"));
 const user_model_1 = __importDefault(require("../User/user.model"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const subject_model_1 = require("../Subject/subject.model");
+const booking_model_1 = require("../Booking/booking.model");
+const student_model_1 = __importDefault(require("../Student/student.model"));
 const getMe = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const tutor = yield tutor_model_1.default.findOne({ email: user.email }).populate('subject');
     return tutor;
@@ -46,7 +48,44 @@ const updateTutor = (user, body) => __awaiter(void 0, void 0, void 0, function* 
         throw error;
     }
 });
+const activeSessions = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const tutorData = yield tutor_model_1.default.findOne({ email: user.email });
+    if (!tutorData) {
+        throw new Error('Tutor not found');
+    }
+    const bookings = yield booking_model_1.Booking.find({
+        tutorId: tutorData._id,
+        status: 'confirmed',
+    });
+    return bookings;
+});
+const bookingRequests = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const tutorData = yield tutor_model_1.default.findOne({ email: user.email });
+    if (!tutorData) {
+        throw new Error('Tutor not found');
+    }
+    const bookings = yield booking_model_1.Booking.find({
+        tutorId: tutorData._id,
+        status: 'pending',
+    });
+    return bookings;
+});
+const getStudent = (user, id) => __awaiter(void 0, void 0, void 0, function* () {
+    const tutor = yield tutor_model_1.default.findOne({ email: user.email });
+    if (!tutor || !tutor.bookedStudents) {
+        throw new Error('Tutor or booked students not found');
+    }
+    const studentIdExists = tutor.bookedStudents.includes(new mongoose_1.default.Types.ObjectId(id));
+    if (!studentIdExists) {
+        throw new Error('Student not found');
+    }
+    const student = yield student_model_1.default.findById(id);
+    return student;
+});
 exports.tutorService = {
     getMe,
     updateTutor,
+    activeSessions,
+    bookingRequests,
+    getStudent,
 };

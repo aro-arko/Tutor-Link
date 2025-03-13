@@ -64,10 +64,24 @@ const searchTutors = catchAsync(async (req, res) => {
   });
 });
 
+const getStudentByEmail = catchAsync(async (req, res) => {
+  const user = req.user;
+  const { email } = req.params;
+  const result = await studentService.getStudentByEmail(user, email);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Student fetched successfully',
+    data: result,
+  });
+});
+
 export const studentController = {
   getMe,
   updateMe,
   reviewTutor,
   updateReview,
   searchTutors,
+  getStudentByEmail,
 };

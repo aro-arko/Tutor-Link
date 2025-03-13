@@ -8,6 +8,7 @@ import Tutor from '../Tutor/tutor.model';
 import { Booking } from '../Booking/booking.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { Subject } from '../Subject/subject.model';
+import { TQuery } from '../../types/query.type';
 
 const getMe = async (user: JwtPayload) => {
   const userData = await User.findOne({ email: user.email });
@@ -161,28 +162,63 @@ const updateReview = async (
   return tutor;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const searchTutors = async (query: any) => {
-  const searchableFields = ['name', 'subject'];
+const searchTutors = async (query: Partial<TQuery>) => {
+  const { name, subject } = query;
 
-  // Check if the search term is for a subject
-  let subjectDetails;
-  if (query.subject) {
-    subjectDetails = await Subject.findOne({ name: query.subject });
+  let searchQuery = {};
+
+  if (name && subject) {
+    const subjectDetails = await Subject.findOne({
+      name: subject,
+    });
+
+    if (subjectDetails) {
+      searchQuery = {
+        name: name,
+        subject: { $in: [subjectDetails._id] },
+      };
+    } else {
+      return [];
+    }
+  } else if (name) {
+    searchQuery = {
+      name: name,
+    };
+  } else if (subject) {
+    const subjectDetails = await Subject.findOne({
+      name: subject,
+    });
+
+    if (subjectDetails) {
+      searchQuery = {
+        subject: { $in: [subjectDetails._id] },
+      };
+    } else {
+      return [];
+    }
+  } else {
+    searchQuery = {};
   }
-  query.subject = subjectDetails?._id;
-
-  // console.log(subjectDetails);
 
   const queryBuilder = new QueryBuilder(Tutor.find(), query)
-    .search(searchableFields)
     .filter()
     .sort()
     .paginate()
     .fields();
 
+  // Merge the searchQuery with the QueryBuilder's query
+  queryBuilder.modelQuery = queryBuilder.modelQuery.find(searchQuery);
+
   const tutors = await queryBuilder.modelQuery;
   return tutors;
+};
+
+const getStudentByEmail = async (user: JwtPayload, email: string) => {
+  if (user.email !== email) {
+    throw new Error('You are not authorized to access this resource');
+  }
+  const studentData = await Student.findOne({ email: email });
+  return studentData;
 };
 
 export const studentService = {
@@ -191,4 +227,5 @@ export const studentService = {
   reviewTutor,
   updateReview,
   searchTutors,
+  getStudentByEmail,
 };

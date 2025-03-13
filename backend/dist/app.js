@@ -23,7 +23,7 @@ app.use(body_parser_1.default.json());
 app.use('/api/v1', routes_1.default);
 // Root endpoint
 app.get('/', (req, res) => {
-    res.send('Welcome to BookShop backend server!');
+    res.send('Welcome to TutorLink backend server!');
 });
 app.use(notFound_1.default);
 app.use(globalErrorHandler_1.default);
