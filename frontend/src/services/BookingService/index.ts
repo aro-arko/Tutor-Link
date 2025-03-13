@@ -31,7 +31,7 @@ export const createBooking = async (data: BookingData) => {
     const booking = await res.json();
     return booking;
   } catch (error) {
-    console.error("Failed to create booking:", error);
+    // console.error("Failed to create booking:", error);
     throw error;
   }
 };

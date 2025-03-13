@@ -20,5 +20,9 @@ export interface ITutor {
   reviews: number;
   coverImage: string;
   subject: string[];
-  availability: { day: string; timeSlots: string[] }[];
+  availability: {
+    _id: string;
+    day: string;
+    timeSlots: string[];
+  }[];
 }

@@ -106,7 +106,7 @@ const Booking = () => {
       toast.success("Booking created successfully!");
     } catch (error) {
       console.error("Failed to create booking:", error);
-      toast.error("Failed to create booking. Please try again.");
+      toast.error("Invalid date range. Please try again.");
     }
   };
 
