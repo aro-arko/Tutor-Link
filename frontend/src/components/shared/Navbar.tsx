@@ -104,14 +104,6 @@ export default function Navbar() {
                 <DropdownMenuContent className="mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200">
                   <DropdownMenuItem>
                     <Link
-                      href="/profile"
-                      className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
-                    >
-                      Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Link
                       href={`/${role}/dashboard`}
                       className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
                     >
@@ -120,16 +112,16 @@ export default function Navbar() {
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Link
-                      href="/change-password"
+                      href={`/booking/lists`}
                       className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
                     >
-                      Change Password
+                      Bookings
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <button
                       onClick={handleLogout}
-                      className="block w-full px-4 py-2 text-gray-600 hover:bg-gray-100"
+                      className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
                     >
                       Logout
                     </button>
