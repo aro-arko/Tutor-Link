@@ -23,6 +23,8 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { createBooking } from "@/services/BookingService";
+import { toast } from "sonner";
 
 const Booking = () => {
   const searchParams = useSearchParams();
@@ -71,7 +73,7 @@ const Booking = () => {
     fetchSubjects();
   }, [tutor]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (
       !selectedSubjectId ||
@@ -90,15 +92,22 @@ const Booking = () => {
     // Prepare the booking data
     const bookingData = {
       tutorId: tutorId,
-      subjectId: selectedSubjectId,
+      subject: selectedSubjectId,
       timeSlotId: selectedTimeSlotId,
       sessionStartDate: formattedStartDate,
       sessionEndDate: formattedEndDate,
     };
 
-    // Log the booking data (replace with API call)
-    console.log("Booking Data:", bookingData);
-    alert("Booking submitted successfully!");
+    console.log(bookingData);
+
+    try {
+      const res = await createBooking(bookingData);
+      console.log("Booking created:", res);
+      toast.success("Booking created successfully!");
+    } catch (error) {
+      console.error("Failed to create booking:", error);
+      toast.error("Failed to create booking. Please try again.");
+    }
   };
 
   if (!tutor) {
@@ -186,7 +195,7 @@ const Booking = () => {
                 </SelectTrigger>
                 <SelectContent>
                   {tutor.availability.map((slot) => (
-                    <SelectItem key={slot.day} value={slot.day}>
+                    <SelectItem key={slot._id} value={slot._id}>
                       {slot.day}: {slot.timeSlots}
                     </SelectItem>
                   ))}
