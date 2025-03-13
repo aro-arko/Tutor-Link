@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { Home, LayoutDashboard, Settings, LucideIcon } from "lucide-react";
+import { Home, LayoutDashboard, LucideIcon } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -18,7 +18,6 @@ const getSidebarItems = (role: "student" | "tutor" | "admin" | "guest") => {
   const commonItems = [
     { title: "Home", url: "/", icon: Home },
     { title: "Dashboard", url: `/${role}/dashboard`, icon: LayoutDashboard },
-    { title: "Settings", url: `/${role}/settings`, icon: Settings },
   ];
 
   const roleBasedItems: {
@@ -33,8 +32,9 @@ const getSidebarItems = (role: "student" | "tutor" | "admin" | "guest") => {
       { title: "Tutors", url: "/student/tutors", icon: LayoutDashboard },
     ],
     tutor: [
-      { title: "My Students", url: "/tutor/students", icon: LayoutDashboard },
-      { title: "Schedule", url: "/tutor/schedule", icon: LayoutDashboard },
+      { title: "Profile", url: "/tutor/profile", icon: LayoutDashboard },
+      { title: "Students", url: "/tutor/students", icon: LayoutDashboard },
+      { title: "Bookings", url: "/tutor/bookings", icon: LayoutDashboard },
     ],
     admin: [
       { title: "Manage Users", url: "/admin/users", icon: LayoutDashboard },
@@ -58,18 +58,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     getSidebarItems("guest")
   );
 
-  // ✅ Prevents multiple calls to setIsLoading
   const loadingSet = React.useRef(false);
 
-  // ✅ Call setIsLoading(true) only once if user is null
   React.useEffect(() => {
     if (!user && !loadingSet.current) {
       setIsLoading(true);
-      loadingSet.current = true; // Mark as called
+      loadingSet.current = true;
     }
   }, [user, setIsLoading]);
 
-  // ✅ Fetch tutor details if the role is "tutor"
   React.useEffect(() => {
     if (role === "tutor") {
       tutorInfo()
@@ -78,7 +75,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }
   }, [role]);
 
-  // ✅ Update sidebar items when user role changes
   React.useEffect(() => {
     setSidebarItems(getSidebarItems(role || "guest"));
   }, [role]);
