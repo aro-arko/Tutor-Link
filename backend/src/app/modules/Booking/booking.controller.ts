@@ -6,7 +6,7 @@ import httpStatus from 'http-status';
 const createBooking = catchAsync(async (req, res) => {
   const user = req.user;
   const bookingData = req.body;
-  const result = await bookingService.createBooking(user, bookingData);
+  const result = await bookingService.createBooking(user, bookingData, req.ip!);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -56,11 +56,11 @@ const tutorBookingList = catchAsync(async (req, res) => {
 const updateBookingStatus = catchAsync(async (req, res) => {
   const user = req.user;
   const bookingId = req.params.bookingId;
-  const status = req.body.status;
+  const approvalStatus = req.body.approvalStatus;
   const result = await bookingService.updateBookingStatus(
     user,
     bookingId,
-    status,
+    approvalStatus,
   );
 
   sendResponse(res, {
@@ -70,6 +70,18 @@ const updateBookingStatus = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const verifyPayment = catchAsync(async (req, res) => {
+  const order = await bookingService.verifyPayment(
+    req.query.order_id as string,
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: 'Order verified successfully',
+    data: order,
+  });
+});
 
 export const bookingController = {
   createBooking,
@@ -77,4 +89,5 @@ export const bookingController = {
   cancelBooking,
   tutorBookingList,
   updateBookingStatus,
+  verifyPayment,
 };

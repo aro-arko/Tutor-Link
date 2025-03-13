@@ -4,8 +4,13 @@ import { Booking } from './booking.model';
 import Tutor from '../Tutor/tutor.model';
 import Student from '../Student/student.model';
 import mongoose from 'mongoose';
+import { bookingUtils } from './booking.utils';
 
-const createBooking = async (user: JwtPayload, bookingData: TBooking) => {
+const createBooking = async (
+  user: JwtPayload,
+  bookingData: TBooking,
+  client_ip: string,
+) => {
   const userData = await Student.findOne({ email: user.email });
 
   if (!userData) {
@@ -59,7 +64,7 @@ const createBooking = async (user: JwtPayload, bookingData: TBooking) => {
     startDate.setDate(startDate.getDate() + 1);
   }
 
-  console.log(occurrences);
+  // console.log(occurrences);
 
   const totalDuration = sessionDuration * occurrences;
 
@@ -72,11 +77,39 @@ const createBooking = async (user: JwtPayload, bookingData: TBooking) => {
     studentId: userData._id,
     duration: totalDuration,
     price: tutorData.hourlyRate * totalDuration,
-    status: 'pending', // Default status
+    approvalStatus: 'pending',
   };
 
-  const booking = await Booking.create(bookingDataWithUserId);
-  return booking;
+  let booking = await Booking.create(bookingDataWithUserId);
+  // return booking;
+
+  // console.log(booking.price, booking._id);
+
+  const shurjopayPayload = {
+    amount: booking.price,
+    order_id: booking._id,
+    currency: 'BDT',
+    customer_name: userData?.name,
+    customer_address: 'N/A',
+    customer_email: userData?.email,
+    customer_phone: 'N/A',
+    customer_city: 'N/A',
+    client_ip,
+  };
+
+  const payment = await bookingUtils.makePaymentAsync(shurjopayPayload);
+
+  if (payment?.transactionStatus) {
+    booking = await booking.updateOne({
+      transaction: {
+        id: payment.sp_order_id,
+        transactionStatus: payment.transactionStatus,
+      },
+      paymentUrl: payment.checkout_url,
+    });
+  }
+
+  return payment.checkout_url;
 };
 
 const studentBookingList = async (user: JwtPayload) => {
@@ -101,13 +134,13 @@ const cancelBooking = async (user: JwtPayload, bookingId: string) => {
     throw new Error('Sorry you cannot cancel this booking');
   }
 
-  if (ownBooking.paymentStatus !== 'unpaid') {
+  if (ownBooking.status !== 'Unpaid') {
     throw new Error(
       'Cannot cancel a booking with paid status please contact support',
     );
   }
 
-  ownBooking.status = 'canceled';
+  ownBooking.approvalStatus = 'canceled';
   await ownBooking.save();
 
   return ownBooking;
@@ -122,7 +155,7 @@ const tutorBookingList = async (user: JwtPayload) => {
 const updateBookingStatus = async (
   user: JwtPayload,
   bookingId: string,
-  status: 'pending' | 'confirmed' | 'completed' | 'canceled',
+  approvalStatus: 'pending' | 'confirmed' | 'completed' | 'canceled',
 ) => {
   const session = await mongoose.startSession();
 
@@ -143,11 +176,11 @@ const updateBookingStatus = async (
       throw new Error('Booking not found');
     }
 
-    ownReceivedBooking.status = status;
+    ownReceivedBooking.approvalStatus = approvalStatus;
     await ownReceivedBooking.save({ session });
 
     // Add student ID to bookedStudents in Tutor collection if status is confirmed
-    if (status === 'confirmed') {
+    if (approvalStatus === 'confirmed') {
       await Tutor.findByIdAndUpdate(
         userData._id,
         { $addToSet: { bookedStudents: ownReceivedBooking.studentId } },
@@ -166,10 +199,48 @@ const updateBookingStatus = async (
   }
 };
 
+const verifyPayment = async (order_id: string) => {
+  const verifiedPayment = await bookingUtils.verifyPaymentAsync(order_id);
+
+  if (verifiedPayment.length) {
+    const updatedBooking = await Booking.findOneAndUpdate(
+      {
+        'transaction.id': order_id,
+      },
+      {
+        'transaction.bank_status': verifiedPayment[0].bank_status,
+        'transaction.sp_code': verifiedPayment[0].sp_code,
+        'transaction.sp_message': verifiedPayment[0].sp_message,
+        'transaction.transactionStatus': verifiedPayment[0].transaction_status,
+        'transaction.method': verifiedPayment[0].method,
+        'transaction.date_time': verifiedPayment[0].date_time,
+        status:
+          verifiedPayment[0].bank_status === 'Success'
+            ? 'Paid'
+            : verifiedPayment[0].bank_status === 'Failed'
+              ? 'Pending'
+              : verifiedPayment[0].bank_status === 'Cancel'
+                ? 'Cancelled'
+                : '',
+      },
+      { new: true },
+    );
+
+    if (!updatedBooking) {
+      throw new Error('Booking not found or update failed');
+    }
+
+    return updatedBooking;
+  }
+
+  throw new Error('Payment verification failed');
+};
+
 export const bookingService = {
   createBooking,
   tutorBookingList,
   cancelBooking,
   updateBookingStatus,
   studentBookingList,
+  verifyPayment,
 };

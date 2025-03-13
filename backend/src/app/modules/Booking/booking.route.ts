@@ -39,4 +39,6 @@ router.put(
   bookingController.updateBookingStatus,
 );
 
+router.get('/verify', auth(USER_ROLE.student), bookingController.verifyPayment);
+
 export const BookingRoutes = router;

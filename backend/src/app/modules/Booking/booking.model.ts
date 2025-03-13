@@ -10,18 +10,29 @@ const bookingSchema = new Schema<TBooking>(
     sessionStartDate: { type: Date, required: true },
     sessionEndDate: { type: Date, required: true },
     duration: { type: Number, required: true },
-    status: {
+    approvalStatus: {
       type: String,
       enum: ['pending', 'confirmed', 'completed', 'canceled'],
       default: 'pending',
     },
-    paymentStatus: {
+    status: {
       type: String,
-      enum: ['unpaid', 'paid'],
-      default: 'unpaid',
+      enum: ['Unpaid', 'Paid'],
+      default: 'Unpaid',
+    },
+    transaction: {
+      id: String,
+      transactionStatus: String,
+      bank_status: String,
+      sp_code: String,
+      sp_message: String,
+      method: String,
+      date_time: String,
     },
     price: { type: Number, required: true },
+    paymentUrl: { type: String },
   },
+
   {
     timestamps: true,
   },

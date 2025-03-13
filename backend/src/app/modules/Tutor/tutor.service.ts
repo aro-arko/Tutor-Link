@@ -59,7 +59,7 @@ const activeSessions = async (user: JwtPayload) => {
 
   const bookings = await Booking.find({
     tutorId: tutorData._id,
-    status: 'confirmed',
+    approvalStatus: 'confirmed',
   });
 
   return bookings;
@@ -73,7 +73,7 @@ const bookingRequests = async (user: JwtPayload) => {
 
   const bookings = await Booking.find({
     tutorId: tutorData._id,
-    status: 'pending',
+    approvalStatus: 'pending',
   });
 
   return bookings;
