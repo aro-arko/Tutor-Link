@@ -1,11 +1,29 @@
 import FeaturedTutorsCard from "./FeaturedTutorsCard";
-import tutorsData from "@/fakeData/tutorsData.json";
+// import tutorsData from "@/fakeData/tutorsData.json";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { getAllTutors } from "@/services/TutorService";
 
 const FeaturedTutors = () => {
+  const [tutorData, setTutorData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchTutors = async () => {
+      try {
+        const response = await getAllTutors();
+        // console.log("Fetched Tutors:", response);
+        setTutorData(response.data);
+      } catch (error) {
+        console.error("Failed to fetch tutors:", error);
+      }
+    };
+
+    fetchTutors();
+  }, []);
+
   // Show a max of 8 tutors
-  const displayedTutors = tutorsData.slice(0, 6);
+  const displayedTutors = tutorData.slice(0, 6);
 
   return (
     <section className="py-16">
@@ -23,7 +41,7 @@ const FeaturedTutors = () => {
         {/* Tutors Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
           {displayedTutors.map((tutor) => (
-            <FeaturedTutorsCard key={tutor.id} tutor={tutor} />
+            <FeaturedTutorsCard key={tutor._id} tutor={tutor} />
           ))}
         </div>
 
