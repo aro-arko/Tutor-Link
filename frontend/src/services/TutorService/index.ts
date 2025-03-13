@@ -173,3 +173,30 @@ export const bookingRequest = async () => {
     throw error;
   }
 };
+
+export const updateTutorProfile = async (data: any) => {
+  const token = (await cookies()).get("accessToken")?.value;
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/tutor/update`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status} ${res.statusText}`);
+    }
+
+    const response = await res.json();
+    return response;
+  } catch (error) {
+    console.error("Failed to update tutor profile:", error);
+    throw error;
+  }
+};

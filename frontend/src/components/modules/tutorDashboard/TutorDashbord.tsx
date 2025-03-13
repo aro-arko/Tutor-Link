@@ -2,6 +2,7 @@ import ActiveSessions from "./activeSessions/ActiveSessions";
 import BookingApproval from "./booking-approval/BookingApproval";
 import CreateSubject from "./createSubject/CreateSubject";
 import EarningsReviewsRatings from "./earnings-reviews-ratings/EarningsReviewsRatings";
+import TotalEarning from "./totalEarnings/TotalEarning";
 
 const TutorDashboard = () => {
   return (
@@ -13,7 +14,7 @@ const TutorDashboard = () => {
           <ActiveSessions />
         </div>
 
-        {/* Earnings, Reviews & Ratings Card */}
+        {/* Reviews & Ratings Card */}
         <div className="rounded-xl bg-red-50 border border-red-100 h-auto md:h-[400px] overflow-y-auto">
           <EarningsReviewsRatings />
         </div>
@@ -28,12 +29,11 @@ const TutorDashboard = () => {
           <CreateSubject />
         </div>
 
-        {/* Earnings, Reviews & Ratings Card */}
-        <div className="rounded-xl bg-red-50 border border-red-100 h-auto h-[450px] overflow-y-auto"></div>
+        {/* Earnings */}
+        <div className="rounded-xl bg-red-50 border border-red-100 h-auto md:h-[450px] overflow-y-auto">
+          <TotalEarning />
+        </div>
       </div>
-
-      {/* Bottom Section */}
-      <div className="min-h-[100vh] rounded-xl bg-muted mt-4"></div>
     </div>
   );
 };

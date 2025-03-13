@@ -170,3 +170,29 @@ export const bookingApproval = async (
     throw error;
   }
 };
+
+export const tutorEarnings = async () => {
+  const token = (await cookies()).get("accessToken")?.value;
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/booking/earnings`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status} ${res.statusText}`);
+    }
+
+    const earnings = await res.json();
+    return earnings;
+  } catch (error) {
+    console.error("Failed to fetch earnings:", error);
+    throw error;
+  }
+};

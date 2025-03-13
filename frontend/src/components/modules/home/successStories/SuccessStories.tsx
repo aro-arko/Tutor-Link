@@ -24,6 +24,7 @@ const SuccessStories = () => {
       try {
         const userRes = await fetch("https://randomuser.me/api/?results=6");
         const userData = await userRes.json();
+        console.log("success", userData);
 
         const testimonialsData = userData.results.map(
           (user: any, index: number) => ({
