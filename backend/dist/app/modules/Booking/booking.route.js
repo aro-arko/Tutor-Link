@@ -22,4 +22,6 @@ router.put('/cancel/:bookingId', (0, auth_1.default)(user_constant_1.USER_ROLE.s
 router.get('/bookings', (0, auth_1.default)(user_constant_1.USER_ROLE.tutor), booking_controller_1.bookingController.tutorBookingList);
 // tutor approve or decline booking
 router.put('/:bookingId', (0, auth_1.default)(user_constant_1.USER_ROLE.tutor), booking_controller_1.bookingController.updateBookingStatus);
+router.get('/verify', (0, auth_1.default)(user_constant_1.USER_ROLE.student), booking_controller_1.bookingController.verifyPayment);
+router.get('/earnings', (0, auth_1.default)(user_constant_1.USER_ROLE.tutor), booking_controller_1.bookingController.tutorEarnings);
 exports.BookingRoutes = router;

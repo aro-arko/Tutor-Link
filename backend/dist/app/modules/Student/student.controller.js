@@ -37,28 +37,28 @@ const updateMe = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 
         data: result,
     });
 }));
-const reviewTutor = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = req.user;
-    const tutorId = req.params.tutorId;
-    const result = yield student_service_1.studentService.reviewTutor(user, tutorId, req.body);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'Review added successfully',
-        data: result,
-    });
-}));
-const updateReview = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = req.user;
-    const reviewId = req.params.reviewId;
-    const result = yield student_service_1.studentService.updateReview(user, reviewId, req.body);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'Review updated successfully',
-        data: result,
-    });
-}));
+// const reviewTutor = catchAsync(async (req, res) => {
+//   const user = req.user;
+//   const tutorId = req.params.tutorId;
+//   const result = await studentService.reviewTutor(user, tutorId, req.body);
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: 'Review added successfully',
+//     data: result,
+//   });
+// });
+// const updateReview = catchAsync(async (req, res) => {
+//   const user = req.user;
+//   const reviewId = req.params.reviewId;
+//   const result = await studentService.updateReview(user, reviewId, req.body);
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: 'Review updated successfully',
+//     data: result,
+//   });
+// });
 const searchTutors = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield student_service_1.studentService.searchTutors(req.query);
     (0, sendResponse_1.default)(res, {
@@ -68,10 +68,22 @@ const searchTutors = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         data: result,
     });
 }));
+const getStudentByEmail = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const { email } = req.params;
+    const result = yield student_service_1.studentService.getStudentByEmail(user, email);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Student fetched successfully',
+        data: result,
+    });
+}));
 exports.studentController = {
     getMe,
     updateMe,
-    reviewTutor,
-    updateReview,
+    // reviewTutor,
+    // updateReview,
     searchTutors,
+    getStudentByEmail,
 };

@@ -20,7 +20,7 @@ const http_status_1 = __importDefault(require("http-status"));
 const createBooking = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const bookingData = req.body;
-    const result = yield booking_service_1.bookingService.createBooking(user, bookingData);
+    const result = yield booking_service_1.bookingService.createBooking(user, bookingData, req.ip);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.CREATED,
         success: true,
@@ -62,12 +62,31 @@ const tutorBookingList = (0, catchAsync_1.default)((req, res) => __awaiter(void 
 const updateBookingStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const bookingId = req.params.bookingId;
-    const status = req.body.status;
-    const result = yield booking_service_1.bookingService.updateBookingStatus(user, bookingId, status);
+    const approvalStatus = req.body.approvalStatus;
+    const result = yield booking_service_1.bookingService.updateBookingStatus(user, bookingId, approvalStatus);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'Booking status updated successfully',
+        data: result,
+    });
+}));
+const verifyPayment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const order = yield booking_service_1.bookingService.verifyPayment(req.query.order_id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.CREATED,
+        success: true,
+        message: 'Order verified successfully',
+        data: order,
+    });
+}));
+const tutorEarnings = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const result = yield booking_service_1.bookingService.tutorEarnings(user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Tutor earnings fetched successfully',
         data: result,
     });
 }));
@@ -77,4 +96,6 @@ exports.bookingController = {
     cancelBooking,
     tutorBookingList,
     updateBookingStatus,
+    verifyPayment,
+    tutorEarnings,
 };

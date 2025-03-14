@@ -55,7 +55,7 @@ const activeSessions = (user) => __awaiter(void 0, void 0, void 0, function* () 
     }
     const bookings = yield booking_model_1.Booking.find({
         tutorId: tutorData._id,
-        status: 'confirmed',
+        approvalStatus: 'confirmed',
     });
     return bookings;
 });
@@ -66,7 +66,7 @@ const bookingRequests = (user) => __awaiter(void 0, void 0, void 0, function* ()
     }
     const bookings = yield booking_model_1.Booking.find({
         tutorId: tutorData._id,
-        status: 'pending',
+        approvalStatus: 'pending',
     });
     return bookings;
 });
@@ -82,10 +82,30 @@ const getStudent = (user, id) => __awaiter(void 0, void 0, void 0, function* () 
     const student = yield student_model_1.default.findById(id);
     return student;
 });
+const getAllTutors = () => __awaiter(void 0, void 0, void 0, function* () {
+    const tutors = yield tutor_model_1.default.find();
+    return tutors;
+});
+const getTutorById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const tutor = yield tutor_model_1.default.findById(id);
+    return tutor;
+});
+const getBookingById = (user, bookingId) => __awaiter(void 0, void 0, void 0, function* () {
+    const tutor = yield tutor_model_1.default.findOne({ email: user.email });
+    // console.log(tutor);
+    const booking = yield booking_model_1.Booking.findOne({
+        _id: bookingId,
+        tutorId: tutor._id,
+    });
+    return booking;
+});
 exports.tutorService = {
     getMe,
     updateTutor,
     activeSessions,
     bookingRequests,
     getStudent,
+    getAllTutors,
+    getTutorById,
+    getBookingById,
 };

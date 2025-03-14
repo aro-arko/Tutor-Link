@@ -17,7 +17,8 @@ const booking_model_1 = require("./booking.model");
 const tutor_model_1 = __importDefault(require("../Tutor/tutor.model"));
 const student_model_1 = __importDefault(require("../Student/student.model"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const createBooking = (user, bookingData) => __awaiter(void 0, void 0, void 0, function* () {
+const booking_utils_1 = require("./booking.utils");
+const createBooking = (user, bookingData, client_ip) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield student_model_1.default.findOne({ email: user.email });
     if (!userData) {
         throw new Error('User not found');
@@ -56,14 +57,37 @@ const createBooking = (user, bookingData) => __awaiter(void 0, void 0, void 0, f
         }
         startDate.setDate(startDate.getDate() + 1);
     }
-    console.log(occurrences);
+    // console.log(occurrences);
     const totalDuration = sessionDuration * occurrences;
     if (totalDuration === 0) {
         throw new Error('No available slots within the specified date range');
     }
-    const bookingDataWithUserId = Object.assign(Object.assign({}, bookingData), { studentId: userData._id, duration: totalDuration, price: tutorData.hourlyRate * totalDuration, status: 'pending' });
-    const booking = yield booking_model_1.Booking.create(bookingDataWithUserId);
-    return booking;
+    const bookingDataWithUserId = Object.assign(Object.assign({}, bookingData), { studentId: userData._id, duration: totalDuration, price: tutorData.hourlyRate * totalDuration, approvalStatus: 'pending' });
+    let booking = yield booking_model_1.Booking.create(bookingDataWithUserId);
+    // return booking;
+    // console.log(booking.price, booking._id);
+    const shurjopayPayload = {
+        amount: booking.price,
+        order_id: booking._id,
+        currency: 'BDT',
+        customer_name: userData === null || userData === void 0 ? void 0 : userData.name,
+        customer_address: 'N/A',
+        customer_email: userData === null || userData === void 0 ? void 0 : userData.email,
+        customer_phone: 'N/A',
+        customer_city: 'N/A',
+        client_ip,
+    };
+    const payment = yield booking_utils_1.bookingUtils.makePaymentAsync(shurjopayPayload);
+    if (payment === null || payment === void 0 ? void 0 : payment.transactionStatus) {
+        booking = yield booking.updateOne({
+            transaction: {
+                id: payment.sp_order_id,
+                transactionStatus: payment.transactionStatus,
+            },
+            paymentUrl: payment.checkout_url,
+        });
+    }
+    return payment.checkout_url;
 });
 const studentBookingList = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield student_model_1.default.findOne({ email: user.email });
@@ -82,10 +106,10 @@ const cancelBooking = (user, bookingId) => __awaiter(void 0, void 0, void 0, fun
     if (!ownBooking) {
         throw new Error('Sorry you cannot cancel this booking');
     }
-    if (ownBooking.paymentStatus !== 'unpaid') {
+    if (ownBooking.status !== 'Unpaid') {
         throw new Error('Cannot cancel a booking with paid status please contact support');
     }
-    ownBooking.status = 'canceled';
+    ownBooking.approvalStatus = 'canceled';
     yield ownBooking.save();
     return ownBooking;
 });
@@ -94,7 +118,7 @@ const tutorBookingList = (user) => __awaiter(void 0, void 0, void 0, function* (
     const bookings = yield booking_model_1.Booking.find({ tutorId: userData._id });
     return bookings;
 });
-const updateBookingStatus = (user, bookingId, status) => __awaiter(void 0, void 0, void 0, function* () {
+const updateBookingStatus = (user, bookingId, approvalStatus) => __awaiter(void 0, void 0, void 0, function* () {
     const session = yield mongoose_1.default.startSession();
     try {
         session.startTransaction();
@@ -109,10 +133,10 @@ const updateBookingStatus = (user, bookingId, status) => __awaiter(void 0, void 
         if (!ownReceivedBooking) {
             throw new Error('Booking not found');
         }
-        ownReceivedBooking.status = status;
+        ownReceivedBooking.approvalStatus = approvalStatus;
         yield ownReceivedBooking.save({ session });
         // Add student ID to bookedStudents in Tutor collection if status is confirmed
-        if (status === 'confirmed') {
+        if (approvalStatus === 'confirmed') {
             yield tutor_model_1.default.findByIdAndUpdate(userData._id, { $addToSet: { bookedStudents: ownReceivedBooking.studentId } }, { session });
         }
         yield session.commitTransaction();
@@ -125,10 +149,49 @@ const updateBookingStatus = (user, bookingId, status) => __awaiter(void 0, void 
         throw error;
     }
 });
+const verifyPayment = (order_id) => __awaiter(void 0, void 0, void 0, function* () {
+    const verifiedPayment = yield booking_utils_1.bookingUtils.verifyPaymentAsync(order_id);
+    if (verifiedPayment.length) {
+        const updatedBooking = yield booking_model_1.Booking.findOneAndUpdate({
+            'transaction.id': order_id,
+        }, {
+            'transaction.bank_status': verifiedPayment[0].bank_status,
+            'transaction.sp_code': verifiedPayment[0].sp_code,
+            'transaction.sp_message': verifiedPayment[0].sp_message,
+            'transaction.transactionStatus': verifiedPayment[0].transaction_status,
+            'transaction.method': verifiedPayment[0].method,
+            'transaction.date_time': verifiedPayment[0].date_time,
+            status: verifiedPayment[0].bank_status === 'Success'
+                ? 'Paid'
+                : verifiedPayment[0].bank_status === 'Failed'
+                    ? 'Pending'
+                    : verifiedPayment[0].bank_status === 'Cancel'
+                        ? 'Cancelled'
+                        : '',
+        }, { new: true });
+        if (!updatedBooking) {
+            throw new Error('Booking not found or update failed');
+        }
+        return updatedBooking;
+    }
+    throw new Error('Payment verification failed');
+});
+const tutorEarnings = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = yield tutor_model_1.default.findOne({ email: user.email });
+    const bookings = yield booking_model_1.Booking.find({
+        tutorId: userData._id,
+        status: 'Paid',
+        approvalStatus: 'confirmed',
+    });
+    const earnings = bookings.reduce((acc, booking) => acc + booking.price, 0);
+    return earnings;
+});
 exports.bookingService = {
     createBooking,
     tutorBookingList,
     cancelBooking,
     updateBookingStatus,
     studentBookingList,
+    verifyPayment,
+    tutorEarnings,
 };

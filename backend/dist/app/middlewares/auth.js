@@ -26,7 +26,7 @@ const auth = (...requiredRoles) => {
         // Retrieve token from headers
         const authHeader = req.headers.authorization;
         if (!authHeader) {
-            throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, 'You are not authorized!');
+            throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, 'You are not authorized!!');
         }
         const token = authHeader;
         try {

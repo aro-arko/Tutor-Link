@@ -9,12 +9,21 @@ const auth_1 = __importDefault(require("../../middlewares/auth"));
 const user_constant_1 = require("../User/user.constant");
 const student_controller_1 = require("./student.controller");
 const router = express_1.default.Router();
+// search for tutors by query
+router.get('/search', student_controller_1.studentController.searchTutors);
 router.get('/me', (0, auth_1.default)(user_constant_1.USER_ROLE.student), student_controller_1.studentController.getMe);
 router.patch('/update', (0, auth_1.default)(user_constant_1.USER_ROLE.student), student_controller_1.studentController.updateMe);
 // giving review to a tutor
-router.post('/review/:tutorId', (0, auth_1.default)(user_constant_1.USER_ROLE.student), student_controller_1.studentController.reviewTutor);
+// router.post(
+//   '/review/:tutorId',
+//   auth(USER_ROLE.student),
+//   studentController.reviewTutor,
+// );
 // update review
-router.patch('/review/:reviewId', (0, auth_1.default)(user_constant_1.USER_ROLE.student), student_controller_1.studentController.updateReview);
-// search for tutors by query
-router.get('/search', student_controller_1.studentController.searchTutors);
+// router.patch(
+//   '/review/:reviewId',
+//   auth(USER_ROLE.student),
+//   studentController.updateReview,
+// );
+router.get('/:email', (0, auth_1.default)(user_constant_1.USER_ROLE.student), student_controller_1.studentController.getStudentByEmail);
 exports.StudentRoutes = router;

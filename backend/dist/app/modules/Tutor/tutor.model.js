@@ -9,6 +9,7 @@ const tutorSchema = new mongoose_1.Schema({
     address: { type: String, default: '' },
     hourlyRate: { type: Number, default: 0 },
     tutorImage: { type: String, default: '' },
+    backgroundImage: { type: String, default: '' },
     phone: { type: String, default: '' },
     subject: { type: [mongoose_1.Schema.Types.ObjectId], ref: 'Subject', default: [] },
     qualification: { type: String, default: '' },
