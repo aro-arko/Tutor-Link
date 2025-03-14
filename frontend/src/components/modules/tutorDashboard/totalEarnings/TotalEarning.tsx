@@ -7,6 +7,7 @@ import { DollarSign, Calendar, CheckCircle } from "lucide-react"; // Import icon
 
 const TotalEarning = () => {
   const [earnings, setEarnings] = useState<number | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +43,10 @@ const TotalEarning = () => {
     fetchData();
   }, []);
 
-  const paidBookings = bookings.filter((booking) => booking.status === "Paid");
+  const paidBookings = bookings.filter(
+    (booking) =>
+      booking.status === "Paid" && booking.approvalStatus === "confirmed"
+  );
 
   if (loading) {
     return (
@@ -86,7 +90,7 @@ const TotalEarning = () => {
       </div>
 
       {/* Paid Bookings Section */}
-      <h2 className="text-2xl font-bold mb-6">Paid Bookings</h2>
+      <h2 className="text-2xl font-bold mb-6">Paid Confirmed Bookings</h2>
       {paidBookings.length === 0 ? (
         <p className="text-gray-600">No paid bookings found.</p>
       ) : (

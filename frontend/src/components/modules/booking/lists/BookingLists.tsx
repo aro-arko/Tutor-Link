@@ -7,18 +7,18 @@ import {
   studentCancelBooking,
 } from "@/services/BookingService";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 const BookingLists = () => {
   const [bookings, setBookings] = useState<any[]>([]);
+  const router = useRouter(); // Initialize Next.js router
 
-  // Fetch bookings on component mount
   useEffect(() => {
     const fetchBookings = async () => {
       try {
         const response = await studentBookings();
         if (response.success) {
-          // Reverse the array to show the most recent booking first
-          setBookings(response.data.reverse());
+          setBookings(response.data.reverse()); // Reverse for latest bookings first
         }
       } catch (error) {
         console.error("Failed to fetch bookings:", error);
@@ -29,36 +29,6 @@ const BookingLists = () => {
   }, []);
 
   // Handle cancel booking
-  //   const handleCancelBooking = async (bookingId: string) => {
-  //     // Show a warning toast if status is Paid or approvalStatus is not pending
-  //     const canceledBooking = bookings.find(
-  //       (booking) => booking._id === bookingId
-  //     );
-  //     if (
-  //       canceledBooking?.status === "Paid" ||
-  //       canceledBooking?.approvalStatus !== "pending"
-  //     ) {
-  //       toast(
-  //         "Sorry you can't cancel this booking. Please contact support for assistance.",
-  //         {
-  //           icon: "⚠️",
-  //         }
-  //       );
-  //     } else {
-  //       try {
-  //         const response = await studentCancelBooking(bookingId);
-  //         if (response.success) {
-  //           setBookings((prev) =>
-  //             prev.filter((booking) => booking._id !== bookingId)
-  //           );
-  //           toast.success("Booking canceled successfully!");
-  //         }
-  //       } catch (error) {
-  //         console.error("Failed to cancel booking:", error);
-  //         toast.error("Failed to cancel booking. Please try again.");
-  //       }
-  //     }
-  //   };
   const handleCancelBooking = async (bookingId: string) => {
     const canceledBooking = bookings.find(
       (booking) => booking._id === bookingId
@@ -80,7 +50,7 @@ const BookingLists = () => {
           setBookings((prevBookings) =>
             prevBookings.map((booking) =>
               booking._id === bookingId
-                ? { ...booking, approvalStatus: "canceled" } // Update status locally
+                ? { ...booking, approvalStatus: "canceled" }
                 : booking
             )
           );
@@ -119,6 +89,8 @@ const BookingLists = () => {
                   <p className="text-gray-600">
                     Duration: {booking.duration} hours
                   </p>
+
+                  {/* Approval Status */}
                   <p className="text-gray-600">
                     Approval Status:{" "}
                     <span
@@ -135,24 +107,29 @@ const BookingLists = () => {
                       {booking.approvalStatus}
                     </span>
                   </p>
+
+                  {/* Payment Status */}
                   <p className="text-gray-600">
                     Payment Status:{" "}
                     <span
                       className={`font-semibold ${
                         booking.status === "Paid"
                           ? "text-green-600"
+                          : booking.status === "Pending"
+                          ? "text-yellow-600"
                           : "text-red-600"
                       }`}
                     >
                       {booking.status}
                     </span>
                   </p>
+
                   <p className="text-gray-600">Price: ${booking.price}</p>
                 </div>
 
                 {/* Buttons */}
                 <div className="flex flex-col sm:flex-row gap-2">
-                  {/* Show "Pay Now" button only if approvalStatus is not completed or canceled */}
+                  {/* Show "Pay Now" button if status is Unpaid and approvalStatus is not completed or canceled */}
                   {booking.status === "Unpaid" &&
                     booking.approvalStatus !== "completed" &&
                     booking.approvalStatus !== "canceled" && (
@@ -166,8 +143,24 @@ const BookingLists = () => {
                       </Button>
                     )}
 
-                  {/* Show "Cancel Booking" button only if approvalStatus is not canceled */}
-                  {booking.approvalStatus !== "canceled" &&
+                  {/* Show rebooking message if Payment Status is Pending */}
+                  {booking.status === "Pending" && (
+                    <p className="text-red-600 font-medium">
+                      Payment Failed.{" "}
+                      <span
+                        className="text-blue-600 cursor-pointer underline"
+                        onClick={() =>
+                          router.push(`/tutors/${booking.tutorId}`)
+                        }
+                      >
+                        Please rebook
+                      </span>
+                    </p>
+                  )}
+
+                  {/* Show "Cancel Booking" button if Payment Status is not Pending and Approval Status is not Canceled */}
+                  {booking.status !== "Pending" &&
+                    booking.approvalStatus !== "canceled" &&
                     (booking.status === "Paid" ||
                     booking.approvalStatus === "confirmed" ? (
                       <Button

@@ -174,6 +174,7 @@ export const bookingRequest = async () => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const updateTutorProfile = async (data: any) => {
   const token = (await cookies()).get("accessToken")?.value;
   try {
@@ -197,6 +198,33 @@ export const updateTutorProfile = async (data: any) => {
     return response;
   } catch (error) {
     console.error("Failed to update tutor profile:", error);
+    throw error;
+  }
+};
+
+export const getTutorBookingById = async (bookingId: string) => {
+  const token = (await cookies()).get("accessToken")!.value;
+  console.log(bookingId);
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/tutor/bookings/${bookingId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error(`Failed to fetch booking with id ${bookingId}:`, error);
     throw error;
   }
 };
