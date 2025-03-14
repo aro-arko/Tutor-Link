@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { tutorPersonalInfo } from "@/services/TutorService";
 import { Alert } from "@/components/ui/alert";
-import { Star, Mail, User, MessageCircle } from "lucide-react"; // Import icons
+import { Star, Mail, User, MessageCircle } from "lucide-react";
 
 const EarningsReviewsRatings = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [personalInfo, setPersonalInfo] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

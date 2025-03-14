@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { studentBookings } from "@/services/BookingService";
@@ -52,14 +53,6 @@ const ActiveBookings = () => {
     return (
       <div className="p-4">
         <Alert variant="destructive">{error}</Alert>
-      </div>
-    );
-  }
-
-  if (bookings.length === 0) {
-    return (
-      <div className="p-4">
-        <p className="text-gray-600">No confirmed bookings found.</p>
       </div>
     );
   }

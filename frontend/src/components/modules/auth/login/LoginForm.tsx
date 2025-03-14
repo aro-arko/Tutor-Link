@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
@@ -20,10 +21,8 @@ import Link from "next/link";
 import {
   getCurrentUser,
   loginUser,
-  reCaptchaTokenVerification,
+  // reCaptchaTokenVerification,
 } from "@/services/AuthService";
-import ReCAPTCHA from "react-google-recaptcha";
-import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const LoginForm = () => {
@@ -35,22 +34,22 @@ const LoginForm = () => {
     formState: { isSubmitting },
   } = form;
 
-  const [reCaptchaStatus, setReCaptchaStatus] = useState(false);
+  // const [reCaptchaStatus, setReCaptchaStatus] = useState(false);
 
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirectPath");
   const router = useRouter();
 
-  const handleReCaptcha = async (value: string | null) => {
-    try {
-      const res = await reCaptchaTokenVerification(value!);
-      if (res?.success) {
-        setReCaptchaStatus(true);
-      }
-    } catch (error: any) {
-      console.error(error);
-    }
-  };
+  // const handleReCaptcha = async (value: string | null) => {
+  //   try {
+  //     const res = await reCaptchaTokenVerification(value!);
+  //     if (res?.success) {
+  //       setReCaptchaStatus(true);
+  //     }
+  //   } catch (error: any) {
+  //     console.error(error);
+  //   }
+  // };
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
@@ -134,13 +133,9 @@ const LoginForm = () => {
                   </FormItem>
                 )}
               />
-              <ReCAPTCHA
-                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_CLIENT_KEY || ""}
-                onChange={handleReCaptcha}
-              />
+
               {/* Submit Button */}
               <Button
-                disabled={!reCaptchaStatus}
                 type="submit"
                 className="w-full bg-red-600 hover:bg-red-700"
               >

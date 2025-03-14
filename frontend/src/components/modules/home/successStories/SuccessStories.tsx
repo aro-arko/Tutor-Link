@@ -27,6 +27,7 @@ const SuccessStories = () => {
         console.log("success", userData);
 
         const testimonialsData = userData.results.map(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (user: any, index: number) => ({
             name: `${user.name.first} ${user.name.last}`,
             role: index % 2 === 0 ? "Student" : "Tutor",

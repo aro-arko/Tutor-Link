@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { studentBookings } from "@/services/BookingService";
@@ -14,7 +15,11 @@ const MyBookings = () => {
         setLoading(true);
         const res = await studentBookings();
         if (res.success) {
-          setBookings(res.data);
+          const sortedBookings = res.data.sort(
+            (a: any, b: any) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+          setBookings(sortedBookings);
         } else {
           setError("Failed to fetch bookings");
           console.error("Failed to fetch bookings:", res.message);

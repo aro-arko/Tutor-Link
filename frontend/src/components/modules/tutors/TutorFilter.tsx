@@ -45,7 +45,7 @@ const TutorFilter: React.FC<TutorFilterProps> = ({
   handleSubjectChange,
 }) => {
   const [subs, setSubs] = useState<{ _id: string; name: string }[]>([]);
-  const router = useRouter(); // Initialize useRouter
+  const router = useRouter();
 
   useEffect(() => {
     const fetchSubjects = async () => {

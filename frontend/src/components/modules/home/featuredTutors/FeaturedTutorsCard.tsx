@@ -119,7 +119,8 @@ const FeaturedTutorsCard = ({ tutor }: { tutor: Tutor }) => {
           ))}
         </div>
         <p className="ml-2 text-gray-700 text-sm">
-          {tutor.rating.toFixed(1)} ({tutor.reviews.toLocaleString()} reviews)
+          {tutor.rating.toFixed(1)} (
+          {Array.isArray(tutor.reviews) ? tutor.reviews.length : 0} reviews)
         </p>
       </div>
 

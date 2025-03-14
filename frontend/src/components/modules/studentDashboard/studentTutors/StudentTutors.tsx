@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { studentBookings } from "@/services/BookingService";
@@ -17,11 +18,17 @@ const StudentTutors = () => {
         setLoading(true);
         const res = await studentBookings();
         if (res.success) {
-          const filteredBookings = res.data.filter(
-            (booking: any) =>
-              booking.approvalStatus === "confirmed" ||
-              booking.approvalStatus === "completed"
-          );
+          const filteredBookings = res.data
+            .filter(
+              (booking: any) =>
+                booking.approvalStatus === "confirmed" ||
+                booking.approvalStatus === "completed"
+            )
+            .sort(
+              (a: any, b: any) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            );
           setBookings(filteredBookings);
 
           // Fetch tutor details for each booking
@@ -53,6 +60,19 @@ const StudentTutors = () => {
 
     fetchBookings();
   }, []);
+
+  const getTimeSlot = (tutorId: string, timeSlotId: string) => {
+    const tutor = tutors[tutorId];
+    if (tutor) {
+      const availability = tutor.availability.find(
+        (slot: any) => slot._id === timeSlotId
+      );
+      if (availability) {
+        return `${availability.day} ${availability.timeSlots}`;
+      }
+    }
+    return "N/A";
+  };
 
   if (loading) {
     return (
@@ -100,6 +120,9 @@ const StudentTutors = () => {
                 Booking ID
               </th>
               <th className="py-3 px-4 text-left text-gray-900 font-semibold">
+                Time Slot
+              </th>
+              <th className="py-3 px-4 text-left text-gray-900 font-semibold">
                 Approval Status
               </th>
             </tr>
@@ -126,11 +149,15 @@ const StudentTutors = () => {
                   {booking._id}
                 </td>
                 <td className="py-3 px-4 border-b border-red-100 text-gray-700">
+                  {getTimeSlot(booking.tutorId, booking.timeSlotId)}
+                </td>
+                <td className="py-3 px-4 border-b border-red-100 text-gray-700">
                   <span
                     className={`px-2 py-1 rounded-full text-sm ${
-                      booking.approvalStatus === "confirmed" ||
-                      booking.approvalStatus === "completed"
+                      booking.approvalStatus === "confirmed"
                         ? "bg-green-100 text-green-600"
+                        : booking.approvalStatus === "completed"
+                        ? "bg-blue-100 text-blue-600"
                         : "bg-red-100 text-red-600"
                     }`}
                   >

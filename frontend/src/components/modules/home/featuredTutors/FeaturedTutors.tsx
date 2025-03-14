@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import FeaturedTutorsCard from "./FeaturedTutorsCard";
 // import tutorsData from "@/fakeData/tutorsData.json";
 import Link from "next/link";

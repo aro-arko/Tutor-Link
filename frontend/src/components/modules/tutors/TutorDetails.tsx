@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Star, MapPin, Calendar } from "lucide-react";
+import { Star, MapPin, Calendar, Phone, Mail } from "lucide-react";
 import Image from "next/image";
 import { getTutorById } from "@/services/TutorService";
 import { getSubjectById } from "@/services/Subjects";
@@ -92,6 +92,18 @@ const TutorDetails = () => {
               <p className="text-gray-500 text-sm mt-1">
                 🎓 {tutor.qualification}
               </p>
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-gray-500" />
+                <span className="text-gray-500 text-sm mt-1">
+                  {tutor.phone}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-gray-500" />
+                <span className="text-gray-500 text-sm mt-1">
+                  {tutor.email}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -106,8 +118,8 @@ const TutorDetails = () => {
               ))}
             </div>
             <p className="ml-2 text-gray-700 text-sm">
-              {tutor.rating.toFixed(1)} ({tutor.reviews.toLocaleString()}{" "}
-              reviews)
+              {tutor.rating.toFixed(1)} (
+              {Array.isArray(tutor.reviews) ? tutor.reviews.length : 0} reviews)
             </p>
           </div>
 

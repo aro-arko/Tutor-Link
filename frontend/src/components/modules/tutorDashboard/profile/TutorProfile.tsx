@@ -139,15 +139,16 @@ const TutorProfile = () => {
         hourlyRate: tutorData.hourlyRate,
         tutorImage: tutorData.tutorImage,
         phone: tutorData.phone,
-        subjects: tutorData.subjects.map((subject) => subject._id),
+        subject: tutorData.subjects.map((subject) => subject._id),
         qualification: tutorData.qualification,
         age: tutorData.age,
         availability: tutorData.availability,
         backgroundImage: tutorData.backgroundImage,
       };
 
-      // Call the API to update the tutor profile
+      console.log(updatedData);
       const response = await updateTutorProfile(updatedData);
+      console.log(response);
 
       if (response.success) {
         toast.success("Profile updated successfully!");

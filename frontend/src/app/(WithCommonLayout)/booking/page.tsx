@@ -1,10 +1,17 @@
 import Booking from "@/components/modules/booking/Booking";
+import { Suspense } from "react";
 
 const BookingPage = () => {
   return (
-    <div>
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-screen">
+          <p>Loading...</p>
+        </div>
+      }
+    >
       <Booking />
-    </div>
+    </Suspense>
   );
 };
 

@@ -17,11 +17,12 @@ import { getAllTutors } from "@/services/TutorService";
 import { useSearchParams } from "next/navigation";
 import { searchTutors } from "@/services/StudentService";
 
-const ITEMS_PER_PAGE = 9; // Maximum tutors per page
+const ITEMS_PER_PAGE = 9;
 
 const AllTutors = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [tutorData, setTutorData] = useState<any[]>([]);
-  const searchParams = useSearchParams(); // Hook to access query parameters
+  const searchParams = useSearchParams();
   const [filters, setFilters] = useState({
     search: "",
     subjects: [] as string[],

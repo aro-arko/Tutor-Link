@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react";
 
 const StudentDetails = () => {
   const { id } = useParams() as { id: string };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [studentData, setStudentData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 const BookingDetails = () => {
   const { id } = useParams() as { id: string };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [booking, setBooking] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -1,10 +1,17 @@
 import AllTutors from "@/components/modules/tutors/AllTutors";
+import { Suspense } from "react";
 
 const TutorsPage = () => {
   return (
-    <div className="min-h-screen">
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-screen">
+          <p>Loading...</p>
+        </div>
+      }
+    >
       <AllTutors />
-    </div>
+    </Suspense>
   );
 };
 
