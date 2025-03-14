@@ -1,15 +1,11 @@
-const StudentDashboard = () => {
+import StudentDashboard from "@/components/modules/studentDashboard/StudentDashboard";
+
+const StudentDashboardPage = () => {
   return (
     <div>
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-        <h1>I am student dashboard</h1>
-        <div className="aspect-video rounded-xl bg-muted"></div>
-        <div className="aspect-video rounded-xl bg-muted"></div>
-        <div className="aspect-video rounded-xl bg-muted"></div>
-      </div>
-      <div className="min-h-[100vh] rounded-xl bg-muted mt-4"></div>
+      <StudentDashboard />
     </div>
   );
 };
 
-export default StudentDashboard;
+export default StudentDashboardPage;
