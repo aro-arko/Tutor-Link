@@ -1,7 +1,9 @@
+import Students from "@/components/modules/tutorDashboard/students/students";
+
 const studentsPage = () => {
   return (
     <div>
-      <h1>This is studentsPage component</h1>
+      <Students />
     </div>
   );
 };

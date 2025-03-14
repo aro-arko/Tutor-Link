@@ -79,7 +79,7 @@ export const getStudentById = async (studentId: string) => {
   const token = (await cookies()).get("accessToken")?.value;
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/student/${studentId}`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/tutor/student/${studentId}`,
       {
         method: "GET",
         headers: {
