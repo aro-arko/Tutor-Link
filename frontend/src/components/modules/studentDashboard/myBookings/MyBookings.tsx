@@ -59,14 +59,6 @@ const MyBookings = () => {
     );
   }
 
-  if (bookings.length === 0) {
-    return (
-      <div className="p-4">
-        <p className="text-gray-600">No bookings found.</p>
-      </div>
-    );
-  }
-
   return (
     <div className="p-6 bg-white rounded-lg shadow-sm">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">My Bookings</h1>
