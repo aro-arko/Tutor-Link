@@ -28,8 +28,9 @@ const getSidebarItems = (role: "student" | "tutor" | "admin" | "guest") => {
     }[];
   } = {
     student: [
-      { title: "My Bookings", url: "/student/bookings", icon: LayoutDashboard },
+      { title: "Profile", url: "/student/profile", icon: LayoutDashboard },
       { title: "Tutors", url: "/student/tutors", icon: LayoutDashboard },
+      { title: "Bookings", url: "/student/bookings", icon: LayoutDashboard },
     ],
     tutor: [
       { title: "Profile", url: "/tutor/profile", icon: LayoutDashboard },

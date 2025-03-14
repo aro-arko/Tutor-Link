@@ -25,6 +25,34 @@ export const getMe = async () => {
   }
 };
 
+export const updateStudentProfile = async (studentData: any) => {
+  const token = (await cookies()).get("accessToken")!.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/student/update`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(studentData),
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to update student profile:", error);
+    throw error;
+  }
+};
+
 export const searchTutors = async (
   queryParams: string,
   searchQuery: string
