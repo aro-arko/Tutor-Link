@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "@/context/UserContext";
 import { Button } from "../ui/button";
 import { Menu, X } from "lucide-react";
@@ -37,6 +37,13 @@ export default function Navbar() {
       router.push("/");
     }
   };
+
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  }, [pathname, setIsLoading]);
 
   return (
     <nav className="bg-white shadow-md fixed w-full z-10 mb-4">

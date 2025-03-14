@@ -1,7 +1,9 @@
+import StudentProfile from "@/components/modules/student-profile/StudentProfile";
+
 const studentProfilePage = () => {
   return (
     <div>
-      <h1>This is studentProfilePage component</h1>
+      <StudentProfile />
     </div>
   );
 };

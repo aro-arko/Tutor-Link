@@ -14,11 +14,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useUser } from "@/context/UserContext";
 
 const Banner = () => {
   const router = useRouter();
-  const [searchType, setSearchType] = useState<"name" | "subject">("name"); // Default to "name"
+  const [searchType, setSearchType] = useState<"name" | "subject">("name");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const { user } = useUser();
 
   const handleSearch = () => {
     if (!searchQuery.trim()) {
@@ -81,21 +84,23 @@ const Banner = () => {
           </div>
 
           {/* Call-to-Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <Link href="/register-student">
-              <Button className="bg-red-600 hover:bg-red-700 text-white py-6 px-8 text-lg">
-                Sign Up as a Student
-              </Button>
-            </Link>
-            <Link href="/register-tutor">
-              <Button
-                variant="outline"
-                className="border-red-600 text-red-600 hover:bg-red-50 py-6 px-8 text-lg"
-              >
-                Register as a Tutor
-              </Button>
-            </Link>
-          </div>
+          {!user && (
+            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+              <Link href="/register-student">
+                <Button className="bg-red-600 hover:bg-red-700 text-white py-6 px-8 text-lg">
+                  Sign Up as a Student
+                </Button>
+              </Link>
+              <Link href="/register-tutor">
+                <Button
+                  variant="outline"
+                  className="border-red-600 text-red-600 hover:bg-red-50 py-6 px-8 text-lg"
+                >
+                  Register as a Tutor
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Right Section: Banner Image (Hidden on Small Screens) */}
