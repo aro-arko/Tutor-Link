@@ -14,6 +14,11 @@ router.get(
 );
 
 router.get(
+  '/bookings/:bookingId',
+  auth(USER_ROLE.tutor),
+  tutorController.getBookingById,
+);
+router.get(
   '/booking-requests',
   auth(USER_ROLE.tutor),
   tutorController.bookingRequests,

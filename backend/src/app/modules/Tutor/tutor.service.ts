@@ -104,6 +104,17 @@ const getTutorById = async (id: string) => {
   return tutor;
 };
 
+const getBookingById = async (user: JwtPayload, bookingId: string) => {
+  const tutor = await Tutor.findOne({ email: user.email });
+  // console.log(tutor);
+
+  const booking = await Booking.findOne({
+    _id: bookingId,
+    tutorId: tutor!._id,
+  });
+  return booking;
+};
+
 export const tutorService = {
   getMe,
   updateTutor,
@@ -112,4 +123,5 @@ export const tutorService = {
   getStudent,
   getAllTutors,
   getTutorById,
+  getBookingById,
 };

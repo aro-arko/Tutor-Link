@@ -83,6 +83,18 @@ const verifyPayment = catchAsync(async (req, res) => {
   });
 });
 
+const tutorEarnings = catchAsync(async (req, res) => {
+  const user = req.user;
+  const result = await bookingService.tutorEarnings(user);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Tutor earnings fetched successfully',
+    data: result,
+  });
+});
+
 export const bookingController = {
   createBooking,
   studentBookingList,
@@ -90,4 +102,5 @@ export const bookingController = {
   tutorBookingList,
   updateBookingStatus,
   verifyPayment,
+  tutorEarnings,
 };

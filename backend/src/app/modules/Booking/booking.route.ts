@@ -41,4 +41,6 @@ router.put(
 
 router.get('/verify', auth(USER_ROLE.student), bookingController.verifyPayment);
 
+router.get('/earnings', auth(USER_ROLE.tutor), bookingController.tutorEarnings);
+
 export const BookingRoutes = router;

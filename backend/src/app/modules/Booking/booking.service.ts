@@ -236,6 +236,17 @@ const verifyPayment = async (order_id: string) => {
   throw new Error('Payment verification failed');
 };
 
+const tutorEarnings = async (user: JwtPayload) => {
+  const userData = await Tutor.findOne({ email: user.email });
+  const bookings = await Booking.find({
+    tutorId: userData!._id,
+    status: 'Paid',
+    approvalStatus: 'confirmed',
+  });
+  const earnings = bookings.reduce((acc, booking) => acc + booking.price, 0);
+  return earnings;
+};
+
 export const bookingService = {
   createBooking,
   tutorBookingList,
@@ -243,4 +254,5 @@ export const bookingService = {
   updateBookingStatus,
   studentBookingList,
   verifyPayment,
+  tutorEarnings,
 };

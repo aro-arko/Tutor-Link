@@ -90,6 +90,20 @@ const getTutorById = catchAsync(async (req, res) => {
   });
 });
 
+const getBookingById = catchAsync(async (req, res) => {
+  const user = req.user;
+  // console.log(user);
+  const { bookingId } = req.params;
+  const result = await tutorService.getBookingById(user, bookingId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Booking fetched successfully',
+    data: result,
+  });
+});
+
 export const tutorController = {
   getMe,
   updateTutor,
@@ -98,4 +112,5 @@ export const tutorController = {
   getStudent,
   getAllTutors,
   getTutorById,
+  getBookingById,
 };
