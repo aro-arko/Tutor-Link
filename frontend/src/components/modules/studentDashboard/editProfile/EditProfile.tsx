@@ -61,14 +61,14 @@ const EditProfile = () => {
   if (!studentData) {
     return (
       <div className="p-4">
-        <p className="text-gray-500">No student profile found.</p>
+        <p className="text-gray-500">No profile found.</p>
       </div>
     );
   }
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-6">Student Profile</h1>
+      <h1 className="text-2xl font-bold mb-6">Profile</h1>
       <div className="space-y-6">
         {/* Name Card */}
         <div className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow">
