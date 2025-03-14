@@ -18,6 +18,7 @@ import { registrationValidation } from "../registerValidation";
 import { registerStudent } from "@/services/AuthService";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const StudentRegisterForm = () => {
   const form = useForm({
@@ -27,6 +28,7 @@ const StudentRegisterForm = () => {
   const {
     formState: { isSubmitting },
   } = form;
+  const router = useRouter();
 
   const password = form.watch("password");
   const passwordConfirm = form.watch("passwordConfirm");
@@ -36,6 +38,7 @@ const StudentRegisterForm = () => {
       const res = await registerStudent(data);
       if (res?.success) {
         toast.success(res?.message);
+        router.push("/login");
       } else {
         toast.error(res?.message);
       }
