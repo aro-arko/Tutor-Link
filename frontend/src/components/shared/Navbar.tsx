@@ -103,6 +103,23 @@ export default function Navbar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200">
                   <DropdownMenuItem>
+                    {role === "tutor" ? (
+                      <Link
+                        href={`/tutor-profile`}
+                        className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
+                      >
+                        Profile
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/student-profile`}
+                        className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
+                      >
+                        Profile
+                      </Link>
+                    )}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
                     <Link
                       href={`/${role}/dashboard`}
                       className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
@@ -111,12 +128,21 @@ export default function Navbar() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <Link
-                      href={`/booking/lists`}
-                      className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
-                    >
-                      Bookings
-                    </Link>
+                    {role === "student" ? (
+                      <Link
+                        href={`/booking/lists`}
+                        className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
+                      >
+                        Bookings
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/tutor/bookings`}
+                        className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
+                      >
+                        Bookings
+                      </Link>
+                    )}
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <button
