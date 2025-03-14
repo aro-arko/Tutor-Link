@@ -1,213 +1,95 @@
-# TutorLink App
+# TutorLink
 
-Welcome to TutorLink App, a robust, scalable, and feature-rich API for managing tutor-student interactions, booking tutoring sessions, handling payments, and more. Built with Node.js, Express.js, Mongoose, and TypeScript, it streamlines tutor management, student bookings, subject assignments, and real-time availability tracking.
-With TutorLink, you can:
-✅ Seamlessly manage tutor profiles & subjects
-✅ Book & schedule tutoring sessions with instant availability checks
-✅ Secure payment processing and real-time transaction verification
-✅ Instant error handling & validation responses for better user experience
-✅ Scalable architecture ensuring smooth performance
+Welcome to TutorLink – a robust, scalable, and feature-rich web platform designed to connect students with expert tutors seamlessly. Students can browse and book tutoring sessions effortlessly, track their learning progress, and make secure payments for their sessions.
+
+For tutors, the platform provides powerful management tools, including session scheduling, student engagement tracking, and subject management. Tutors can create and update their profiles, manage student bookings, and oversee their teaching activities efficiently.
+
+With an intuitive user interface and a streamlined workflow, TutorLink ensures a smooth experience for both students and tutors, making quality education accessible anytime, anywhere. 🚀
 
 ## Features
 
-### Auth Management
+### For Students:
 
-You can log in securely with robust authentication, ensuring safe access and data protection for tutors and students. 🔐
+- 📚 Find Tutors – Search and filter tutors by subject, grade level, and availability.
+- 📝 Book Sessions – Easily schedule tutoring sessions with preferred tutors.
+- 💳 Secure Payments – Pay for tutoring sessions securely through integrated payment options.
+- ⭐ Leave Reviews – Provide feedback and rate tutors based on learning experience.
+- 📅 Manage Bookings – View, update, or cancel upcoming tutoring sessions.
 
-- Login
-- Register
-- Role based access(JWT Token)
-- Logout
+### For Tutors:
 
-### Tutor Management
+🎓 Create & Manage Profile – Qualifications, and availability.
+📅 Manage Bookings – Accept or decline student booking requests.
+📊 Track Earnings – View payment history and earnings from completed sessions.
+🏫 Manage Subjects – Add subjects to offer tutoring services.
+⭐ Receive Reviews – Build credibility by collecting student feedback.
+🚀 View Active Sessions – Keep track of ongoing and upcoming sessions in real-time.
 
-Tutors can create and update their profiles, set availability, and manage subjects, while students can view tutor details before booking
+### Additional Features
 
-- Profile
-- Active Sessions
-- Booking Requests
-- Student Details
-- Booking Details
-- Earnings
+🔐 Secure Authentication – Register and log in securely as a student or tutor.
+🔎 Advanced Search & Filters – Quickly find the best match based on specific needs.
+📊 Dashboard Insights – Monitor sessions, transactions, and overall engagement.
+🌍 Multi-Platform Access – Use the platform seamlessly on web and mobile devices.
 
-### Student Management
+## Prerequisites
 
-Students can create profiles, browse tutors, and book sessions, while tutors can view student details and manage bookings efficiently
+Ensure you have the following installed:
 
-- Profile
-- Booking
-- Review Tutor
+- **Next.js** – A React framework for building web applications
+- **React Hook Form** – Form handling for React applications
+- **ShadCN UI** – A set of accessible and customizable UI components
+- **Radix UI** – Low-level, accessible UI primitives for React
+- **Tailwind CSS** – Utility-first CSS framework for styling
+- **Lucide React** – Beautiful, consistent icons for React applications
+- **JWT Decode** – Decode JSON Web Tokens for authentication
 
-### Subject Management
+Use a package manager like **npm** or **yarn** to install dependencies.
 
-Tutors can create and manage subjects, while students can browse and enroll in available subjects seamlessly.
+---
 
-- Create Subject
-- Get Subject by Id, Name
-- Get All Subjects
+## Dependencies
 
-### Booking Management
-
-Students can schedule tutoring sessions and make secure payments, while tutors can manage appointments, approve bookings, and track session statuses in real-time.
-
-- Booking Status
-- Booking Details
-- Booking Payment
-
-### Error Handling
-
-You will get a consistant error response with a details of each errors.
-
-## Getting Started
-
-Follow these simple steps to set up and run the project on your local machine:
-
-### Prerequisites
-
-Before setting up the project, ensure you have the following installed:
-
-- Node.js (Recommended version: v22.11.0)
-- Express (^4.21.2) - Web framework
-- Mongoose (^8.12.1) - MongoDB object modeling
-- Dotenv (^16.4.7) - Environment variable management
-- CORS (^2.8.5) - Cross-Origin Resource Sharing
-- Zod (^3.24.2) - Schema validation
-- HTTP-Status (^2.1.0) - HTTP status code utilities
-- Bcrypt (^5.1.1) - Password hashing
-- JSON Web Token (JWT) (^9.0.2) - Authentication and authorization
-- ShurjoPay (^0.12.1) - Payment gateway integration
-
-You'll also need a package manager like npm or yarn to install dependencies.
-For development, TypeScript should be added as a devDependency.
-You're all set! 🚀 Let’s get started! 🎉
-
-### Installation guide
-
-## Setting Up the Project Locally 🚀
-
-Follow these steps to get the project up and running on your local machine:
-
-### **1️⃣ Clone the Repository**
-
-Start by cloning the GitHub repository:
-
-```bash
-git clone https://github.com/Ridwan-Suhel/car-store-api.git
+```json
+"dependencies": {
+    "@hookform/resolvers": "^4.1.3",
+    "@radix-ui/react-accordion": "^1.2.3",
+    "@radix-ui/react-avatar": "^1.1.3",
+    "@radix-ui/react-checkbox": "^1.1.4",
+    "@radix-ui/react-collapsible": "^1.1.3",
+    "@radix-ui/react-dialog": "^1.1.6",
+    "@radix-ui/react-dropdown-menu": "^2.1.6",
+    "@radix-ui/react-label": "^2.1.2",
+    "@radix-ui/react-select": "^2.1.6",
+    "@radix-ui/react-separator": "^1.1.2",
+    "@radix-ui/react-slider": "^1.2.3",
+    "@radix-ui/react-slot": "^1.1.2",
+    "@radix-ui/react-tooltip": "^1.1.8",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.479.0",
+    "next": "15.2.1",
+    "next-themes": "^0.4.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-google-recaptcha": "^3.1.0",
+    "react-hook-form": "^7.54.2",
+    "react-icons": "^5.5.0",
+    "swiper": "^11.2.5",
+    "tailwind-merge": "^3.0.2",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.24.2"
+}
 ```
-
-### **2️⃣ Install Dependencies**
-
-Run the following command to install all required packages:
-
-```bash
-npm install
-```
-
-### **3️⃣ Set Up Environment Variables**
-
-Create a .env file in the root directory and add the following:
-
-```bash
-npm install
-```
-
-Replace DATABASE_URL with your actual database connection string.
-
-### **4️⃣ Start the Server**
-
-To launch the server, use:
-
-```bash
-npm run start:dev
-```
-
-The server should now be running on port 5000 (or the one you set in the .env file).
-
-### **5️⃣ Check for Linting Issues**
-
-Ensure your code follows best practices by running:
-
-```bash
-npm run lint
-```
-
-You're all set! 🎉 Your project is now up and running. 🚀
-
-## 📌 API Endpoints Documentation
-
-Below is a structured list of the major API endpoints available in the **TutorLink API**. These endpoints allow users (students and tutors) to register, book sessions, manage accounts, and more.
-
----
-
-### 🛡️ Authentication
-
-- **Register as a Tutor:** `POST /auth/register/tutor`
-- **Register as a Student:** `POST /auth/register/student`
-- **Login:** `POST /auth/login`
-
----
-
-### 👨‍🏫 Tutor Management
-
-- **Get All Tutors:** `GET /tutor/all-tutors`
-- **Get Tutor by ID:** `GET /tutor/{tutorId}`
-- **Get Tutor Bookings:** `GET /tutor/bookings/{tutorId}`
-- **Get Active Sessions:** `GET /tutor/active-sessions`
-- **Get Tutor Profile:** `GET /tutor/me`
-- **Update Tutor Profile:** `PUT /tutor/update`
-
----
-
-### 🎓 Student Management
-
-- **Get Student by Email:** `GET /student/{email}`
-- **Search Students by Subject:** `GET /student/search?subject={subjectName}`
-- **Get Student Profile:** `GET /student/me`
-- **Update Student Profile:** `PUT /student/update`
-
----
-
-### 📚 Subject Management
-
-- **Get Subject by ID:** `GET /subject/{subjectId}`
-- **Create a New Subject (Tutor Only):** `POST /subject/create`
-
----
-
-### 📅 Booking Management
-
-- **Book a Session:** `POST /booking`
-- **Get Booking by ID:** `GET /booking/{bookingId}`
-- **Get All Bookings:** `GET /booking/bookings`
-- **Cancel a Booking:** `DELETE /booking/cancel/{bookingId}`
-- **Verify Payment:** `GET /booking/verify?order_id={orderId}`
-- **Get Tutor Booking Requests:** `GET /tutor/booking-requests`
-- **Get Earnings from Bookings:** `GET /booking/earnings`
-
----
-
-### ⭐ Reviews Management
-
-- **Submit or Get a Review:** `GET /reviews/review/{tutorId}`
-- **Update a Review:** `PATCH /reviews/review/{reviewId}`
-
----
-
-### 🔗 Additional Notes
-
-- All API endpoints follow **RESTful** principles.
-- Ensure proper authentication headers when accessing **protected routes**.
-- Response structure includes **success messages, error handling, and necessary data fields**.
-
-📌 _For a more detailed API reference and request/response samples, refer to the official documentation._
-
----
 
 ### About Me 🙋‍♂️
 
-Hi! My name is Abidur Rahman Arko. I'm a passionate developer who loves creating efficient and user-friendly solutions. This project reflects my expertise in backend development, API design, and scalable system architecture.
+Hi! My name is Abidur Rahman Arko. I'm a passionate developer who loves creating efficient and user-friendly solutions. This project reflects my skills in Next.js, Tailwind CSS, API integration, and modern UI/UX design.
 
 ### Links 🔗
 
-- GitHub Repository: [Tutor Link Backend Repo](https://github.com/aro-arko/Tutor-Link/tree/main/backend)
-- Live API: [Tutor Link API](https://tutor-link-backend-server.vercel.app/)
+GitHub Repository: [Tutor Link Frontend](https://github.com/aro-arko/Tutor-Link/tree/main/frontend)
+GitHub Repository: [Tutor Link Backend](https://github.com/aro-arko/Tutor-Link/tree/main/backend)
+Live API: [Tutor Link API](https://tutor-link-backend-server.vercel.app/)
+Live Website: [Tutor Link App](https://tutorlink-frontend-mu.vercel.app/)
