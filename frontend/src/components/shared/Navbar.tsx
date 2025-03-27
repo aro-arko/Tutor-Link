@@ -15,6 +15,8 @@ import {
 import Link from "next/link";
 import { FaUserCircle } from "react-icons/fa";
 import { protectedRoutes } from "@/constants";
+import Image from "next/image";
+import logo from "@/app/favicon.ico";
 
 export default function Navbar() {
   const { user, setIsLoading } = useUser();
@@ -52,7 +54,10 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="text-xl font-bold text-gray-800">
-              TutorLink
+              <div className="flex items-center space-x-2">
+                <Image src={logo} alt="TutorLink" width={24} height={24} />
+                <span>TutorLink</span>
+              </div>
             </Link>
           </div>
 

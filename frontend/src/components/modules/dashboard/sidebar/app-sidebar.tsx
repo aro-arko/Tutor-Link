@@ -3,7 +3,17 @@
 "use client";
 
 import * as React from "react";
-import { Home, LayoutDashboard, LucideIcon } from "lucide-react";
+import {
+  Home,
+  LayoutDashboard,
+  User,
+  Users,
+  CalendarCheck,
+  Settings,
+  GraduationCap,
+  UserCheck,
+  LucideIcon,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -29,21 +39,21 @@ const getSidebarItems = (role: "student" | "tutor" | "admin" | "guest") => {
     }[];
   } = {
     student: [
-      { title: "Profile", url: "/student/profile", icon: LayoutDashboard },
-      { title: "My Tutors", url: "/student/tutors", icon: LayoutDashboard },
-      { title: "My Bookings", url: "/student/bookings", icon: LayoutDashboard },
+      { title: "Profile", url: "/student/profile", icon: User },
+      { title: "My Tutors", url: "/student/tutors", icon: GraduationCap },
+      { title: "My Bookings", url: "/student/bookings", icon: CalendarCheck },
     ],
     tutor: [
-      { title: "Profile", url: "/tutor/profile", icon: LayoutDashboard },
-      { title: "Students", url: "/tutor/students", icon: LayoutDashboard },
-      { title: "Bookings", url: "/tutor/bookings", icon: LayoutDashboard },
+      { title: "Profile", url: "/tutor/profile", icon: User },
+      { title: "Students", url: "/tutor/students", icon: Users },
+      { title: "Bookings", url: "/tutor/bookings", icon: CalendarCheck },
     ],
     admin: [
-      { title: "Manage Users", url: "/admin/users", icon: LayoutDashboard },
+      { title: "Manage Users", url: "/admin/users", icon: UserCheck },
       {
         title: "Platform Settings",
         url: "/admin/settings",
-        icon: LayoutDashboard,
+        icon: Settings,
       },
     ],
     guest: [],

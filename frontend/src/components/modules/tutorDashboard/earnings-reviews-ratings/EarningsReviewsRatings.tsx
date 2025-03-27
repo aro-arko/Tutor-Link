@@ -98,7 +98,9 @@ const EarningsReviewsRatings = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Rating</p>
-                <p className="text-base font-semibold">{personalInfo.rating}</p>
+                <p className="text-base font-semibold">
+                  {personalInfo.rating.toFixed(1)}
+                </p>
               </div>
             </div>
           </div>

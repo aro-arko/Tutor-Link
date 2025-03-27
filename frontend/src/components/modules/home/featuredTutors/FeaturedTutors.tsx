@@ -1,6 +1,7 @@
+"use client";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import FeaturedTutorsCard from "./FeaturedTutorsCard";
-// import tutorsData from "@/fakeData/tutorsData.json";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
@@ -13,7 +14,6 @@ const FeaturedTutors = () => {
     const fetchTutors = async () => {
       try {
         const response = await getAllTutors();
-        // console.log("Fetched Tutors:", response);
         setTutorData(response.data);
       } catch (error) {
         console.error("Failed to fetch tutors:", error);
@@ -23,7 +23,6 @@ const FeaturedTutors = () => {
     fetchTutors();
   }, []);
 
-  // Show a max of 8 tutors
   const displayedTutors = tutorData.slice(0, 6);
 
   return (
