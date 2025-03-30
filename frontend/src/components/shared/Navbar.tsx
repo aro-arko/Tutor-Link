@@ -10,7 +10,6 @@ import {
   User,
   LayoutDashboard,
   Calendar,
-  Search,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { logout } from "@/services/AuthService";
@@ -30,17 +29,8 @@ import Image from "next/image";
 import logo from "@/app/favicon.ico";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 import { getAllSubjects } from "@/services/Subjects";
+import NavTutorFilters from "./NavTutorFilters";
 
 interface Filters {
   search: string;
@@ -75,10 +65,6 @@ export default function Navbar() {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const toggleBrowseTutors = () => {
-    setIsBrowseTutorsOpen(!isBrowseTutorsOpen);
-  };
-
   const handleLogout = () => {
     logout();
     setIsLoading(true);
@@ -87,17 +73,7 @@ export default function Navbar() {
     }
   };
 
-  const handleSubjectChange = (subjectId: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      subjects: prev.subjects.includes(subjectId)
-        ? prev.subjects.filter((id) => id !== subjectId)
-        : [...prev.subjects, subjectId],
-    }));
-  };
-
   const handleSearch = () => {
-    // Build query params from filters
     const queryParams = new URLSearchParams();
     if (filters.search) queryParams.append("search", filters.search);
     if (filters.subjects.length > 0)
@@ -180,23 +156,20 @@ export default function Navbar() {
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={cn(
-                  "px-3 py-2 text-sm font-medium rounded-md transition-all flex items-center space-x-1",
-                  isActive(link.href)
-                    ? "text-primary bg-primary/10"
-                    : "text-foreground/80 hover:text-primary hover:bg-primary/5"
-                )}
-              >
-                {link.icon && <span>{link.icon}</span>}
-                <span>{link.name}</span>
-              </Link>
-            ))}
+            {/* Home Link */}
+            <Link
+              href="/"
+              className={cn(
+                "px-3 py-2 text-sm font-medium rounded-md transition-all flex items-center space-x-1",
+                isActive("/")
+                  ? "text-primary bg-primary/10"
+                  : "text-foreground/80 hover:text-primary hover:bg-primary/5"
+              )}
+            >
+              <span>Home</span>
+            </Link>
 
-            {/* Browse Tutors with Dropdown */}
+            {/* Browse Tutors Dropdown (right after Home) */}
             <DropdownMenu
               open={isBrowseTutorsOpen}
               onOpenChange={setIsBrowseTutorsOpen}
@@ -220,137 +193,31 @@ export default function Navbar() {
                 align="start"
                 sideOffset={10}
               >
-                <div className="space-y-4">
-                  {/* Search Input */}
-                  <div>
-                    <h4 className="text-lg font-semibold mb-2">
-                      Search Tutors
-                    </h4>
-                    <Input
-                      type="text"
-                      placeholder="Search by name or expertise..."
-                      value={filters.search}
-                      onChange={(e) =>
-                        setFilters({ ...filters, search: e.target.value })
-                      }
-                    />
-                  </div>
-
-                  {/* Subject Filter */}
-                  <div>
-                    <h4 className="text-lg font-semibold mb-2">Subjects</h4>
-                    <div className="grid grid-cols-3 gap-2">
-                      {subjects.map((subject) => (
-                        <div
-                          key={subject._id}
-                          className="flex items-center space-x-2"
-                        >
-                          <Checkbox
-                            id={`subject-${subject._id}`}
-                            checked={filters.subjects.includes(subject._id)}
-                            onCheckedChange={() =>
-                              handleSubjectChange(subject._id)
-                            }
-                          />
-                          <label
-                            htmlFor={`subject-${subject._id}`}
-                            className="text-sm"
-                          >
-                            {subject.name}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Rating and Rate Filters */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <h4 className="text-sm font-medium mb-2">
-                        Minimum Rating
-                      </h4>
-                      <Select
-                        value={filters.rating}
-                        onValueChange={(value) =>
-                          setFilters({ ...filters, rating: value })
-                        }
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Any rating" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="4">4+ Stars</SelectItem>
-                          <SelectItem value="3">3+ Stars</SelectItem>
-                          <SelectItem value="2">2+ Stars</SelectItem>
-                          <SelectItem value="1">1+ Stars</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium mb-2">
-                        Max Hourly Rate: ${filters.hourlyRate}
-                      </h4>
-                      <Slider
-                        defaultValue={[filters.hourlyRate]}
-                        max={100}
-                        step={5}
-                        onValueChange={(value) =>
-                          setFilters({ ...filters, hourlyRate: value[0] })
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  {/* Availability and Location */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <h4 className="text-sm font-medium mb-2">Availability</h4>
-                      <Select
-                        value={filters.availability}
-                        onValueChange={(value) =>
-                          setFilters({ ...filters, availability: value })
-                        }
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Any day" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Monday">Monday</SelectItem>
-                          <SelectItem value="Tuesday">Tuesday</SelectItem>
-                          <SelectItem value="Wednesday">Wednesday</SelectItem>
-                          <SelectItem value="Thursday">Thursday</SelectItem>
-                          <SelectItem value="Friday">Friday</SelectItem>
-                          <SelectItem value="Saturday">Saturday</SelectItem>
-                          <SelectItem value="Sunday">Sunday</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium mb-2">Location</h4>
-                      <Input
-                        type="text"
-                        placeholder="City or region..."
-                        value={filters.location}
-                        onChange={(e) =>
-                          setFilters({ ...filters, location: e.target.value })
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  {/* Search Button */}
-                  <div className="flex justify-end pt-2">
-                    <Button
-                      onClick={handleSearch}
-                      className="gap-2 bg-primary hover:bg-primary/90"
-                    >
-                      <Search className="h-4 w-4" />
-                      Search Tutors
-                    </Button>
-                  </div>
-                </div>
+                <NavTutorFilters
+                  subjects={subjects}
+                  filters={filters}
+                  setFilters={setFilters}
+                  onSearch={handleSearch}
+                />
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {/* Other Navigation Links */}
+            {navLinks.slice(1).map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={cn(
+                  "px-3 py-2 text-sm font-medium rounded-md transition-all flex items-center space-x-1",
+                  isActive(link.href)
+                    ? "text-primary bg-primary/10"
+                    : "text-foreground/80 hover:text-primary hover:bg-primary/5"
+                )}
+              >
+                {link.icon && <span>{link.icon}</span>}
+                <span>{link.name}</span>
+              </Link>
+            ))}
           </div>
 
           {/* User/Log In Button */}
