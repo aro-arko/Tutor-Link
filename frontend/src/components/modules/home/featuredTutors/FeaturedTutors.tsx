@@ -30,7 +30,7 @@ const FeaturedTutors = () => {
   const displayedTutors = tutorData.slice(0, 6);
 
   return (
-    <section className="py-16">
+    <section className="pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-extrabold text-gray-900">

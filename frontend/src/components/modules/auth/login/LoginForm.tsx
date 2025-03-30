@@ -24,6 +24,7 @@ import {
   // reCaptchaTokenVerification,
 } from "@/services/AuthService";
 import { useRouter, useSearchParams } from "next/navigation";
+import Cookies from "js-cookie";
 
 const LoginForm = () => {
   const form = useForm({
@@ -58,7 +59,12 @@ const LoginForm = () => {
       if (res?.success) {
         toast.success(res?.message);
         if (redirect) {
-          router.push(redirect);
+          if (redirect === "/booking") {
+            router.push(`/tutors/${Cookies.get("tutorId")}`);
+            Cookies.remove("tutorId");
+          } else {
+            router.push(redirect);
+          }
         } else {
           const user = await getCurrentUser();
           router.push(`/${user.role}/dashboard`);

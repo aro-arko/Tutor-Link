@@ -15,12 +15,14 @@ import { Filter, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import TutorFilter from "./TutorFilter";
 import { useRouter, useSearchParams } from "next/navigation";
 import { searchTutors } from "@/services/StudentService";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 const ITEMS_PER_PAGE = 9;
 
 const AllTutors = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [tutorData, setTutorData] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const searchParams = useSearchParams();
   const router = useRouter();
   const [filters, setFilters] = useState({
@@ -70,6 +72,8 @@ const AllTutors = () => {
       } catch (error) {
         console.error("Error fetching tutors:", error);
         setTutorData([]);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -88,6 +92,10 @@ const AllTutors = () => {
         : [...prev.subjects, subject],
     }));
   };
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   // Filtered Tutors
   const filteredTutors = tutorData.filter((tutor) => {

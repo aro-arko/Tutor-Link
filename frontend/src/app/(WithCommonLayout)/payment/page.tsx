@@ -1,5 +1,11 @@
 import PaymentVerify from "@/components/modules/payment/PaymentVerify";
+import { Metadata } from "next";
 import { Suspense } from "react";
+
+export const metadata: Metadata = {
+  title: "Payment",
+  description: "Payment page for TutorLink",
+};
 
 const PaymentPage = () => {
   return (

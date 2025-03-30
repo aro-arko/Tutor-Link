@@ -3,30 +3,48 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Star, MapPin, Calendar, Phone, Mail } from "lucide-react";
+import {
+  Star,
+  MapPin,
+  Calendar,
+  Phone,
+  Mail,
+  BookOpen,
+  Clock,
+  GraduationCap,
+} from "lucide-react";
 import Image from "next/image";
 import { getTutorById } from "@/services/TutorService";
 import { getSubjectById } from "@/services/Subjects";
 import Link from "next/link";
 import { ITutor } from "@/types";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import { useUser } from "@/context/UserContext";
+import Cookies from "js-cookie";
 
 const TutorDetails = () => {
   const { id } = useParams() as { id: string };
   const [tutor, setTutor] = useState<ITutor | null>(null);
   const [subjectNames, setSubjectNames] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchTutor = async () => {
       try {
         const res = await getTutorById(id);
         setTutor(res.data);
+
+        if (!user) {
+          Cookies.set("tutorId", id, { expires: 1 });
+        }
       } catch (error) {
         console.error("Failed to fetch tutor info:", error);
       }
     };
 
     fetchTutor();
-  }, [id]);
+  }, [id, user]);
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -41,6 +59,8 @@ const TutorDetails = () => {
           setSubjectNames(subjectNames);
         } catch (error) {
           console.error("Failed to fetch subjects:", error);
+        } finally {
+          setLoading(false);
         }
       }
     };
@@ -48,95 +68,113 @@ const TutorDetails = () => {
     fetchSubjects();
   }, [tutor]);
 
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
   if (!tutor) {
     return <p className="text-center text-gray-600">Tutor not found.</p>;
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
       {/* Main Layout */}
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Cover Image (Left Side) */}
-        <div className="lg:w-1/2">
-          <div className="relative w-full h-96 rounded-lg overflow-hidden shadow-lg">
+        {/* Left Side - Cover Image and Bio */}
+        <div className="lg:w-1/2 flex flex-col gap-8">
+          {/* Cover Image */}
+          <div className="relative w-full h-48 md:h-80 rounded-xl overflow-hidden shadow-lg">
             <Image
               src={tutor.backgroundImage}
               alt={tutor.name}
               layout="fill"
               objectFit="cover"
+              className=""
             />
-          </div>
-        </div>
-
-        {/* Tutor Details (Right Side) */}
-        <div className="lg:w-1/2">
-          {/* Tutor Info */}
-          <div className="flex flex-col md:flex-row md:items-center gap-6">
-            <div className="h-28 w-28 relative">
-              <Image
-                src={tutor.tutorImage}
-                alt={tutor.name}
-                layout="fill"
-                objectFit="cover"
-                className="rounded-full border-4 border-gray-300"
-              />
-            </div>
-            <div>
-              <h2 className="text-3xl font-bold">{tutor.name}</h2>
-              <p className="text-gray-600 flex items-center gap-1">
-                <MapPin className="h-4 w-4 text-gray-500" /> {tutor.address}
-              </p>
-              <p className="text-lg font-semibold text-red-600">
-                {tutor.hourlyRate} /hr
-              </p>
-              <p className="text-gray-500 text-sm mt-1">
-                🎓 {tutor.qualification}
-              </p>
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-gray-500" />
-                <span className="text-gray-500 text-sm mt-1">
-                  {tutor.phone}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-gray-500" />
-                <span className="text-gray-500 text-sm mt-1">
-                  {tutor.email}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Rating */}
-          <div className="flex items-center mt-4">
-            <div className="flex">
-              {[...Array(Math.floor(tutor.rating))].map((_, i) => (
-                <Star
-                  key={i}
-                  className="h-5 w-5 text-yellow-400 fill-current"
-                />
-              ))}
-            </div>
-            <p className="ml-2 text-gray-700 text-sm">
-              {tutor.rating.toFixed(1)} (
-              {Array.isArray(tutor.reviews) ? tutor.reviews.length : 0} reviews)
-            </p>
           </div>
 
           {/* Bio Section */}
-          <div className="mt-6 bg-gray-100 p-6 rounded-lg">
-            <h3 className="text-lg font-semibold">👨‍🏫 About {tutor.name}</h3>
-            <p className="text-gray-700 mt-2">{tutor.bio}</p>
+          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+            <h3 className="text-xl font-bold flex items-center gap-2 mb-4">
+              <BookOpen className="h-5 w-5 text-red-600" />
+              About {tutor.name}
+            </h3>
+            <p className="text-gray-700 leading-relaxed">{tutor.bio}</p>
+          </div>
+        </div>
+
+        {/* Right Side - Tutor Details */}
+        <div className="lg:w-1/2 flex flex-col gap-6">
+          {/* Tutor Profile Card */}
+          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+            <div className="flex flex-col md:flex-row md:items-center gap-6">
+              <div className="h-28 w-28 relative shrink-0">
+                <Image
+                  src={tutor.tutorImage}
+                  alt={tutor.name}
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-full border-4 border-white shadow-md"
+                />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-800">
+                  {tutor.name}
+                </h2>
+                <p className="text-gray-600 flex items-center gap-1 mt-1">
+                  <MapPin className="h-4 w-4 text-gray-500" /> {tutor.address}
+                </p>
+                <div className="mt-3 flex items-center justify-between">
+                  <p className="text-lg font-bold text-red-600 bg-red-50 px-3 py-1 rounded-full">
+                    ${tutor.hourlyRate}/hr
+                  </p>
+                  <div className="flex items-center bg-yellow-50 px-3 py-1 rounded-full">
+                    <div className="flex mr-1">
+                      {[...Array(Math.floor(tutor.rating))].map((_, i) => (
+                        <Star
+                          key={i}
+                          className="h-4 w-4 text-yellow-400 fill-current"
+                        />
+                      ))}
+                    </div>
+                    <span className="text-sm font-medium text-gray-700">
+                      {tutor.rating.toFixed(1)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Info */}
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                <GraduationCap className="h-4 w-4 text-gray-500" />
+                <span className="text-sm text-gray-700">
+                  {tutor.qualification}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                <Phone className="h-4 w-4 text-gray-500" />
+                <span className="text-sm text-gray-700">{tutor.phone}</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg sm:col-span-2">
+                <Mail className="h-4 w-4 text-gray-500" />
+                <span className="text-sm text-gray-700">{tutor.email}</span>
+              </div>
+            </div>
           </div>
 
-          {/* Subjects */}
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold">📚 Subjects:</h3>
-            <div className="flex flex-wrap gap-2 mt-1">
+          {/* Subjects Card */}
+          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+            <h3 className="text-xl font-bold flex items-center gap-2 mb-4">
+              <BookOpen className="h-6 w-6 text-red-600" />
+              Subjects Offered
+            </h3>
+            <div className="flex flex-wrap gap-3">
               {subjectNames.map((subjectName, index) => (
                 <span
                   key={index}
-                  className="bg-gray-200 text-gray-700 text-sm px-3 py-1 rounded-full"
+                  className="bg-red-50 text-gray-900 text-sm px-4 py-2 rounded-full font-medium"
                 >
                   {subjectName}
                 </span>
@@ -144,31 +182,37 @@ const TutorDetails = () => {
             </div>
           </div>
 
-          {/* Availability */}
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold">🕒 Availability:</h3>
-            <div className="mt-2">
+          {/* Availability Card */}
+          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+            <h3 className="text-xl font-bold flex items-center gap-2 mb-4">
+              <Clock className="h-5 w-5 text-red-600" />
+              Availability
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {tutor.availability.map((slot, index) => (
-                <li key={index} className="mt-1">
-                  <span className="font-medium text-gray-700">{slot.day}:</span>{" "}
-                  {/* Ensure timeSlots is treated as an array */}
-                  {Array.isArray(slot.timeSlots)
-                    ? slot.timeSlots.join(", ")
-                    : slot.timeSlots}
-                </li>
+                <div key={index} className="bg-red-50 p-3 rounded-lg">
+                  <h4 className="font-medium text-gray-800">{slot.day}</h4>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {Array.isArray(slot.timeSlots)
+                      ? slot.timeSlots.join(", ")
+                      : slot.timeSlots}
+                  </p>
+                </div>
               ))}
             </div>
           </div>
 
-          {/* Contact Button */}
-          <div className="mt-6">
-            <Link href={`/booking?tutorId=${tutor._id}`}>
-              <Button className="w-full bg-red-600 text-white py-2 hover:bg-red-700 transition flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
-                Request a Booking
-              </Button>
-            </Link>
-          </div>
+          {/* Booking Button */}
+          {user?.role !== "tutor" && (
+            <div className=" mt-4">
+              <Link href={`/booking?tutorId=${tutor._id}`}>
+                <Button className="w-full cursor-pointer bg-red-600 hover:bg-red-700 text-white py-3 text-lg shadow-lg transition-all hover:shadow-xl flex items-center justify-center gap-2">
+                  <Calendar className="h-5 w-5" />
+                  Book a Session
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

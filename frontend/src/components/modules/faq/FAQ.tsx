@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import {
   Accordion,
   AccordionContent,
@@ -30,7 +31,7 @@ const faqs = [
       },
       {
         q: "Can I get a refund if I cancel a session?",
-        a: "Yes, refunds depend on the tutor’s cancellation policy. Check before booking.",
+        a: "Yes, refunds depend on the tutor's cancellation policy. Check before booking.",
       },
     ],
   },
@@ -51,15 +52,31 @@ const faqs = [
 
 const FAQ = () => {
   return (
-    <div className="max-w-4xl mx-auto px-6 py-16">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-4xl mx-auto px-6 py-16"
+    >
       {/* Section Title */}
-      <h1 className="text-4xl font-bold text-gray-900 text-center mb-12">
+      <motion.h1
+        initial={{ y: -20 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="text-3xl font-extrabold text-gray-900 mb-8 text-center"
+      >
         Frequently Asked Questions
-      </h1>
+      </motion.h1>
 
       {/* FAQ Sections */}
       {faqs.map((section, sectionIdx) => (
-        <div key={sectionIdx} className="mb-8">
+        <motion.div
+          key={sectionIdx}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 * sectionIdx }}
+          className="mb-8"
+        >
           {/* Category Title */}
           <h2 className="text-2xl font-semibold text-red-600 mb-4">
             {section.category}
@@ -85,14 +102,20 @@ const FAQ = () => {
                   {faq.q}
                 </AccordionTrigger>
                 <AccordionContent className="text-gray-600 px-6 pb-4">
-                  {faq.a}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {faq.a}
+                  </motion.div>
                 </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
-        </div>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 };
 

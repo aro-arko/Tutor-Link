@@ -2,34 +2,55 @@
 
 import { Star, Users, Globe, BookOpen } from "lucide-react";
 import Image from "next/image";
-import AboutMission from "@/app/assets/images/about-mission.jpg";
-
+import goalImage from "@/app/assets/images/goal.jpg";
 const About = () => {
   const team = [
-    { name: "John Doe", role: "Co-Founder & CEO", image: 10 },
-    { name: "Jane Smith", role: "Co-Founder & CTO", image: 11 },
-    { name: "Alex Johnson", role: "Head of Operations", image: 12 },
-    { name: "Emily Brown", role: "Head of Marketing", image: 13 },
+    {
+      name: "John Doe",
+      role: "Co-Founder & CEO",
+      image:
+        "https://business.columbia.edu/sites/default/files-efs/styles/default_3_2_mobile_543x362/public/articles/images_upload/the-connected-narrative-N8lRH2uxih4-unsplash.jpg?h=b2774bcf&itok=USAV08mN",
+    },
+    {
+      name: "Sophia Williams",
+      role: "Co-Founder & CTO",
+      image:
+        "https://img.freepik.com/premium-photo/portrait-professional-woman-suit-business-woman-standing-office-generative-ai_868783-4132.jpg",
+    },
+    {
+      name: "Alex Johnson",
+      role: "Head of Operations",
+      image:
+        "https://xebia.com/wp-content/uploads/2023/08/avatar_user_619_1691398826-256x256.jpg",
+    },
+    {
+      name: "Emily Brown",
+      role: "Head of Marketing",
+      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2",
+    },
   ];
 
   const successStories = [
     {
-      name: "Sarah",
+      name: "Muniba",
       story:
-        "TutorLink helped me find an amazing math tutor. My grades improved from Cs to As in just three months!",
-      image: 20,
+        "TutorLink helped me excel in my English language skills. I feel more confident now!",
+      image:
+        "https://i.pinimg.com/736x/32/10/8a/32108a13a9753d5569a5a587cc22452e.jpg",
     },
     {
       name: "Michael",
       story:
         "I was struggling with chemistry, but my tutor made it so easy to understand. Highly recommend TutorLink!",
-      image: 21,
+      image:
+        "https://img.freepik.com/premium-photo/boy-student-chinese-portrait-standing-smiling_53876-289705.jpg",
     },
     {
       name: "Emily",
       story:
         "As a tutor, I love how TutorLink connects me with passionate students. It's been a rewarding experience!",
-      image: 22,
+      image:
+        "https://images.stockcake.com/public/8/1/3/8131eb96-18fd-4112-8459-28613801e8b4_medium/graduate-s-joyful-moment-stockcake.jpg",
     },
   ];
 
@@ -57,7 +78,7 @@ const About = () => {
     <div className="max-w-7xl mx-auto px-6 py-16">
       {/* Overview Section */}
       <section className="text-center mb-16">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">About Us</h1>
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-4">About Us</h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
           At TutorLink, we connect students with the best tutors worldwide. Our
           mission is to make learning personalized, accessible, and effective
@@ -84,29 +105,28 @@ const About = () => {
           </div>
         </div>
         {/* Image Positioned to the Right */}
-        <div className="md:w-1/3 flex justify-end">
+        <div className="md:w-1/3 flex h-56 justify-end border-1 border-gray-100 rounded-lg">
           <Image
-            src={AboutMission}
+            src={goalImage}
             alt="Mission"
             width={400}
-            height={300}
-            className="rounded-lg shadow-lg"
+            height={100}
+            className="rounded-lg shadow-lg object-cover h-full w-full "
           />
         </div>
       </section>
 
-      {/* Meet Our Team Section */}
       <section className="mb-16 text-center">
         <h2 className="text-3xl font-bold text-gray-900 mb-8">Meet Our Team</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {team.map(({ name, role, image }, index) => (
             <div key={index} className="text-center">
               <Image
-                src={`https://randomuser.me/api/portraits/men/${image}.jpg`}
+                src={image}
                 alt={name}
                 width={150}
                 height={150}
-                className="rounded-full border-4 border-red-200 shadow-md mx-auto"
+                className="rounded-full aspect-square object-cover border-4 border-red-200 shadow-md mx-auto"
               />
               <h3 className="text-xl font-semibold text-gray-900 mt-3">
                 {name}
@@ -117,7 +137,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* Success Stories Section */}
       <section className="mb-16 text-center">
         <h2 className="text-3xl font-bold text-gray-900 mb-8">
           Success Stories
@@ -129,11 +148,11 @@ const About = () => {
               className="bg-white p-6 rounded-lg shadow-md border border-red-100"
             >
               <Image
-                src={`https://randomuser.me/api/portraits/women/${image}.jpg`}
+                src={image}
                 alt={name}
                 width={120}
                 height={120}
-                className="rounded-full border-4 border-red-200 mx-auto mb-4"
+                className="rounded-full aspect-square object-cover border-4 border-red-200 mx-auto mb-4"
               />
               <h3 className="text-xl font-semibold text-gray-900">{name}</h3>
               <p className="text-gray-600 italic">&quot;{story}&quot;</p>
