@@ -44,7 +44,7 @@ const FeaturedTutorsCard = ({ tutor }: { tutor: Tutor }) => {
   }, [tutor.subject]);
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 border border-gray-300 hover:shadow-lg transition duration-300">
+    <div className="bg-white shadow-md rounded-lg p-4 border border-gray-300 hover:shadow-lg transition duration-300 flex flex-col h-full">
       {/* Cover Image */}
       <div className="w-full h-48 relative rounded-md overflow-hidden mb-4">
         <Image
@@ -107,6 +107,9 @@ const FeaturedTutorsCard = ({ tutor }: { tutor: Tutor }) => {
           {Array.isArray(tutor.reviews) ? tutor.reviews.length : 0} reviews)
         </p>
       </div>
+
+      {/* Spacer to push the button to the bottom */}
+      <div className="flex-grow"></div>
 
       {/* View Details Button */}
       <Link href={`/tutors/${tutor._id}`}>
