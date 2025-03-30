@@ -55,12 +55,26 @@ export const updateStudentProfile = async (studentData: any) => {
 };
 
 export const searchTutors = async (
-  queryParams: string,
-  searchQuery: string
+  queryParams: Record<string, string | number | string[]>
 ) => {
   try {
+    // Build query string dynamically
+    const queryString = new URLSearchParams();
+
+    Object.entries(queryParams).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        // Handle array values (e.g., subjects)
+        value.forEach((item) => queryString.append(key, item));
+      } else if (value !== undefined && value !== null && value !== "") {
+        // Only append non-empty values
+        queryString.append(key, value.toString());
+      }
+    });
+
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/student/search?${queryParams}=${searchQuery}`,
+      `${
+        process.env.NEXT_PUBLIC_BASE_API
+      }/student/search?${queryString.toString()}`,
       {
         method: "GET",
         headers: {
@@ -77,10 +91,9 @@ export const searchTutors = async (
     return data;
   } catch (error) {
     console.error("Failed to search tutors:", error);
-    throw error;
+    return { success: false, message: "Failed to fetch tutors", data: [] };
   }
 };
-
 export const reviewTutor = async (tutorId: string, reviewData: any) => {
   const token = (await cookies()).get("accessToken")!.value;
 

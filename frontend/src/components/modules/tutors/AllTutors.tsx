@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/dialog";
 import { Filter, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import TutorFilter from "./TutorFilter";
-import { getAllTutors } from "@/services/TutorService";
 import { useSearchParams } from "next/navigation";
 import { searchTutors } from "@/services/StudentService";
 
@@ -33,33 +32,48 @@ const AllTutors = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Fetch tutors based on query parameters
   useEffect(() => {
     const fetchTutors = async () => {
       try {
+        // Parse query parameters
         const name = searchParams.get("name");
-        const subject = searchParams.get("subject");
+        const subjectParam = searchParams.get("subjects");
 
-        if (name) {
-          // If there's a name query parameter, call searchTutors with name
-          const response = await searchTutors("name", name);
-          setTutorData(response.data);
-        } else if (subject) {
-          // If there's a subject query parameter, call searchTutors with subject
-          const response = await searchTutors("subject", subject);
+        const subject = searchParams.get("subject");
+        const rating = searchParams.get("rating");
+        const maxRate = searchParams.get("maxRate");
+        const availability = searchParams.get("availability");
+
+        // Build filters object
+        const filters: Record<string, string | number | string[]> = {};
+
+        if (name) filters.name = name;
+        if (subjectParam)
+          filters.subjects = decodeURIComponent(subjectParam).split(",");
+        if (rating) filters.rating = parseFloat(rating);
+        if (maxRate) filters.maxRate = parseFloat(maxRate);
+        if (subject) filters.subject = subject;
+        if (availability) filters.availability = availability;
+
+        console.log("Filters being sent to API:", filters);
+
+        // Fetch tutors using searchTutors
+        const response = await searchTutors(filters);
+
+        if (response.success) {
           setTutorData(response.data);
         } else {
-          // Otherwise, fetch all tutors
-          const response = await getAllTutors();
-          setTutorData(response.data);
+          console.error("Failed to fetch tutors:", response.message);
+          setTutorData([]);
         }
       } catch (error) {
-        console.error("Failed to fetch tutors:", error);
+        console.error("Error fetching tutors:", error);
+        setTutorData([]);
       }
     };
 
     fetchTutors();
-  }, [searchParams]); // Re-run when query parameters change
+  }, [searchParams]);
 
   // Handle subject selection
   const handleSubjectChange = (subject: string) => {
