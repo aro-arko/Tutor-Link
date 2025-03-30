@@ -62,6 +62,7 @@ const AllTutors = () => {
 
         // Fetch tutors using searchTutors
         const response = await searchTutors(filters);
+        console.log(response);
 
         if (response.success) {
           setTutorData(response.data);

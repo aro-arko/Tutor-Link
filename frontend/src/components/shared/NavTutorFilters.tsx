@@ -1,6 +1,5 @@
 "use client";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -84,23 +83,6 @@ export default function NavTutorFilters({
           </Select>
         </div>
         <div>
-          <h4 className="text-sm font-medium mb-2">
-            Max Hourly Rate: ${filters.hourlyRate}
-          </h4>
-          <Slider
-            defaultValue={[filters.hourlyRate]}
-            max={100}
-            step={5}
-            onValueChange={(value) =>
-              setFilters({ ...filters, hourlyRate: value[0] })
-            }
-          />
-        </div>
-      </div>
-
-      {/* Availability and Location */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
           <h4 className="text-sm font-medium mb-2">Availability</h4>
           <Select
             value={filters.availability}
@@ -122,28 +104,33 @@ export default function NavTutorFilters({
             </SelectContent>
           </Select>
         </div>
+      </div>
+
+      {/* Availability and Location */}
+      <div className="grid grid-cols-2 gap-4">
         <div>
-          <h4 className="text-sm font-medium mb-2">Location</h4>
-          <Input
-            type="text"
-            placeholder="City or region..."
-            value={filters.location}
-            onChange={(e) =>
-              setFilters({ ...filters, location: e.target.value })
+          <h4 className="text-sm font-medium mb-2">
+            Max Hourly Rate: ${filters.hourlyRate}
+          </h4>
+          <Slider
+            defaultValue={[filters.hourlyRate]}
+            max={100}
+            step={5}
+            onValueChange={(value) =>
+              setFilters({ ...filters, hourlyRate: value[0] })
             }
           />
         </div>
-      </div>
-
-      {/* Search Button */}
-      <div className="flex justify-end pt-2">
-        <Button
-          onClick={onSearch}
-          className="gap-2 bg-primary hover:bg-primary/90"
-        >
-          <Search className="h-4 w-4" />
-          Search Tutors
-        </Button>
+        {/* Search Button */}
+        <div className="flex justify-between pt-2">
+          <Button
+            onClick={onSearch}
+            className="gap-2 bg-primary hover:bg-primary/90"
+          >
+            <Search className="h-4 w-4" />
+            Search Tutors
+          </Button>
+        </div>
       </div>
     </div>
   );

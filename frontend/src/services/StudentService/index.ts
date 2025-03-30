@@ -58,18 +58,16 @@ export const searchTutors = async (
   queryParams: Record<string, string | number | string[]>
 ) => {
   try {
-    // Build query string dynamically
     const queryString = new URLSearchParams();
 
     Object.entries(queryParams).forEach(([key, value]) => {
       if (Array.isArray(value)) {
-        // Handle array values (e.g., subjects)
-        value.forEach((item) => queryString.append(key, item));
+        queryString.append(key, value.join(","));
       } else if (value !== undefined && value !== null && value !== "") {
-        // Only append non-empty values
         queryString.append(key, value.toString());
       }
     });
+    console.log("Query String:", queryString.toString());
 
     const res = await fetch(
       `${

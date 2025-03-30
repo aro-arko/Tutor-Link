@@ -18,7 +18,7 @@ import { useUser } from "@/context/UserContext";
 
 const Banner = () => {
   const router = useRouter();
-  const [searchType, setSearchType] = useState<"name" | "subject">("name");
+  const [searchType, setSearchType] = useState<"name" | "subject">("subject");
   const [searchQuery, setSearchQuery] = useState("");
 
   const { user } = useUser();
@@ -29,40 +29,51 @@ const Banner = () => {
       return;
     }
 
-    // Redirect to /tutors with the appropriate query parameter
     const queryParam = searchType === "name" ? "name" : "subject";
     router.push(`/tutors?${queryParam}=${encodeURIComponent(searchQuery)}`);
   };
 
   return (
-    <div className="min-h-[80vh] w-full max-w-7xl mx-auto flex items-center justify-center bg-white py-12 px-4 sm:px-6 lg:px-8 pt-20 md:pt-12">
+    <div className="min-h-[70vh] md:min-h-[80vh] w-full max-w-7xl mx-auto flex items-center justify-center bg-white py-8 px-4 sm:px-6 lg:px-8 pt-16 md:pt-12">
       {/* Main Container */}
-      <div className="flex flex-col-reverse md:flex-row items-center gap-8">
+      <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 w-full">
+        {/* Banner Image (Now visible on all screens) */}
+        <div className="w-full md:hidden mb-6">
+          <div className="max-w-[300px] mx-auto">
+            <Image
+              src={banner}
+              alt="Tutors"
+              className="w-full h-auto object-cover rounded-lg shadow-md"
+              priority
+            />
+          </div>
+        </div>
+
         {/* Left Section: Text and Search Bar */}
-        <div className="flex-1 space-y-8 text-center md:text-left">
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight">
+        <div className="flex-1 space-y-6 md:space-y-8 text-center md:text-left">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 leading-tight">
             Find the Best Tutors in Minutes!
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-lg sm:text-xl text-gray-600">
             Book expert tutors for personalized learning.
           </p>
 
           {/* Search Bar with Integrated Dropdown and Button */}
-          <div className="flex items-center gap-2 max-w-lg">
-            <div className="relative flex-1">
+          <div className="flex flex-col sm:flex-row items-center gap-2 w-full max-w-lg mx-auto md:mx-0">
+            <div className="relative w-full">
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
                 <Select
                   value={searchType}
-                  onValueChange={(value: "name" | "subject") =>
+                  onValueChange={(value: "subject" | "name") =>
                     setSearchType(value)
                   }
                 >
-                  <SelectTrigger className="w-[100px] h-8 bg-transparent border-none focus:ring-0 p-0">
+                  <SelectTrigger className="w-[90px] sm:w-[100px] h-8 bg-transparent border-none focus:ring-0 p-0">
                     <SelectValue placeholder="Search by" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="name">Name</SelectItem>
                     <SelectItem value="subject">Subject</SelectItem>
+                    <SelectItem value="name">Name</SelectItem>
                   </SelectContent>
                 </Select>
                 <div className="h-5 w-px bg-gray-300"></div>
@@ -70,14 +81,14 @@ const Banner = () => {
               <Input
                 type="text"
                 placeholder="Search by name or subject..."
-                className="w-full pl-32 pr-4 py-6 rounded-lg border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                className="w-full pl-28 sm:pl-32 pr-4 py-5 sm:py-6 rounded-lg border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <Button
               onClick={handleSearch}
-              className="bg-red-600 hover:bg-red-700 text-white py-6 px-8 text-lg rounded-lg"
+              className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white py-5 sm:py-6 px-6 sm:px-8 text-lg rounded-lg"
             >
               Search
             </Button>
@@ -85,25 +96,25 @@ const Banner = () => {
 
           {/* Call-to-Action Buttons */}
           {!user && (
-            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <Link href="/register-student">
-                <Button className="bg-red-600 hover:bg-red-700 text-white py-6 px-8 text-lg">
-                  Sign Up as a Student
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start">
+              <Link href="/register-student" className="w-full sm:w-auto">
+                <Button className="w-full bg-red-600 hover:bg-red-700 text-white py-5 sm:py-6 px-6 sm:px-8 text-lg">
+                  Sign Up as Student
                 </Button>
               </Link>
-              <Link href="/register-tutor">
+              <Link href="/register-tutor" className="w-full sm:w-auto">
                 <Button
                   variant="outline"
-                  className="border-red-600 text-red-600 hover:bg-red-50 py-6 px-8 text-lg"
+                  className="w-full border-red-600 text-red-600 hover:bg-red-50 py-5 sm:py-6 px-6 sm:px-8 text-lg"
                 >
-                  Register as a Tutor
+                  Register as Tutor
                 </Button>
               </Link>
             </div>
           )}
         </div>
 
-        {/* Right Section: Banner Image (Hidden on Small Screens) */}
+        {/* Right Section: Banner Image (Hidden on mobile, shown on md+) */}
         <div className="flex-1 hidden md:flex justify-end">
           <div className="max-w-[500px]">
             <Image
