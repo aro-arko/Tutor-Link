@@ -157,7 +157,7 @@ const TutorFilter: React.FC<TutorFilterProps> = ({
         <Button
           variant="outline"
           onClick={handleResetFilters}
-          className="bg-red-500 text-white hover:bg-red-600"
+          className="bg-red-600 text-white hover:bg-red-700 hover:text-white transition duration-200"
         >
           Reset Filters
         </Button>

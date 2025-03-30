@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Filter, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import TutorFilter from "./TutorFilter";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { searchTutors } from "@/services/StudentService";
 
 const ITEMS_PER_PAGE = 9;
@@ -22,6 +22,7 @@ const AllTutors = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [tutorData, setTutorData] = useState<any[]>([]);
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [filters, setFilters] = useState({
     search: "",
     subjects: [] as string[],
@@ -77,6 +78,9 @@ const AllTutors = () => {
 
   // Handle subject selection
   const handleSubjectChange = (subject: string) => {
+    if (searchParams.toString()) {
+      router.push("/tutors");
+    }
     setFilters((prev) => ({
       ...prev,
       subjects: prev.subjects.includes(subject)

@@ -95,22 +95,6 @@ const FeaturedTutorsCard = ({ tutor }: { tutor: Tutor }) => {
         </div>
       </div>
 
-      {/* Availability */}
-      <div className="mt-3">
-        <h4 className="text-sm font-semibold text-gray-700">Availability:</h4>
-        <ul className="text-xs text-gray-600 mt-1">
-          {tutor.availability.map((slot, index) => (
-            <li key={index} className="mt-1">
-              <span className="font-medium text-gray-700">{slot.day}:</span>{" "}
-              {/* Ensure timeSlots is treated as an array */}
-              {Array.isArray(slot.timeSlots)
-                ? slot.timeSlots.join(", ")
-                : slot.timeSlots}
-            </li>
-          ))}
-        </ul>
-      </div>
-
       {/* Ratings */}
       <div className="flex items-center mt-3">
         <div className="flex">
