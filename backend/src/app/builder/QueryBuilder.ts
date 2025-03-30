@@ -36,18 +36,39 @@ class QueryBuilder<T> {
     ];
     excludeFields.forEach((field) => delete queryObj[field]);
 
-    // Handle filter for authorId
-    if (queryObj.filter) {
-      queryObj.author = queryObj.filter; // Assign filter to `author` field
-      delete queryObj.filter; // Remove original filter field
+    // Handle filtering for specific fields
+    const filterQuery: FilterQuery<T> = {};
+
+    // Filter by multiple subjects
+    if (queryObj.subjects) {
+      const subjectIds = (queryObj.subjects as string)
+        .split(',')
+        .map((id) => new Types.ObjectId(id));
+      (filterQuery as Record<string, unknown>)['subject'] = { $in: subjectIds };
     }
 
-    // Parse ObjectId fields if present
-    if (queryObj.author) {
-      queryObj.author = new Types.ObjectId(queryObj.author as string);
+    // Filter by minimum rating
+    if (queryObj.rating) {
+      (filterQuery as Record<string, unknown>)['rating'] = {
+        $gte: Number(queryObj.rating),
+      };
     }
 
-    this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
+    // Filter by maximum hourly rate
+    if (queryObj.maxRate) {
+      (filterQuery as Record<string, unknown>)['hourlyRate'] = {
+        $lte: Number(queryObj.maxRate),
+      };
+    }
+
+    // Filter by availability (day of the week)
+    if (queryObj.availability) {
+      (filterQuery as Record<string, unknown>)['availability.day'] =
+        queryObj.availability;
+    }
+
+    // Merge the filterQuery with the existing query
+    this.modelQuery = this.modelQuery.find(filterQuery);
     return this;
   }
 
