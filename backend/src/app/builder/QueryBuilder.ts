@@ -71,10 +71,9 @@ class QueryBuilder<T> {
     this.modelQuery = this.modelQuery.find(filterQuery);
     return this;
   }
-
   sort() {
-    const sortBy = (this.query.sortBy as string) || 'createdAt';
-    const sortOrder = (this.query.sortOrder as string) === 'asc' ? '' : '-';
+    const sortBy = (this.query.sortBy as string) || 'rating'; // Default to 'rating'
+    const sortOrder = (this.query.sortOrder as string) === 'asc' ? '' : '-'; // Default to descending order
     const sortString = `${sortOrder}${sortBy}`;
     this.modelQuery = this.modelQuery.sort(sortString);
     return this;
@@ -82,7 +81,7 @@ class QueryBuilder<T> {
 
   paginate() {
     const page = Number(this.query.page) || 1;
-    const limit = Number(this.query.limit) || 10;
+    const limit = Number(this.query.limit) || 9;
     const skip = (page - 1) * limit;
     this.modelQuery = this.modelQuery.skip(skip).limit(limit);
     return this;

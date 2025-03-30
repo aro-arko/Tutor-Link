@@ -95,7 +95,7 @@ const getStudent = async (user: JwtPayload, id: string) => {
 };
 
 const getAllTutors = async () => {
-  const tutors = await Tutor.find();
+  const tutors = await Tutor.find().sort({ rating: -1 });
   return tutors;
 };
 

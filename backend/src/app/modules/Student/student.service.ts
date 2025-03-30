@@ -59,7 +59,9 @@ const searchTutors = async (query: Partial<TQuery>) => {
 
   // Filter by a single subject name
   if (subject) {
-    const subjectDetails = await Subject.findOne({ name: subject });
+    const subjectDetails = await Subject.findOne({
+      name: { $regex: subject, $options: 'i' },
+    });
     if (subjectDetails) {
       searchQuery.subject = { $in: [subjectDetails._id] };
     } else {
@@ -91,11 +93,7 @@ const searchTutors = async (query: Partial<TQuery>) => {
     searchQuery['availability.day'] = availability;
   }
 
-  const queryBuilder = new QueryBuilder(Tutor.find(), query)
-    .filter()
-    .sort()
-    .paginate()
-    .fields();
+  const queryBuilder = new QueryBuilder(Tutor.find(), query).filter().sort();
 
   // Merge the searchQuery with the QueryBuilder's query
   queryBuilder.modelQuery = queryBuilder.modelQuery.find(searchQuery);
@@ -115,8 +113,6 @@ const getStudentByEmail = async (user: JwtPayload, email: string) => {
 export const studentService = {
   getMe,
   updateMe,
-  // reviewTutor,
-  // updateReview,
   searchTutors,
   getStudentByEmail,
 };
