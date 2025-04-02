@@ -64,6 +64,7 @@ const TutorProfile = () => {
         } else {
           setError("Failed to fetch tutor information.");
         }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         setError("Something went wrong. Please try again.");
         console.error("Error fetching tutor data:", error);
