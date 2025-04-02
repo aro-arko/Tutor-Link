@@ -2,18 +2,31 @@
 
 import React, { useEffect, useState } from "react";
 import { activeSessions } from "@/services/TutorService";
+import { bookingApproval } from "@/services/BookingService";
 import { Alert } from "@/components/ui/alert";
-import { User, Clock, Calendar, Activity } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import {
+  User,
+  Clock,
+  Calendar,
+  Activity,
+  ChevronDown,
+  FileText,
+} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
-const ActiveSessions = () => {
+const AllActiveSessions = () => {
   const [totalActiveSessions, setTotalActiveSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     const fetchActiveSessions = async () => {
@@ -35,12 +48,31 @@ const ActiveSessions = () => {
     fetchActiveSessions();
   }, []);
 
+  const handleStatusChange = async (bookingId: string) => {
+    try {
+      const updatedStatus = "completed";
+      const response = await bookingApproval(bookingId, updatedStatus);
+
+      if (response.success) {
+        toast.success(`Booking ID: ${bookingId} marked as completed`);
+        setTotalActiveSessions((prev) =>
+          prev.filter((s) => s._id !== bookingId)
+        );
+      } else {
+        toast.error(`Failed to update: ${response.message}`);
+      }
+    } catch (error) {
+      toast.error("Error updating booking status");
+      console.error(error);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="p-4 space-y-4">
-        <Skeleton className="h-32 w-full rounded-lg" />
-        {[...Array(3)].map((_, i) => (
-          <Skeleton key={i} className="h-20 rounded-lg" />
+      <div className="p-6 space-y-4">
+        <Skeleton className="h-10 w-1/3 rounded-lg" />
+        {[...Array(5)].map((_, i) => (
+          <Skeleton key={i} className="h-24 w-full rounded-lg" />
         ))}
       </div>
     );
@@ -48,28 +80,26 @@ const ActiveSessions = () => {
 
   if (error) {
     return (
-      <div className="p-4">
+      <div className="p-6">
         <Alert variant="destructive">{error}</Alert>
       </div>
     );
   }
 
-  const displayedSessions = showAll
-    ? totalActiveSessions
-    : totalActiveSessions.slice(0, 2);
-
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-6">Active Sessions</h1>
+    <div className="p-6 w-full">
+      <h1 className="text-3xl font-bold text-black mb-6">
+        All Active Sessions
+      </h1>
 
-      {/* Active Sessions Count Card */}
-      <div className="p-4 bg-white border rounded-lg max-w-full shadow-sm hover:shadow-md transition-shadow mx-auto mb-6">
+      {/* Total count */}
+      <div className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md mb-6 w-full">
         <div className="flex items-center space-x-4">
           <div className="p-2 bg-blue-50 rounded-full">
             <Activity className="w-5 h-5 text-blue-600" />
           </div>
           <div>
-            <p className="text-sm text-gray-500">Active Sessions</p>
+            <p className="text-sm text-gray-500">Total Active Sessions</p>
             <p className="text-xl font-semibold">
               {totalActiveSessions.length}
             </p>
@@ -77,18 +107,33 @@ const ActiveSessions = () => {
         </div>
       </div>
 
-      {/* Sessions List */}
-      {displayedSessions.length === 0 ? (
+      {/* List */}
+      {totalActiveSessions.length === 0 ? (
         <p className="text-gray-600">No active sessions found.</p>
       ) : (
         <ul className="space-y-4">
           <Separator />
-          {displayedSessions.map((session: any, index: number) => (
+          {totalActiveSessions.map((session: any, index: number) => (
             <li
               key={session?._id || index}
-              className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow max-w-full mx-auto"
+              className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow w-full"
             >
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
+                {/* Booking ID */}
+                <div className="flex items-center space-x-3 flex-1 min-w-0">
+                  <div className="p-2 bg-yellow-50 rounded-full">
+                    <FileText className="w-5 h-5 text-yellow-600" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm text-gray-500">Booking ID</p>
+                    <Link href={`/tutor/bookings/${session?._id}`}>
+                      <p className="text-base font-semibold truncate hover:underline">
+                        {session?._id}
+                      </p>
+                    </Link>
+                  </div>
+                </div>
+
                 {/* Student ID */}
                 <div className="flex items-center space-x-3 flex-1 min-w-0">
                   <div className="p-2 bg-blue-50 rounded-full">
@@ -96,13 +141,15 @@ const ActiveSessions = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm text-gray-500">Student ID</p>
-                    <p className="text-base font-semibold truncate">
-                      {session?.studentId || "N/A"}
-                    </p>
+                    <Link href={`/tutor/students/${session?.studentId}`}>
+                      <p className="text-base font-semibold truncate text-blue-600 hover:text-blue-800 hover:underline">
+                        {session?.studentId}
+                      </p>
+                    </Link>
                   </div>
                 </div>
 
-                {/* Session Start Date */}
+                {/* Start Date */}
                 <div className="flex items-center space-x-3 flex-1 min-w-0">
                   <div className="p-2 bg-green-50 rounded-full">
                     <Calendar className="w-5 h-5 text-green-600" />
@@ -117,7 +164,7 @@ const ActiveSessions = () => {
                   </div>
                 </div>
 
-                {/* Session End Date */}
+                {/* End Date */}
                 <div className="flex items-center space-x-3 flex-1 min-w-0">
                   <div className="p-2 bg-purple-50 rounded-full">
                     <Clock className="w-5 h-5 text-purple-600" />
@@ -132,29 +179,30 @@ const ActiveSessions = () => {
                   </div>
                 </div>
 
-                {/* Active Status Indicator */}
-                <div className="w-3 h-3 bg-green-500 rounded-full flex-shrink-0"></div>
+                {/* Complete Dropdown */}
+                <div className="ml-auto">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <div className="p-1.5 bg-gray-50 rounded-full cursor-pointer hover:bg-gray-100">
+                        <ChevronDown className="w-4 h-4 text-gray-600" />
+                      </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-40">
+                      <DropdownMenuItem
+                        onClick={() => handleStatusChange(session._id)}
+                      >
+                        Mark as Completed
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </div>
             </li>
           ))}
         </ul>
       )}
-
-      {/* Show All/Show Less Button */}
-
-      <div className="flex justify-center mt-4">
-        <Link href={"/tutor/bookings/active"}>
-          <Button
-            className="cursor-pointer"
-            variant="outline"
-            onClick={() => setShowAll(!showAll)}
-          >
-            {showAll ? "Show Less" : `Show All (${totalActiveSessions.length})`}
-          </Button>
-        </Link>
-      </div>
     </div>
   );
 };
 
-export default ActiveSessions;
+export default AllActiveSessions;
