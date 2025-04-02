@@ -3,9 +3,9 @@
 import { getStudentById, tutorInfo } from "@/services/TutorService";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { User, BadgeCheck, Mail } from "lucide-react";
 
 const Students = () => {
-  const [bookedStudents, setBookedStudents] = useState<string[]>([]);
   const [studentsData, setStudentsData] = useState<
     { _id: string; name: string; email: string }[]
   >([]);
@@ -13,59 +13,51 @@ const Students = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchTutorInfo = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await tutorInfo();
-        if (res.success) {
-          setBookedStudents(res.data.bookedStudents);
-        } else {
+        const tutorRes = await tutorInfo();
+
+        if (!tutorRes.success) {
           setError("Failed to fetch tutor info");
-          console.error("Failed to fetch tutor info:", res.message);
+          return;
         }
+
+        const bookedStudents = tutorRes.data.bookedStudents;
+
+        if (bookedStudents.length === 0) {
+          setStudentsData([]);
+          return;
+        }
+
+        const studentDetails = await Promise.all(
+          bookedStudents.map(async (studentId: string) => {
+            const res = await getStudentById(studentId);
+            return res.success ? res.data : null;
+          })
+        );
+
+        setStudentsData(studentDetails.filter((student) => student !== null));
       } catch (error) {
-        setError("Error fetching tutor info");
-        console.error("Error fetching tutor info:", error);
+        console.error("Fetch error:", error);
+        setError("Failed to fetch student data");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTutorInfo();
+    fetchData();
   }, []);
-
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        if (bookedStudents.length > 0) {
-          const studentDetails = await Promise.all(
-            bookedStudents.map(async (studentId) => {
-              const res = await getStudentById(studentId);
-              return res.success ? res.data : null;
-            })
-          );
-
-          setStudentsData(studentDetails.filter((student) => student !== null));
-        }
-      } catch (error) {
-        console.error("Error fetching student details:", error);
-        setError("Failed to fetch student details");
-      }
-    };
-
-    fetchStudents();
-  }, [bookedStudents]);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-40">
-        <div className="animate-pulse flex space-x-4">
-          <div className="rounded-full bg-red-100 h-8 w-8"></div>
-          <div className="flex-1 space-y-3">
-            <div className="h-3 bg-red-100 rounded w-3/4"></div>
-            <div className="h-3 bg-red-100 rounded w-1/2"></div>
-          </div>
-        </div>
+      <div className="p-6 space-y-4">
+        {[...Array(3)].map((_, i) => (
+          <div
+            key={i}
+            className="h-24 w-full bg-red-100 animate-pulse rounded-lg"
+          />
+        ))}
       </div>
     );
   }
@@ -81,50 +73,72 @@ const Students = () => {
   }
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-sm">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Booked Students</h1>
-      {studentsData.length > 0 ? (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-red-100 rounded-lg overflow-hidden">
-            <thead className="bg-red-50">
-              <tr>
-                <th className="py-3 px-4 text-left text-gray-900 font-semibold">
-                  Student ID
-                </th>
-                <th className="py-3 px-4 text-left text-gray-900 font-semibold">
-                  Name
-                </th>
-                <th className="py-3 px-4 text-left text-gray-900 font-semibold">
-                  Email
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {studentsData.map((student) => (
-                <tr
-                  key={student._id}
-                  className="hover:bg-red-50 transition-colors"
-                >
-                  <td className="py-3 px-4 border-b border-red-100 text-gray-700">
-                    <Link href={`/tutor/students/${student._id}`}>
-                      <span className="text-blue-600 hover:underline">
-                        {student._id}
-                      </span>
-                    </Link>
-                  </td>
-                  <td className="py-3 px-4 border-b border-red-100 text-gray-700">
-                    {student.name}
-                  </td>
-                  <td className="py-3 px-4 border-b border-red-100 text-gray-700">
-                    {student.email}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <div className="p-6 w-full">
+      <h1 className="text-3xl font-bold text-black mb-6 text-center">
+        Booked Students
+      </h1>
+
+      <div className="flex justify-center mb-8">
+        <div className="inline-flex items-center space-x-2 px-3 py-2 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-medium transition">
+          <User className="w-4 h-4" />
+          <span>Total Students: {studentsData.length}</span>
         </div>
+      </div>
+
+      {studentsData.length !== 0 ? (
+        <ul className="space-y-4">
+          {studentsData.map((student) => (
+            <li
+              key={student._id}
+              className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow w-full"
+            >
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between md:gap-4 space-y-4 md:space-y-0">
+                {/* Student ID */}
+                <div className="flex items-center space-x-3 w-full md:w-1/3">
+                  <div className="p-2 bg-blue-50 rounded-full">
+                    <User className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Student ID</p>
+                    <Link href={`/tutor/students/${student._id}`}>
+                      <p className="text-base font-semibold truncate hover:underline">
+                        {student._id}
+                      </p>
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Name */}
+                <div className="flex items-center space-x-3 w-full md:w-1/3">
+                  <div className="p-2 bg-green-50 rounded-full">
+                    <BadgeCheck className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Name</p>
+                    <p className="text-base font-semibold truncate">
+                      {student.name}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Email */}
+                <div className="flex items-center space-x-3 w-full md:w-1/3">
+                  <div className="p-2 bg-red-50 rounded-full">
+                    <Mail className="w-5 h-5 text-red-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Email</p>
+                    <p className="text-base font-semibold truncate">
+                      {student.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
       ) : (
-        <p className="text-center text-gray-600">No booked students found.</p>
+        <p className="text-gray-600 text-center">No booked students found.</p>
       )}
     </div>
   );

@@ -23,7 +23,7 @@ import Link from "next/link";
 import { TBooking } from "@/types/booking";
 
 const TutorBookings = () => {
-  const [bookings, setBookings] = useState<any[]>([]);
+  const [bookings, setBookings] = useState<TBooking[]>([]);
   const [subjects, setSubjects] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -98,6 +98,13 @@ const TutorBookings = () => {
   return (
     <div className="p-6 w-full">
       <h1 className="text-3xl font-bold mb-6 text-center">Bookings</h1>
+
+      <div className="flex justify-center mb-6">
+        <div className="inline-flex items-center space-x-2 px-3 py-2 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-medium transition ">
+          <Calendar className="w-4 h-4" />
+          <span>Total Bookings: {bookings.length}</span>
+        </div>
+      </div>
 
       {bookings.length === 0 ? (
         <p className="text-gray-600">No bookings available.</p>

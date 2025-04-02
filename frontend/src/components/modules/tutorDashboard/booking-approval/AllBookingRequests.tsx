@@ -2,7 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import { Alert } from "@/components/ui/alert";
-import { User, DollarSign, ChevronDown, UserCheck } from "lucide-react";
+import {
+  User,
+  DollarSign,
+  ChevronDown,
+  UserCheck,
+  FileText,
+} from "lucide-react";
 import { bookingRequest } from "@/services/TutorService";
 import {
   DropdownMenu,
@@ -12,13 +18,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { bookingApproval } from "@/services/BookingService";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
 import { TBooking } from "@/types/booking";
+import Link from "next/link";
 
-const BookingApproval = () => {
+const AllBookingRequests = () => {
   const [bookingRequests, setBookingRequests] = useState<TBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +38,7 @@ const BookingApproval = () => {
         }
       } catch (error) {
         setError("Failed to fetch booking requests. Please try again later.");
-        console.error("Failed to fetch booking requests:", error);
+        console.error("Fetch error:", error);
       } finally {
         setLoading(false);
       }
@@ -57,12 +61,11 @@ const BookingApproval = () => {
       if (response.success) {
         toast.success(`Booking ID: ${bookingId}, Status: ${updatedStatus}`);
 
-        if (updatedStatus === "confirmed" || updatedStatus === "canceled") {
+        if (updatedStatus === "completed") {
           setBookingRequests((prev) =>
             prev.filter((req) => req._id !== bookingId)
           );
         } else {
-          // Otherwise update approvalStatus
           setBookingRequests((prev) =>
             prev.map((req) =>
               req._id === bookingId
@@ -75,16 +78,16 @@ const BookingApproval = () => {
         toast.error("Failed to update booking status.");
       }
     } catch (error) {
-      console.error("Failed to update booking status:", error);
+      console.error("Update error:", error);
     }
   };
 
   if (loading) {
     return (
-      <div className="p-4 space-y-4">
-        <Skeleton className="h-32 w-full rounded-lg" />
+      <div className="p-6 space-y-4">
+        <Skeleton className="h-10 w-1/3 rounded-lg mx-auto" />
         {[...Array(3)].map((_, i) => (
-          <Skeleton key={i} className="h-20 rounded-lg" />
+          <Skeleton key={i} className="h-24 w-full rounded-lg" />
         ))}
       </div>
     );
@@ -92,58 +95,80 @@ const BookingApproval = () => {
 
   if (error) {
     return (
-      <div className="p-4">
+      <div className="p-6">
         <Alert variant="destructive">{error}</Alert>
       </div>
     );
   }
 
-  const displayedRequests = bookingRequests.slice(0, 2);
-
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-6">Booking Requests</h1>
+    <div className="p-6 w-full">
+      <h1 className="text-3xl font-bold text-black mb-6 text-center">
+        Booking Requests
+      </h1>
 
-      {/* Total Requests Count */}
-      <div className="p-4 bg-white border rounded-lg max-w-full shadow-sm hover:shadow-md transition-shadow mx-auto mb-6">
-        <div className="flex items-center space-x-4">
-          <div className="p-2 bg-blue-50 rounded-full">
-            <UserCheck className="w-5 h-5 text-blue-600" />
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Total Requests</p>
-            <p className="text-xl font-semibold">{bookingRequests.length}</p>
-          </div>
+      <div className="flex justify-center mb-8">
+        <div className="inline-flex items-center space-x-2 px-3 py-2 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-medium transition ">
+          <UserCheck className="w-4 h-4" />
+          <span>Booking Requests: {bookingRequests.length}</span>
         </div>
       </div>
 
-      {/* Request List */}
-      {displayedRequests.length === 0 ? (
+      {bookingRequests.length === 0 ? (
         <p className="text-gray-600">No booking requests found.</p>
       ) : (
         <ul className="space-y-4">
-          <Separator />
-          {displayedRequests.map((request: TBooking, index: number) => (
+          {bookingRequests.map((request: TBooking, index: number) => (
             <li
               key={request?._id || index}
-              className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow max-w-full mx-auto"
+              className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow w-full"
             >
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between md:gap-4 space-y-4 md:space-y-0">
+                {/* Booking ID */}
+                <div className="flex items-center space-x-3 w-full md:w-1/5">
+                  <div className="p-2 bg-yellow-50 rounded-full">
+                    <FileText className="w-5 h-5 text-yellow-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Booking ID</p>
+                    <Link href={`/tutor/bookings/${request?._id}`}>
+                      <p className="text-base font-semibold truncate hover:underline">
+                        {request?._id}
+                      </p>
+                    </Link>
+                  </div>
+                </div>
+
                 {/* Student ID */}
-                <div className="flex items-center space-x-3 flex-1 min-w-0">
+                <div className="flex items-center space-x-3 w-full md:w-1/5">
                   <div className="p-2 bg-blue-50 rounded-full">
                     <User className="w-5 h-5 text-blue-600" />
                   </div>
-                  <div className="min-w-0">
+                  <div>
                     <p className="text-sm text-gray-500">Student ID</p>
+                    <Link href={`/tutor/students/${request?.studentId}`}>
+                      <p className="text-base font-semibold truncate hover:underline">
+                        {request?.studentId}
+                      </p>
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Price */}
+                <div className="flex items-center space-x-3 w-full md:w-1/5">
+                  <div className="p-2 bg-orange-50 rounded-full">
+                    <DollarSign className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Price</p>
                     <p className="text-base font-semibold truncate">
-                      {request?.studentId || "N/A"}
+                      USD {request?.price || "0.00"}
                     </p>
                   </div>
                 </div>
 
                 {/* Payment Status */}
-                <div className="flex items-center space-x-3 flex-1 min-w-0">
+                <div className="flex items-center space-x-3 w-full md:w-1/5">
                   <div className="p-2 bg-green-50 rounded-full">
                     <DollarSign
                       className={`w-5 h-5 ${
@@ -153,7 +178,7 @@ const BookingApproval = () => {
                       }`}
                     />
                   </div>
-                  <div className="min-w-0">
+                  <div>
                     <p className="text-sm text-gray-500">Payment</p>
                     <p
                       className={`text-base font-semibold truncate ${
@@ -167,7 +192,7 @@ const BookingApproval = () => {
                   </div>
                 </div>
 
-                {/* Dropdown Menu */}
+                {/* Approval Dropdown */}
                 <div className="ml-auto">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -210,17 +235,8 @@ const BookingApproval = () => {
           ))}
         </ul>
       )}
-
-      {/* Show All / Show Less Button */}
-      <div className="flex justify-center mt-4">
-        <Link href="/tutor/bookings/requests">
-          <Button className="cursor-pointer" variant="outline">
-            Show All ({bookingRequests.length})
-          </Button>
-        </Link>
-      </div>
     </div>
   );
 };
 
-export default BookingApproval;
+export default AllBookingRequests;

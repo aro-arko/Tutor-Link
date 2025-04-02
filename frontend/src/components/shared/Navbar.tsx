@@ -227,9 +227,9 @@ export default function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="flex items-center space-x-2 px-3 py-2 hover:bg-primary/5 rounded-full"
+                    className="flex items-center space-x-2 px-3 py-2 bg-primary/5 rounded-full"
                   >
-                    <FaUserCircle className="h-6 w-6 text-primary" />
+                    <FaUserCircle className="h-4 w-4 text-primary" />
                     <span className="text-sm font-medium text-foreground">
                       Account
                     </span>

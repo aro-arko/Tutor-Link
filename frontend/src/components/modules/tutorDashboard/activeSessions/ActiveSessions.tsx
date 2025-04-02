@@ -8,12 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import { TBooking } from "@/types/booking";
 
 const ActiveSessions = () => {
-  const [totalActiveSessions, setTotalActiveSessions] = useState<any[]>([]);
+  const [totalActiveSessions, setTotalActiveSessions] = useState<TBooking[]>(
+    []
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     const fetchActiveSessions = async () => {
@@ -54,9 +56,7 @@ const ActiveSessions = () => {
     );
   }
 
-  const displayedSessions = showAll
-    ? totalActiveSessions
-    : totalActiveSessions.slice(0, 2);
+  const displayedSessions = totalActiveSessions.slice(0, 2);
 
   return (
     <div className="p-4">
@@ -83,7 +83,7 @@ const ActiveSessions = () => {
       ) : (
         <ul className="space-y-4">
           <Separator />
-          {displayedSessions.map((session: any, index: number) => (
+          {displayedSessions.map((session: TBooking, index: number) => (
             <li
               key={session?._id || index}
               className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow max-w-full mx-auto"
@@ -144,12 +144,8 @@ const ActiveSessions = () => {
 
       <div className="flex justify-center mt-4">
         <Link href={"/tutor/bookings/active"}>
-          <Button
-            className="cursor-pointer"
-            variant="outline"
-            onClick={() => setShowAll(!showAll)}
-          >
-            {showAll ? "Show Less" : `Show All (${totalActiveSessions.length})`}
+          <Button className="cursor-pointer" variant="outline">
+            Show All ({totalActiveSessions.length})
           </Button>
         </Link>
       </div>

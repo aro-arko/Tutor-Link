@@ -70,7 +70,7 @@ const AllActiveSessions = () => {
   if (loading) {
     return (
       <div className="p-6 space-y-4">
-        <Skeleton className="h-10 w-1/3 rounded-lg" />
+        <Skeleton className="h-10 w-1/3 rounded-lg mx-auto" />
         {[...Array(5)].map((_, i) => (
           <Skeleton key={i} className="h-24 w-full rounded-lg" />
         ))}
@@ -88,22 +88,14 @@ const AllActiveSessions = () => {
 
   return (
     <div className="p-6 w-full">
-      <h1 className="text-3xl font-bold text-black mb-6">
+      <h1 className="text-3xl font-bold text-black mb-6 text-center">
         All Active Sessions
       </h1>
 
-      {/* Total count */}
-      <div className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md mb-6 w-full">
-        <div className="flex items-center space-x-4">
-          <div className="p-2 bg-blue-50 rounded-full">
-            <Activity className="w-5 h-5 text-blue-600" />
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Total Active Sessions</p>
-            <p className="text-xl font-semibold">
-              {totalActiveSessions.length}
-            </p>
-          </div>
+      <div className="flex justify-center mb-8">
+        <div className="inline-flex items-center space-x-2 px-3 py-2 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-medium transition ">
+          <Activity className="w-4 h-4" />
+          <span>Active Sessions: {totalActiveSessions.length}</span>
         </div>
       </div>
 

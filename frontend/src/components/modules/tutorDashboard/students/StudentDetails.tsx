@@ -1,104 +1,175 @@
 "use client";
 
-import { getStudentById } from "@/services/TutorService";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { getStudentById } from "@/services/TutorService";
+import {
+  Mail,
+  MapPin,
+  Phone,
+  GraduationCap,
+  Calendar,
+  User,
+} from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { TStudent } from "@/types/student";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const StudentDetails = () => {
   const { id } = useParams() as { id: string };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [studentData, setStudentData] = useState<any>(null);
+  const [studentData, setStudentData] = useState<TStudent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchStudentDetails = async () => {
+    const fetchStudent = async () => {
       try {
         setLoading(true);
         const res = await getStudentById(id);
         if (res.success) {
           setStudentData(res.data);
         } else {
-          setError("Failed to fetch student details");
-          console.error("Failed to fetch student details:", res.message);
+          setError("Failed to fetch student details.");
         }
-      } catch (error) {
-        setError("Error fetching student details");
-        console.error("Error fetching student details:", error);
+      } catch (err) {
+        console.error("Error:", err);
+        setError("Something went wrong. Please try again.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStudentDetails();
+    fetchStudent();
   }, [id]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader2 className="animate-spin h-10 w-10 text-gray-600" />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
     return (
-      <div className="p-4 text-center">
-        <div className="bg-red-100 text-red-600 p-4 rounded-md">{error}</div>
+      <div className="p-4 max-w-md mx-auto mt-10 bg-red-50 text-red-600 text-center rounded-lg">
+        {error}
       </div>
     );
   }
 
   if (!studentData) {
     return (
-      <div className="p-4 text-center">
-        <div className="bg-gray-100 text-gray-600 p-4 rounded-md">
-          No student details found.
-        </div>
+      <div className="p-4 max-w-md mx-auto mt-10 bg-gray-50 text-gray-600 text-center rounded-lg">
+        No student details found.
       </div>
     );
   }
 
   return (
-    <div className="flex justify-center p-6 bg-red-50 py-12  rounded-2xl">
-      <Card className="w-full max-w-2xl shadow-lg">
-        <CardHeader className="bg-gray-900 py-6 text-white rounded-t-md">
-          <CardTitle className="text-xl font-bold">Student Details</CardTitle>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="grid grid-cols-1 gap-4 text-gray-700">
-            <DetailRow label="Student ID" value={studentData._id} />
-            <DetailRow label="Name" value={studentData.name} />
-            <DetailRow label="Email" value={studentData.email} />
-            <DetailRow
-              label="Education Level"
-              value={studentData.educationLevel}
-            />
-            <DetailRow label="Age" value={studentData.age} />
-            <DetailRow label="Phone Number" value={studentData.phoneNumber} />
-            <DetailRow label="Address" value={studentData.address} />
-            <DetailRow
-              label="Created At"
-              value={new Date(studentData.createdAt).toLocaleDateString()}
-            />
-            <DetailRow
-              label="Updated At"
-              value={new Date(studentData.updatedAt).toLocaleDateString()}
-            />
-          </div>
-        </CardContent>
-      </Card>
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-full mx-auto px-4">
+        {/* Avatar & Name */}
+        <div className="flex flex-col items-center mb-10">
+          <Avatar className="h-32 w-32 border-4 border-white shadow-md">
+            <AvatarImage src="" />
+            <AvatarFallback className="bg-blue-100 text-gray-800 text-4xl">
+              {studentData.name?.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <h1 className="text-3xl font-bold mt-4 text-gray-800">
+            {studentData.name}
+          </h1>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* General Info */}
+          <Card className="border border-gray-200 shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg text-gray-800">
+                <User className="h-5 w-5" />
+                General Info
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <DetailItem label="Student ID" value={studentData._id} />
+              <DetailItem
+                label="Education Level"
+                value={studentData.educationLevel as string}
+                icon={<GraduationCap className="h-4 w-4 text-gray-500" />}
+              />
+              <DetailItem
+                label="Age"
+                value={studentData.age as number}
+                icon={<User className="h-4 w-4 text-gray-500" />}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Contact Info */}
+          <Card className="border border-gray-200 shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg text-gray-800">
+                <Mail className="h-5 w-5" />
+                Contact
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <DetailItem
+                label="Email"
+                value={studentData.email}
+                icon={<Mail className="h-4 w-4 text-gray-500" />}
+              />
+              <DetailItem
+                label="Phone"
+                value={studentData.phoneNumber as string}
+                icon={<Phone className="h-4 w-4 text-gray-500" />}
+              />
+              <DetailItem
+                label="Address"
+                value={studentData.address as string}
+                icon={<MapPin className="h-4 w-4 text-gray-500" />}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Created/Updated Info */}
+          <Card className="border border-gray-200 shadow-sm md:col-span-2">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg text-gray-800">
+                <Calendar className="h-5 w-5" />
+                Record Info
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <DetailItem
+                label="Created At"
+                value={new Date(studentData.createdAt).toLocaleString()}
+              />
+              <DetailItem
+                label="Updated At"
+                value={new Date(studentData.updatedAt).toLocaleString()}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
 
-// Reusable component for each row
-const DetailRow = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-between border-b py-2">
-    <span className="font-medium text-gray-900">{label}:</span>
-    <span className="text-gray-600">{value}</span>
+const DetailItem = ({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string | number;
+  icon?: React.ReactNode;
+}) => (
+  <div className="flex items-start gap-3 bg-red-50 p-3 rounded-lg">
+    {icon && <div className="pt-1">{icon}</div>}
+    <div>
+      <p className="text-sm text-gray-500">{label}</p>
+      <p className="text-base font-medium text-gray-800 break-words">{value}</p>
+    </div>
   </div>
 );
 
