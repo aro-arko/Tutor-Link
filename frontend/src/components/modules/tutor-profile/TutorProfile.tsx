@@ -1,21 +1,24 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { tutorInfo } from "@/services/TutorService";
+import Link from "next/link";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { tutorInfo, updateTutorProfile } from "@/services/TutorService";
-import { toast } from "sonner";
-import { Plus, Trash2 } from "lucide-react";
-import { getAllSubjects } from "@/services/Subjects";
+  Mail,
+  MapPin,
+  Phone,
+  Star,
+  BookOpen,
+  Clock,
+  GraduationCap,
+  User,
+} from "lucide-react";
+import Image from "next/image";
 
 const TutorProfile = () => {
   const [tutorData, setTutorData] = useState({
@@ -28,22 +31,18 @@ const TutorProfile = () => {
     phone: "",
     subjects: [] as { _id: string; name: string }[],
     qualification: "",
+    students: 0,
     age: 0,
+    rating: 0,
     availability: [] as { day: string; timeSlots: string }[],
     backgroundImage: "",
   });
-
-  const [allSubjects, setAllSubjects] = useState<
-    { _id: string; name: string }[]
-  >([]); // Store all available subjects
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch tutor info and all subjects
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch tutor info
         const tutorResponse = await tutorInfo();
         if (tutorResponse.success) {
           setTutorData({
@@ -56,6 +55,8 @@ const TutorProfile = () => {
             phone: tutorResponse.data.phone,
             subjects: tutorResponse.data.subject,
             qualification: tutorResponse.data.qualification,
+            students: tutorResponse.data.bookedStudents?.length || 0,
+            rating: tutorResponse.data.rating || 0,
             age: tutorResponse.data.age,
             availability: tutorResponse.data.availability,
             backgroundImage: tutorResponse.data.backgroundImage,
@@ -63,13 +64,9 @@ const TutorProfile = () => {
         } else {
           setError("Failed to fetch tutor information.");
         }
-
-        // Fetch all subjects
-        const subjectsResponse = await getAllSubjects();
-        setAllSubjects(subjectsResponse.data);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
+      } catch (error: any) {
         setError("Something went wrong. Please try again.");
+        console.error("Error fetching tutor data:", error);
       } finally {
         setLoading(false);
       }
@@ -78,386 +75,230 @@ const TutorProfile = () => {
     fetchData();
   }, []);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setTutorData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleAvailabilityChange = (
-    index: number,
-    field: keyof (typeof tutorData.availability)[0],
-    value: string
-  ) => {
-    const updatedAvailability = [...tutorData.availability];
-    updatedAvailability[index][field] = value;
-    setTutorData((prev) => ({ ...prev, availability: updatedAvailability }));
-  };
-
-  const addAvailability = () => {
-    setTutorData((prev) => ({
-      ...prev,
-      availability: [...prev.availability, { day: "", timeSlots: "" }],
-    }));
-  };
-
-  const removeAvailability = (index: number) => {
-    const updatedAvailability = tutorData.availability.filter(
-      (_, i) => i !== index
-    );
-    setTutorData((prev) => ({ ...prev, availability: updatedAvailability }));
-  };
-
-  const addSubject = (subjectId: string) => {
-    const subjectToAdd = allSubjects.find(
-      (subject) => subject._id === subjectId
-    );
-    if (subjectToAdd && !tutorData.subjects.some((s) => s._id === subjectId)) {
-      setTutorData((prev) => ({
-        ...prev,
-        subjects: [...prev.subjects, subjectToAdd],
-      }));
-    }
-  };
-
-  const removeSubject = (subjectId: string) => {
-    setTutorData((prev) => ({
-      ...prev,
-      subjects: prev.subjects.filter((subject) => subject._id !== subjectId),
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      // Prepare the data to be submitted
-      const updatedData = {
-        name: tutorData.name,
-        bio: tutorData.bio,
-        address: tutorData.address,
-        hourlyRate: tutorData.hourlyRate,
-        tutorImage: tutorData.tutorImage,
-        phone: tutorData.phone,
-        subjects: tutorData.subjects.map((subject) => subject._id),
-        qualification: tutorData.qualification,
-        age: tutorData.age,
-        availability: tutorData.availability,
-        backgroundImage: tutorData.backgroundImage,
-      };
-
-      // Call the API to update the tutor profile
-      const response = await updateTutorProfile(updatedData);
-
-      if (response.success) {
-        toast.success("Profile updated successfully!");
-      } else {
-        toast.error(response.message || "Failed to update profile.");
-      }
-    } catch (error) {
-      console.error("Failed to update profile:", error);
-      toast.error("Failed to update profile. Please try again.");
-    }
-  };
-
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-40 bg-red-50">
-        <div className="animate-pulse flex space-x-4">
-          <div className="rounded-full bg-gray-200 h-8 w-8"></div>
-          <div className="flex-1 space-y-3">
-            <div className="h-3 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
     return (
-      <div className="p-4 bg-red-50">
-        <div className="text-red-600">{error}</div>
+      <div className="p-4 bg-red-50 text-center rounded-lg max-w-md mx-auto mt-10">
+        <div className="text-red-600 font-medium">{error}</div>
+        <Button
+          variant="outline"
+          className="mt-4 border-red-200 text-red-600 hover:bg-red-50"
+          onClick={() => window.location.reload()}
+        >
+          Try Again
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen py-8 rounded-2xl bg-red-50">
-      {" "}
-      {/* Light red background for the entire page */}
-      <div className="flex justify-center p-6">
-        <Card className="w-full max-w-4xl">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold">Tutor Profile</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Name and Email */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Name
-                  </label>
-                  <Input
-                    type="text"
-                    name="name"
-                    value={tutorData.name}
-                    onChange={handleChange}
-                    placeholder="Enter your name"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
-                  </label>
-                  <Input
-                    type="email"
-                    name="email"
-                    value={tutorData.email}
-                    readOnly
-                    className="bg-gray-100 cursor-not-allowed"
-                  />
-                </div>
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0">
+        {/* Profile Header */}
+        <div className="relative mb-12">
+          <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-md">
+            {tutorData.backgroundImage ? (
+              <Image
+                src={tutorData.backgroundImage}
+                alt={`${tutorData.name}'s background`}
+                layout="fill"
+                objectFit="cover"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-r from-red-50 to-red-100 flex items-center justify-center text-gray-400">
+                Background Image
               </div>
+            )}
+          </div>
 
-              {/* Bio */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Bio
-                </label>
-                <Textarea
-                  name="bio"
-                  value={tutorData.bio}
-                  onChange={handleChange}
-                  placeholder="Enter your bio"
-                  required
-                />
-              </div>
+          <div className="flex flex-col items-center -mt-20">
+            <div className="relative h-40 w-40 border-4 border-white rounded-full shadow-lg">
+              <Avatar className="h-full w-full">
+                <AvatarImage src={tutorData.tutorImage} />
+                <AvatarFallback className="bg-red-100 text-red-800 text-4xl">
+                  {tutorData.name.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </div>
 
-              {/* Address */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Address
-                </label>
-                <Input
-                  type="text"
-                  name="address"
-                  value={tutorData.address}
-                  onChange={handleChange}
-                  placeholder="Enter your address"
-                  required
-                />
-              </div>
+            <h1 className="text-3xl font-bold mt-6 text-gray-800">
+              {tutorData.name}
+            </h1>
+            <div className="flex items-center mt-2 gap-4">
+              <p className="text-lg font-bold text-red-600 bg-red-50 px-3 py-1 rounded-full">
+                ${tutorData.hourlyRate}/hr
+              </p>
+            </div>
 
-              {/* Hourly Rate and Phone */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Hourly Rate
-                  </label>
-                  <Input
-                    type="number"
-                    name="hourlyRate"
-                    value={tutorData.hourlyRate}
-                    onChange={handleChange}
-                    placeholder="Enter hourly rate"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone
-                  </label>
-                  <Input
-                    type="text"
-                    name="phone"
-                    value={tutorData.phone}
-                    onChange={handleChange}
-                    placeholder="Enter your phone number"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Tutor Image and Background Image */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tutor Image URL
-                  </label>
-                  <Input
-                    type="text"
-                    name="tutorImage"
-                    value={tutorData.tutorImage}
-                    onChange={handleChange}
-                    placeholder="Enter tutor image URL"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Background Image URL
-                  </label>
-                  <Input
-                    type="text"
-                    name="backgroundImage"
-                    value={tutorData.backgroundImage}
-                    onChange={handleChange}
-                    placeholder="Enter background image URL"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Subjects */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Subjects
-                </label>
-                <div className="space-y-2">
-                  {/* Display selected subjects */}
-                  {tutorData.subjects.map((subject) => (
-                    <div
-                      key={subject._id}
-                      className="flex items-center justify-between p-2 border rounded"
-                    >
-                      <span>{subject.name}</span>
-                      <Button
-                        type="button"
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => removeSubject(subject._id)}
-                      >
-                        <Trash2 className="h-4 w-4 text-red-600" />
-                      </Button>
-                    </div>
-                  ))}
-                  {/* Dropdown to add new subjects */}
-                  <Select onValueChange={(value) => addSubject(value)}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Add a subject" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {allSubjects
-                        .filter(
-                          (subject) =>
-                            !tutorData.subjects.some(
-                              (s) => s._id === subject._id
-                            )
-                        )
-                        .map((subject) => (
-                          <SelectItem key={subject._id} value={subject._id}>
-                            {subject.name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Qualification and Age */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Qualification
-                  </label>
-                  <Input
-                    type="text"
-                    name="qualification"
-                    value={tutorData.qualification}
-                    onChange={handleChange}
-                    placeholder="Enter your qualification"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Age
-                  </label>
-                  <Input
-                    type="number"
-                    name="age"
-                    value={tutorData.age}
-                    onChange={handleChange}
-                    placeholder="Enter your age"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Availability */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Availability
-                </label>
-                {tutorData.availability.map((availability, index) => (
-                  <div key={index} className="flex gap-4 items-end mb-4">
-                    <div className="flex-1">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Day
-                      </label>
-                      <Input
-                        type="text"
-                        value={availability.day}
-                        onChange={(e) =>
-                          handleAvailabilityChange(index, "day", e.target.value)
-                        }
-                        placeholder="Enter day (e.g., Monday)"
-                        required
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Time Slots
-                      </label>
-                      <Input
-                        type="text"
-                        value={availability.timeSlots}
-                        onChange={(e) =>
-                          handleAvailabilityChange(
-                            index,
-                            "timeSlots",
-                            e.target.value
-                          )
-                        }
-                        placeholder="Enter time slots (e.g., 09:00-11:00)"
-                        required
-                      />
-                    </div>
-                    <Button
-                      type="button"
-                      size="icon"
-                      variant="outline"
-                      onClick={() => removeAvailability(index)}
-                      className="mb-2"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
+            <div className="mt-6">
+              <Link href="/tutor/profile">
                 <Button
-                  type="button"
                   variant="outline"
-                  onClick={addAvailability}
-                  className="w-full"
+                  className="border-red-300 text-red-700 hover:bg-red-50 cursor-pointer"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Availability
+                  Edit Profile
                 </Button>
-              </div>
+              </Link>
+            </div>
+          </div>
+        </div>
 
-              {/* Update Button */}
-              <Button
-                type="submit"
-                className="w-full bg-red-600 hover:bg-red-700"
-              >
-                Update Profile
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* About Section */}
+            <Card className="border border-gray-200 shadow-sm">
+              <CardHeader className="bg-white">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <BookOpen className="h-5 w-5 text-red-600" />
+                  About
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-700 leading-relaxed">{tutorData.bio}</p>
+
+                <div className="grid grid-cols-2 gap-4 mt-6">
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <GraduationCap className="h-5 w-5 text-gray-500" />
+                    <div>
+                      <p className="text-sm text-gray-500">Qualification</p>
+                      <p className="font-medium">{tutorData.qualification}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <User className="h-5 w-5 text-gray-500" />
+                    <div>
+                      <p className="text-sm text-gray-500">Age</p>
+                      <p className="font-medium">{tutorData.age}</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Subjects Section */}
+            <Card className="border border-gray-200 shadow-sm">
+              <CardHeader className="bg-white">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <BookOpen className="h-5 w-5 text-red-600" />
+                  Subjects
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-3">
+                  {tutorData.subjects.map((subject) => (
+                    <Badge
+                      key={subject._id}
+                      variant="outline"
+                      className="px-4 py-2 bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
+                    >
+                      {subject.name}
+                    </Badge>
+                  ))}
+                  {tutorData.subjects.length === 0 && (
+                    <p className="text-gray-500">No subjects added yet</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Availability Section */}
+            <Card className="border border-gray-200 shadow-sm">
+              <CardHeader className="bg-white">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Clock className="h-5 w-5 text-red-600" />
+                  Availability
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {tutorData.availability.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {tutorData.availability.map((slot, index) => (
+                      <div key={index} className="p-3 bg-red-50 rounded-lg">
+                        <h4 className="font-medium text-gray-800">
+                          {slot.day}
+                        </h4>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {slot.timeSlots}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500">No availability set</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-6">
+            {/* Contact Info */}
+            <Card className="border border-gray-200 shadow-sm">
+              <CardHeader className="bg-white">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Mail className="h-5 w-5 text-red-600" />
+                  Contact
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <Mail className="h-5 w-5 text-gray-500" />
+                  <div>
+                    <p className="text-sm text-gray-500">Email</p>
+                    <p className="font-medium">{tutorData.email}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <Phone className="h-5 w-5 text-gray-500" />
+                  <div>
+                    <p className="text-sm text-gray-500">Phone</p>
+                    <p className="font-medium">{tutorData.phone}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <MapPin className="h-5 w-5 text-gray-500" />
+                  <div>
+                    <p className="text-sm text-gray-500">Address</p>
+                    <p className="font-medium">
+                      {tutorData.address || "Not specified"}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Teaching Stats */}
+            <Card className="border border-gray-200 shadow-sm">
+              <CardHeader className="bg-white">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Star className="h-5 w-5 text-red-600" />
+                  Teaching Stats
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 bg-gray-50 rounded-lg text-center">
+                    <div className="text-2xl font-bold text-gray-800">
+                      {tutorData.students}
+                    </div>
+                    <div className="text-sm text-gray-500 mt-1">Students</div>
+                  </div>
+                  <div className="p-4 bg-gray-50 rounded-lg text-center">
+                    <div className="text-2xl font-bold text-gray-800">
+                      {tutorData.rating}
+                    </div>
+                    <div className="text-sm text-gray-500 mt-1">Rating</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
