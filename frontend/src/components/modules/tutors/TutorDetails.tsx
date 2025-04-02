@@ -77,7 +77,7 @@ const TutorDetails = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-12">
       {/* Main Layout */}
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left Side - Cover Image and Bio */}
@@ -206,7 +206,7 @@ const TutorDetails = () => {
           {user?.role !== "tutor" && (
             <div className=" mt-4">
               <Link href={`/booking?tutorId=${tutor._id}`}>
-                <Button className="w-full cursor-pointer bg-red-600 hover:bg-red-700 text-white py-3 text-lg shadow-lg transition-all hover:shadow-xl flex items-center justify-center gap-2">
+                <Button className="w-full cursor-pointer bg-red-600 hover:bg-red-700 text-white py-4 text-lg shadow-lg transition-all hover:shadow-xl flex items-center justify-center gap-2">
                   <Calendar className="h-5 w-5" />
                   Book a Session
                 </Button>
