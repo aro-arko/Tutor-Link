@@ -25,18 +25,28 @@ import { useUser } from "@/context/UserContext";
 import { NavUser } from "./nav-user";
 import { tutorInfo } from "@/services/TutorService";
 
-const getSidebarItems = (role: "student" | "tutor" | "admin" | "guest") => {
-  const commonItems = [
+// ✅ Add children support here
+type SidebarItem = {
+  title: string;
+  url: string;
+  icon?: LucideIcon;
+  isActive?: boolean;
+  children?: {
+    title: string;
+    url: string;
+  }[];
+};
+
+const getSidebarItems = (
+  role: "student" | "tutor" | "admin" | "guest"
+): SidebarItem[] => {
+  const commonItems: SidebarItem[] = [
     { title: "Home", url: "/", icon: Home },
     { title: "Dashboard", url: `/${role}/dashboard`, icon: LayoutDashboard },
   ];
 
   const roleBasedItems: {
-    [key in "student" | "tutor" | "admin" | "guest"]?: {
-      title: string;
-      url: string;
-      icon: LucideIcon;
-    }[];
+    [key in "student" | "tutor" | "admin" | "guest"]?: SidebarItem[];
   } = {
     student: [
       { title: "Profile", url: "/student/profile", icon: User },
@@ -46,15 +56,20 @@ const getSidebarItems = (role: "student" | "tutor" | "admin" | "guest") => {
     tutor: [
       { title: "Profile", url: "/tutor/profile", icon: User },
       { title: "Students", url: "/tutor/students", icon: Users },
-      { title: "Bookings", url: "/tutor/bookings", icon: CalendarCheck },
+      {
+        title: "Bookings",
+        url: "#",
+        icon: CalendarCheck,
+        children: [
+          { title: "Bookings", url: "/tutor/bookings" },
+          { title: "Active Sessions", url: "/tutor/bookings/active" },
+          { title: "Booking Requests", url: "/tutor/bookings/requests" },
+        ],
+      },
     ],
     admin: [
       { title: "Manage Users", url: "/admin/users", icon: UserCheck },
-      {
-        title: "Platform Settings",
-        url: "/admin/settings",
-        icon: Settings,
-      },
+      { title: "Platform Settings", url: "/admin/settings", icon: Settings },
     ],
     guest: [],
   };
@@ -66,7 +81,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, setIsLoading } = useUser();
   const role = user?.role as "student" | "tutor" | "admin" | "guest";
   const [tutorDetails, setTutorDetails] = React.useState<any>(null);
-  const [sidebarItems, setSidebarItems] = React.useState(
+  const [sidebarItems, setSidebarItems] = React.useState<SidebarItem[]>(
     getSidebarItems("guest")
   );
 
@@ -97,7 +112,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={sidebarItems} />
       </SidebarContent>
 
-      {/* Footer: User Info & Logout */}
       <SidebarFooter>
         {role === "tutor" ? (
           <NavUser userDetails={tutorDetails} />

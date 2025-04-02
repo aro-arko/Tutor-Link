@@ -1,30 +1,27 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { activeSessions } from "@/services/TutorService";
 import { Alert } from "@/components/ui/alert";
-import { User, Clock, Calendar } from "lucide-react"; // Import icons
+import { User, Clock, Calendar, Activity } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
 
 const ActiveSessions = () => {
   const [totalActiveSessions, setTotalActiveSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     const fetchActiveSessions = async () => {
       try {
         const response = await activeSessions();
-
-        // Debugging: Log the response
-        console.log("Fetched Active Sessions:", response);
-
-        // Ensure response is an array before setting state
         if (response.success) {
           setTotalActiveSessions(response.data);
         } else {
-          console.error("Expected an array but got:", response);
-          setTotalActiveSessions([]); // Fallback to empty array
+          setTotalActiveSessions([]);
         }
       } catch (error) {
         console.error("Failed to fetch active sessions:", error);
@@ -39,14 +36,11 @@ const ActiveSessions = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-40">
-        <div className="animate-pulse flex space-x-4">
-          <div className="rounded-full bg-gray-200 h-8 w-8"></div>
-          <div className="flex-1 space-y-3">
-            <div className="h-3 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-          </div>
-        </div>
+      <div className="p-4 space-y-4">
+        <Skeleton className="h-32 w-full rounded-lg" />
+        {[...Array(3)].map((_, i) => (
+          <Skeleton key={i} className="h-20 rounded-lg" />
+        ))}
       </div>
     );
   }
@@ -59,17 +53,39 @@ const ActiveSessions = () => {
     );
   }
 
+  const displayedSessions = showAll
+    ? totalActiveSessions
+    : totalActiveSessions.slice(0, 3);
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-6">Active Sessions</h1>
-      {totalActiveSessions.length === 0 ? (
+
+      {/* Active Sessions Count Card */}
+      <div className="p-4 bg-white border rounded-lg max-w-full shadow-sm hover:shadow-md transition-shadow mx-auto mb-6">
+        <div className="flex items-center space-x-4">
+          <div className="p-2 bg-blue-50 rounded-full">
+            <Activity className="w-5 h-5 text-blue-600" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Active Sessions</p>
+            <p className="text-xl font-semibold">
+              {totalActiveSessions.length}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Sessions List */}
+      {displayedSessions.length === 0 ? (
         <p className="text-gray-600">No active sessions found.</p>
       ) : (
         <ul className="space-y-4">
-          {totalActiveSessions.map((session: any, index: number) => (
+          <Separator />
+          {displayedSessions.map((session: any, index: number) => (
             <li
               key={session?._id || index}
-              className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow max-w-4xl mx-auto" // Limit card width
+              className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow max-w-full mx-auto"
             >
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
                 {/* Student ID */}
@@ -121,6 +137,15 @@ const ActiveSessions = () => {
             </li>
           ))}
         </ul>
+      )}
+
+      {/* Show All/Show Less Button */}
+      {totalActiveSessions.length > 3 && (
+        <div className="flex justify-center mt-4">
+          <Button variant="outline" onClick={() => setShowAll(!showAll)}>
+            {showAll ? "Show Less" : `Show All (${totalActiveSessions.length})`}
+          </Button>
+        </div>
       )}
     </div>
   );
