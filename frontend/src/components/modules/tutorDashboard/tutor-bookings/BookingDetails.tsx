@@ -1,153 +1,196 @@
 "use client";
 
-import { getTutorBookingById } from "@/services/TutorService";
+import { getStudentById, getTutorBookingById } from "@/services/TutorService";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Calendar, Mail, Phone, MapPin, User } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import Image from "next/image";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
+import { getSubjectById } from "@/services/Subjects";
+import { TBooking } from "@/types/booking";
+import { TStudent } from "@/types/student";
 
 const BookingDetails = () => {
   const { id } = useParams() as { id: string };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [booking, setBooking] = useState<any>(null);
+  const [booking, setBooking] = useState<TBooking | null>(null);
+  const [student, setStudent] = useState<TStudent | null>(null);
+  const [subjectName, setSubjectName] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchBookingDetails = async () => {
-      if (id) {
-        try {
-          setLoading(true);
-          const res = await getTutorBookingById(id);
-          console.log(res);
-          if (res.success) {
-            setBooking(res.data);
-          } else {
-            setError("Failed to fetch booking details");
-            console.error("Failed to fetch booking details:", res.message);
-          }
-        } catch (error) {
-          setError("Error fetching booking details");
-          console.error("Error fetching booking details:", error);
-        } finally {
-          setLoading(false);
+      try {
+        setLoading(true);
+        const res = await getTutorBookingById(id);
+        if (res.success) {
+          setBooking(res.data);
+
+          const [studentRes, subjectRes] = await Promise.all([
+            getStudentById(res.data.studentId),
+            getSubjectById(res.data.subject),
+          ]);
+
+          setStudent(studentRes.data);
+          setSubjectName(subjectRes.data.name);
+        } else {
+          setError("Failed to fetch booking details");
         }
+      } catch (error) {
+        setError("Error fetching booking details");
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchBookingDetails();
+    if (id) fetchBookingDetails();
   }, [id]);
 
-  if (loading) {
+  if (loading) return <LoadingSpinner />;
+  if (error)
     return (
-      <div className="flex items-center justify-center h-40">
-        <div className="animate-pulse flex space-x-4">
-          <div className="rounded-full bg-red-100 h-8 w-8"></div>
-          <div className="flex-1 space-y-3">
-            <div className="h-3 bg-red-100 rounded w-3/4"></div>
-            <div className="h-3 bg-red-100 rounded w-1/2"></div>
-          </div>
-        </div>
+      <div className="p-4 bg-red-50 text-center rounded-lg max-w-md mx-auto mt-10">
+        <p className="text-red-600 font-medium">{error}</p>
       </div>
     );
-  }
 
-  if (error) {
+  if (!booking || !student)
     return (
-      <div className="p-4">
-        <div className="bg-red-50 p-4 rounded-lg text-red-600 border border-red-100">
-          {error}
-        </div>
+      <div className="p-4 bg-gray-50 text-center rounded-lg max-w-md mx-auto mt-10">
+        <p className="text-gray-600">
+          Booking or student information not found.
+        </p>
       </div>
     );
-  }
-
-  if (!booking) {
-    return (
-      <div className="p-4">
-        <div className="bg-gray-50 p-4 rounded-lg text-gray-600 border border-gray-100">
-          No booking details found.
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-sm">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Booking Details</h1>
-      <div className="space-y-4">
-        <div className="flex items-center space-x-4">
-          <div className="w-1/3 font-semibold text-gray-700">Booking ID:</div>
-          <div className="w-2/3 text-gray-900">{booking._id}</div>
+    <div className="min-h-screen md:bg-gray-50 py-12 px-1 md:px-4">
+      <div className="mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Left - Booking Info */}
+        <div className="md:col-span-2 space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-xl font-bold text-gray-800">
+                Booking Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {renderItem("Booking ID", booking._id)}
+              {renderItem(
+                "Session",
+                `${new Date(
+                  booking.sessionStartDate
+                ).toLocaleDateString()} - ${new Date(
+                  booking.sessionEndDate
+                ).toLocaleDateString()}`,
+                <Calendar />
+              )}
+              {renderItem("Subject", subjectName)}
+              {renderItem(
+                "Status",
+                booking.status,
+                statusBadge(booking.status)
+              )}
+              {renderItem(
+                "Approval",
+                booking.approvalStatus || "Pending",
+                approvalBadge(booking.approvalStatus)
+              )}
+              {renderItem("Price", `$${booking.price}`)}
+              {renderItem("Transaction", booking.transaction?.id || "N/A")}
+            </CardContent>
+          </Card>
         </div>
-        <div className="flex items-center space-x-4">
-          <div className="w-1/3 font-semibold text-gray-700">Student ID:</div>
-          <div className="w-2/3 text-gray-900">{booking.studentId}</div>
-        </div>
-        <div className="flex items-center space-x-4">
-          <div className="w-1/3 font-semibold text-gray-700">Subject:</div>
-          <div className="w-2/3 text-gray-900">{booking.subject}</div>
-        </div>
-        <div className="flex items-center space-x-4">
-          <div className="w-1/3 font-semibold text-gray-700">Start Date:</div>
-          <div className="w-2/3 text-gray-900">
-            {new Date(booking.sessionStartDate).toLocaleDateString()}
-          </div>
-        </div>
-        <div className="flex items-center space-x-4">
-          <div className="w-1/3 font-semibold text-gray-700">End Date:</div>
-          <div className="w-2/3 text-gray-900">
-            {new Date(booking.sessionEndDate).toLocaleDateString()}
-          </div>
-        </div>
-        <div className="flex items-center space-x-4">
-          <div className="w-1/3 font-semibold text-gray-700">Status:</div>
-          <div className="w-2/3 text-gray-900">
-            <span
-              className={`px-2 py-1 rounded-full text-sm ${
-                booking.status === "Paid"
-                  ? "bg-green-100 text-green-600"
-                  : booking.status === "Pending"
-                  ? "bg-yellow-100 text-yellow-600"
-                  : "bg-red-100 text-red-600"
-              }`}
-            >
-              {booking.status}
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center space-x-4">
-          <div className="w-1/3 font-semibold text-gray-700">
-            Approval Status:
-          </div>
-          <div className="w-2/3 text-gray-900">
-            <span
-              className={`px-2 py-1 rounded-full text-sm ${
-                booking.approvalStatus === "confirmed"
-                  ? "bg-green-100 text-green-600"
-                  : booking.approvalStatus === "completed"
-                  ? "bg-blue-100 text-blue-600"
-                  : booking.approvalStatus === "canceled"
-                  ? "bg-red-100 text-red-600"
-                  : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              {booking.approvalStatus || "Pending"}
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center space-x-4">
-          <div className="w-1/3 font-semibold text-gray-700">Price:</div>
-          <div className="w-2/3 text-gray-900">${booking.price}</div>
-        </div>
-        <div className="flex items-center space-x-4">
-          <div className="w-1/3 font-semibold text-gray-700">
-            Transaction ID:
-          </div>
-          <div className="w-2/3 text-gray-900">
-            {booking.transaction?.id || "N/A"}
-          </div>
+
+        {/* Right - Student Info */}
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <User className="h-5 w-5" /> Student Info
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex flex-col items-center">
+                <div className="relative w-20 h-20 rounded-full overflow-hidden border border-gray-300 shadow">
+                  <Image
+                    src="https://bookshop-frontend-six.vercel.app/assets/admin-BDCeUw0Y.webp"
+                    alt={student.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <h2 className="text-lg font-semibold text-gray-800 mt-2">
+                  {student.name}
+                </h2>
+                <p className="text-sm text-gray-500">
+                  {student.educationLevel}
+                </p>
+              </div>
+              <div className="space-y-3">
+                {renderItem("Email", student.email, <Mail />)}
+                {renderItem("Phone", student.phoneNumber as string, <Phone />)}
+                {renderItem("Address", student.address as string, <MapPin />)}
+                {renderItem("Age", student.age as number)}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
+  );
+};
+
+const renderItem = (
+  label: string,
+  value: string | number,
+  icon?: React.ReactNode
+) => (
+  <div className="flex items-start gap-3 bg-red-50 p-3 rounded-lg">
+    {icon && <div className="pt-1">{icon}</div>}
+    <div>
+      <p className="text-sm text-gray-500">{label}</p>
+      <p className="text-base font-medium text-gray-800 break-words">{value}</p>
+    </div>
+  </div>
+);
+
+const statusBadge = (status: string) => {
+  const map: Record<"Paid" | "Pending" | "Unpaid", string> = {
+    Paid: "bg-green-100 text-green-600",
+    Pending: "bg-yellow-100 text-yellow-600",
+    Unpaid: "bg-red-100 text-red-600",
+  };
+  return (
+    <span
+      className={`px-2 py-1 text-sm rounded-full ${
+        map[status as keyof typeof map] || ""
+      }`}
+    >
+      {status}
+    </span>
+  );
+};
+
+const approvalBadge = (
+  status: "confirmed" | "completed" | "canceled" | "pending"
+) => {
+  const map = {
+    confirmed: "bg-green-100 text-green-600",
+    completed: "bg-blue-100 text-blue-600",
+    canceled: "bg-red-100 text-red-600",
+    pending: "bg-gray-100 text-gray-600",
+  };
+  return (
+    <span
+      className={`px-2 py-1 text-sm rounded-full ${
+        map[status] || map["pending"]
+      }`}
+    >
+      {status || "Pending"}
+    </span>
   );
 };
 

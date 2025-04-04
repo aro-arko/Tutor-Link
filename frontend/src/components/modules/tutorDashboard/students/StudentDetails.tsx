@@ -64,8 +64,8 @@ const StudentDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-full mx-auto px-4">
+    <div className="min-h-screen md:bg-gray-50 rounded-lg py-12 ">
+      <div className="mx-auto px-1 md:px-4">
         {/* Avatar & Name */}
         <div className="flex flex-col items-center mb-10">
           <Avatar className="h-32 w-32 border-4 border-white shadow-md">
