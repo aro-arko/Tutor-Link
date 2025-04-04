@@ -4,4 +4,5 @@ export const protectedRoutes = [
   "/tutor/:page",
   "/student",
   "/student/:page",
+  "/change-password",
 ];

@@ -72,24 +72,25 @@ export const getCurrentUser = async () => {
   }
 };
 
-// export const reCaptchaTokenVerification = async (token: string) => {
-//   try {
-//     const res = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/x-www-form-urlencoded",
-//       },
-//       body: new URLSearchParams({
-//         secret: process.env.NEXT_PUBLIC_RECAPTCHA_SERVER_KEY!,
-//         response: token,
-//       }),
-//     });
-//     return res.json();
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   } catch (error: any) {
-//     return Error(error);
-//   }
-// };
+export const changePassword = async (passwords: FieldValues) => {
+  const token = (await cookies()).get("accessToken")?.value;
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/auth/change-password`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(passwords),
+      }
+    );
+    return res.json();
+  } catch (error: any) {
+    return error;
+  }
+};
 
 export const logout = async () => {
   (await cookies()).delete("accessToken");

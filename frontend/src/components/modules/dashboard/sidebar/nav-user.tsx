@@ -20,6 +20,7 @@ import { useUser } from "@/context/UserContext";
 import { usePathname, useRouter } from "next/navigation";
 import { logout } from "@/services/AuthService";
 import { protectedRoutes } from "@/constants";
+import { Separator } from "@/components/ui/separator";
 
 interface UserDetails {
   name: string;
@@ -41,6 +42,10 @@ export function NavUser({ userDetails }: { userDetails: UserDetails }) {
     if (protectedRoutes.some((route) => pathname.match(route))) {
       router.push("/");
     }
+  };
+
+  const handleChangePassword = () => {
+    router.push("/change-password");
   };
 
   return (
@@ -88,6 +93,10 @@ export function NavUser({ userDetails }: { userDetails: UserDetails }) {
               </div>
             </DropdownMenuLabel>
 
+            <DropdownMenuItem onClick={() => handleChangePassword()}>
+              Change Password
+            </DropdownMenuItem>
+            <Separator className="my-2" />
             <DropdownMenuItem onClick={() => handleLogout()}>
               <LogOut />
               Log out
