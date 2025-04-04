@@ -10,7 +10,8 @@ import {
   User,
   LayoutDashboard,
   Calendar,
-} from "lucide-react";
+  Heart,
+} from "lucide-react"; // Added Heart icon
 import { usePathname, useRouter } from "next/navigation";
 import { logout } from "@/services/AuthService";
 import {
@@ -31,6 +32,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAllSubjects } from "@/services/Subjects";
 import NavTutorFilters from "./NavTutorFilters";
+import { Badge } from "../ui/badge"; // Added Badge component
 
 interface Filters {
   search: string;
@@ -58,6 +60,7 @@ export default function Navbar() {
     availability: "",
     location: "",
   });
+  const [wishlistCount, setWishlistCount] = useState<number>(0);
 
   const isActive = (path: string) => pathname === path;
 
@@ -115,6 +118,13 @@ export default function Navbar() {
       setIsLoading(false);
     }, 500);
   }, [pathname, setIsLoading]);
+
+  useEffect(() => {
+    // Mock wishlist count - replace with actual API call
+    if (user) {
+      setWishlistCount(5); // Example count
+    }
+  }, [user]);
 
   const navLinks = [
     { name: "Home", href: "/", icon: null },
@@ -213,78 +223,115 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center space-x-3">
             {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="flex items-center space-x-2 px-3 py-2 bg-primary/5 rounded-full"
+              <>
+                {/* Wishlist Button with Badge */}
+                <Link href="/wishlist">
+                  <div
+                    className="relative rounded-full hover:bg-primary/5  cursor-pointer"
+                    onClick={() => router.push("/wishlist")}
+                    aria-label="Wishlist"
                   >
-                    <FaUserCircle className="h-4 w-4 text-primary" />
-                    <span className="text-sm font-medium text-foreground">
-                      Account
-                    </span>
-                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  className="w-56 mt-2 shadow-lg rounded-md border border-border"
-                  align="end"
-                >
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-xs leading-none text-muted-foreground">
-                        {user.email}
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuGroup>
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href={
-                          role === "tutor"
-                            ? "/tutor-profile"
-                            : "/student-profile"
-                        }
-                        className="w-full flex items-center"
+                    <Heart className="h-5 w-5" />
+                    {wishlistCount > 0 && (
+                      <Badge
+                        variant="destructive"
+                        className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0"
                       >
-                        <User className="mr-2 h-4 w-4" />
-                        <span>Profile</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href={`/${role}/dashboard`}
-                        className="w-full flex items-center"
-                      >
-                        <LayoutDashboard className="mr-2 h-4 w-4" />
-                        <span>Dashboard</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href={
-                          role === "student"
-                            ? "/booking/lists"
-                            : "/tutor/bookings"
-                        }
-                        className="w-full flex items-center"
-                      >
-                        <Calendar className="mr-2 h-4 w-4" />
-                        <span>Bookings</span>
-                      </Link>
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={handleLogout}
-                    className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+                        {wishlistCount > 9 ? "9+" : wishlistCount}
+                      </Badge>
+                    )}
+                  </div>
+                </Link>
+
+                {/* Account Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="flex items-center space-x-2 px-3 py-2 bg-primary/5 rounded-full"
+                    >
+                      <FaUserCircle className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium text-foreground">
+                        Account
+                      </span>
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    className="w-56 mt-2 shadow-lg rounded-md border border-border"
+                    align="end"
                   >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {user.email}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={
+                            role === "tutor"
+                              ? "/tutor-profile"
+                              : "/student-profile"
+                          }
+                          className="w-full flex items-center"
+                        >
+                          <User className="mr-2 h-4 w-4" />
+                          <span>Profile</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={`/${role}/dashboard`}
+                          className="w-full flex items-center"
+                        >
+                          <LayoutDashboard className="mr-2 h-4 w-4" />
+                          <span>Dashboard</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={
+                            role === "student"
+                              ? "/booking/lists"
+                              : "/tutor/bookings"
+                          }
+                          className="w-full flex items-center"
+                        >
+                          <Calendar className="mr-2 h-4 w-4" />
+                          <span>Bookings</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      {/* Added Wishlist to Dropdown */}
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href="/wishlist"
+                          className="w-full flex items-center"
+                        >
+                          <Heart className="mr-2 h-4 w-4" />
+                          <span>Wishlist</span>
+                          {wishlistCount > 0 && (
+                            <span className="ml-auto bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs">
+                              {wishlistCount > 9 ? "9+" : wishlistCount}
+                            </span>
+                          )}
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={handleLogout}
+                      className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
             ) : (
               <div className="flex space-x-2">
                 <Button asChild variant="outline" className="rounded-full">
@@ -304,12 +351,7 @@ export default function Navbar() {
             {user && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    size="icon"
-                    className="rounded-full bg-transparent  mr-2"
-                  >
-                    <FaRegUserCircle className="h-6 w-6 text-gray-800" />
-                  </Button>
+                  <FaRegUserCircle className="h-6 w-6 text-gray-800 mr-2" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   className="w-56 shadow-lg rounded-md border border-border"
@@ -360,6 +402,21 @@ export default function Navbar() {
                         <span>Bookings</span>
                       </Link>
                     </DropdownMenuItem>
+                    {/* Added Wishlist to Mobile Dropdown */}
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/wishlist"
+                        className="w-full flex items-center"
+                      >
+                        <Heart className="mr-2 h-4 w-4" />
+                        <span>Wishlist</span>
+                        {wishlistCount > 0 && (
+                          <span className="ml-auto bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs">
+                            {wishlistCount > 9 ? "9+" : wishlistCount}
+                          </span>
+                        )}
+                      </Link>
+                    </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
@@ -372,19 +429,17 @@ export default function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
-            <Button
-              variant="ghost"
-              size="icon"
+            <div
               onClick={toggleMobileMenu}
               aria-label="Toggle mobile menu"
-              className="rounded-full hover:bg-primary/5"
+              className="flex items-center justify-center rounded-full hover:bg-primary/5 h-12 w-12 cursor-pointer"
             >
               {isMobileMenuOpen ? (
-                <X className="h-5 w-5 text-foreground" />
+                <X className="h-6 w-6 text-foreground" />
               ) : (
-                <Menu className="h-5 w-5 text-foreground" />
+                <Menu className="h-6 w-6 text-foreground" />
               )}
-            </Button>
+            </div>
           </div>
         </div>
       </div>

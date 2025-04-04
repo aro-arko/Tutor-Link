@@ -168,7 +168,7 @@ const StudentTutors = () => {
 
       {/* Show All Button */}
       <div className="flex justify-center mt-6">
-        <Link href="/student/tutors/all">
+        <Link href="/student/tutors">
           <Button className="cursor-pointer" variant="outline">
             Show All
           </Button>
