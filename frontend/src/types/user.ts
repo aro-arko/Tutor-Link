@@ -6,6 +6,7 @@ export interface IUser {
 }
 
 export interface ITutor {
+  _id: string;
   user: string;
   name: string;
   email: string;
