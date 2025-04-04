@@ -57,7 +57,7 @@ const getSidebarItems = (role: "student" | "tutor"): SidebarItem[] => {
           { title: "Approved Bookings", url: "/student/bookings/approved" },
           { title: "Pending Bookings", url: "/student/bookings/pending" },
           { title: "Completed Bookings", url: "/student/bookings/completed" },
-          { title: "Rejected Bookings", url: "/student/bookings/rejected" },
+          { title: "Canceled Bookings", url: "/student/bookings/canceled" },
         ],
       },
     ],
