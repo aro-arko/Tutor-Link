@@ -13,7 +13,6 @@ import {
   FileText,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -22,9 +21,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import { TBooking } from "@/types/booking";
 
 const AllActiveSessions = () => {
-  const [totalActiveSessions, setTotalActiveSessions] = useState<any[]>([]);
+  const [totalActiveSessions, setTotalActiveSessions] = useState<TBooking[]>(
+    []
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -104,8 +106,7 @@ const AllActiveSessions = () => {
         <p className="text-gray-600">No active sessions found.</p>
       ) : (
         <ul className="space-y-4">
-          <Separator />
-          {totalActiveSessions.map((session: any, index: number) => (
+          {totalActiveSessions.map((session: TBooking, index: number) => (
             <li
               key={session?._id || index}
               className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow w-full"

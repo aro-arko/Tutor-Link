@@ -20,4 +20,6 @@ export type TBooking = {
   };
   price: number;
   paymentUrl: string;
+  createdAt: Date;
+  updatedAt: Date;
 };

@@ -79,9 +79,9 @@ const TutorBookings = () => {
   if (loading) {
     return (
       <div className="p-6 space-y-4">
-        <Skeleton className="h-8 w-40" />
-        {[...Array(3)].map((_, i) => (
-          <Skeleton key={i} className="h-24 rounded-lg" />
+        <Skeleton className="h-10 w-1/3 rounded-lg mx-auto" />
+        {[...Array(5)].map((_, i) => (
+          <Skeleton key={i} className="h-24 w-full rounded-lg" />
         ))}
       </div>
     );

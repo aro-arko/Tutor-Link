@@ -1,17 +1,17 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import React, { useEffect, useState } from "react";
 import { studentBookings } from "@/services/BookingService";
-import { useEffect, useState } from "react";
 import { Alert } from "@/components/ui/alert";
+import { CreditCard, Calendar, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
-import { CreditCard, CheckCircle } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { TBooking } from "@/types/booking";
 
-const ActiveBookings = () => {
-  const [bookings, setBookings] = useState<any[]>([]);
+const TotalBookings = () => {
+  const [bookings, setBookings] = useState<TBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,17 +20,13 @@ const ActiveBookings = () => {
       try {
         const res = await studentBookings();
         if (res.success) {
-          const confirmedBookings = res.data.filter(
-            (booking: any) => booking.approvalStatus === "confirmed"
-          );
-          setBookings(confirmedBookings);
+          setBookings(res.data);
         } else {
           setError("Failed to fetch bookings");
-          console.error("Failed to fetch bookings:", res.message);
         }
       } catch (error) {
-        setError("Error fetching bookings");
         console.error("Error fetching bookings:", error);
+        setError("Error fetching bookings. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -39,7 +35,8 @@ const ActiveBookings = () => {
     fetchBookings();
   }, []);
 
-  // Loading State
+  const displayedBookings = bookings.slice(0, 3);
+
   if (loading) {
     return (
       <div className="p-4 space-y-4">
@@ -51,7 +48,6 @@ const ActiveBookings = () => {
     );
   }
 
-  // Error State
   if (error) {
     return (
       <div className="p-4">
@@ -62,28 +58,28 @@ const ActiveBookings = () => {
 
   return (
     <div className="p-4 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Approved Bookings</h1>
+      <h1 className="text-2xl font-bold mb-6">Total Bookings</h1>
 
-      {/* Total Confirmed Bookings Card */}
+      {/* Total Bookings Card */}
       <div className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow mb-6">
         <div className="flex items-center space-x-4">
           <div className="p-2 bg-blue-50 rounded-full">
-            <CheckCircle className="w-5 h-5 text-blue-600" />
+            <CreditCard className="w-5 h-5 text-blue-600" />
           </div>
           <div>
-            <p className="text-sm text-gray-500">Total Confirmed Bookings</p>
+            <p className="text-sm text-gray-500">Total Bookings</p>
             <p className="text-xl font-semibold">{bookings.length}</p>
           </div>
         </div>
       </div>
 
       {/* Booking List */}
-      {bookings.length === 0 ? (
+      {displayedBookings.length === 0 ? (
         <p className="text-gray-600">No confirmed bookings found.</p>
       ) : (
         <ul className="space-y-4">
           <Separator />
-          {bookings.map((booking: any, index: number) => (
+          {displayedBookings.map((booking: TBooking, index: number) => (
             <li
               key={booking._id || index}
               className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow"
@@ -92,7 +88,7 @@ const ActiveBookings = () => {
                 {/* Booking ID */}
                 <div className="flex items-center space-x-3 flex-1 min-w-0">
                   <div className="p-2 bg-blue-50 rounded-full">
-                    <CreditCard className="w-5 h-5 text-blue-600" />
+                    <User className="w-5 h-5 text-blue-600" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm text-gray-500">Booking ID</p>
@@ -115,15 +111,17 @@ const ActiveBookings = () => {
                   </div>
                 </div>
 
-                {/* Status */}
+                {/* Date */}
                 <div className="flex items-center space-x-3 flex-1 min-w-0">
                   <div className="p-2 bg-purple-50 rounded-full">
-                    <CheckCircle className="w-5 h-5 text-purple-600" />
+                    <Calendar className="w-5 h-5 text-purple-600" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm text-gray-500">Approval Status</p>
+                    <p className="text-sm text-gray-500">Booking Date</p>
                     <p className="text-base font-semibold truncate">
-                      {booking.approvalStatus || "N/A"}
+                      {booking.createdAt
+                        ? new Date(booking.createdAt).toLocaleString()
+                        : "N/A"}
                     </p>
                   </div>
                 </div>
@@ -132,9 +130,10 @@ const ActiveBookings = () => {
           ))}
         </ul>
       )}
+
       {/* Show All Button */}
       <div className="flex justify-center mt-6">
-        <Link href="/student/bookings/approved">
+        <Link href="/student/bookings">
           <Button className="cursor-pointer" variant="outline">
             Show All
           </Button>
@@ -144,4 +143,4 @@ const ActiveBookings = () => {
   );
 };
 
-export default ActiveBookings;
+export default TotalBookings;

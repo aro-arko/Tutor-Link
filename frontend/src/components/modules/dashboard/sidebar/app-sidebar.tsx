@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 
@@ -9,9 +8,7 @@ import {
   User,
   Users,
   CalendarCheck,
-  Settings,
   GraduationCap,
-  UserCheck,
   LucideIcon,
 } from "lucide-react";
 import {
@@ -24,8 +21,10 @@ import { NavMain } from "./nav-main";
 import { useUser } from "@/context/UserContext";
 import { NavUser } from "./nav-user";
 import { tutorInfo } from "@/services/TutorService";
+import { getMe } from "@/services/StudentService";
+import { TStudent } from "@/types/student";
+import { ITutor } from "@/types";
 
-// ✅ Add children support here
 type SidebarItem = {
   title: string;
   url: string;
@@ -37,21 +36,30 @@ type SidebarItem = {
   }[];
 };
 
-const getSidebarItems = (
-  role: "student" | "tutor" | "admin" | "guest"
-): SidebarItem[] => {
+const getSidebarItems = (role: "student" | "tutor"): SidebarItem[] => {
   const commonItems: SidebarItem[] = [
     { title: "Home", url: "/", icon: Home },
     { title: "Dashboard", url: `/${role}/dashboard`, icon: LayoutDashboard },
   ];
 
   const roleBasedItems: {
-    [key in "student" | "tutor" | "admin" | "guest"]?: SidebarItem[];
+    [key in "student" | "tutor"]?: SidebarItem[];
   } = {
     student: [
       { title: "Profile", url: "/student/profile", icon: User },
       { title: "My Tutors", url: "/student/tutors", icon: GraduationCap },
-      { title: "My Bookings", url: "/student/bookings", icon: CalendarCheck },
+      {
+        title: "My Bookings",
+        url: "/student/bookings",
+        icon: CalendarCheck,
+        children: [
+          { title: "Bookings", url: "/student/bookings" },
+          { title: "Approved Bookings", url: "/student/bookings/approved" },
+          { title: "Pending Bookings", url: "/student/bookings/pending" },
+          { title: "Completed Bookings", url: "/student/bookings/completed" },
+          { title: "Rejected Bookings", url: "/student/bookings/rejected" },
+        ],
+      },
     ],
     tutor: [
       { title: "Profile", url: "/tutor/profile", icon: User },
@@ -67,11 +75,6 @@ const getSidebarItems = (
         ],
       },
     ],
-    admin: [
-      { title: "Manage Users", url: "/admin/users", icon: UserCheck },
-      { title: "Platform Settings", url: "/admin/settings", icon: Settings },
-    ],
-    guest: [],
   };
 
   return [...commonItems, ...(roleBasedItems[role] || [])];
@@ -79,10 +82,13 @@ const getSidebarItems = (
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, setIsLoading } = useUser();
-  const role = user?.role as "student" | "tutor" | "admin" | "guest";
-  const [tutorDetails, setTutorDetails] = React.useState<any>(null);
+  const role = (user?.role ?? "student") as "student" | "tutor";
+  const [tutorDetails, setTutorDetails] = React.useState<ITutor | null>(null);
+  const [studentDetails, setStudentDetails] = React.useState<TStudent | null>(
+    null
+  );
   const [sidebarItems, setSidebarItems] = React.useState<SidebarItem[]>(
-    getSidebarItems("guest")
+    getSidebarItems("student")
   );
 
   const loadingSet = React.useRef(false);
@@ -99,11 +105,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       tutorInfo()
         .then((data) => setTutorDetails(data.data))
         .catch((error) => console.error("Failed to fetch tutor info:", error));
+    } else {
+      getMe()
+        .then((data) => setStudentDetails(data.data))
+        .catch((error) =>
+          console.error("Failed to fetch student info:", error)
+        );
     }
   }, [role]);
 
   React.useEffect(() => {
-    setSidebarItems(getSidebarItems(role || "guest"));
+    setSidebarItems(getSidebarItems(role));
   }, [role]);
 
   return (
@@ -114,10 +126,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarFooter>
         {role === "tutor" ? (
-          <NavUser userDetails={tutorDetails} />
+          <NavUser userDetails={tutorDetails!} />
         ) : (
           // @ts-ignore
-          <NavUser userDetails={user} />
+          <NavUser userDetails={studentDetails!} />
         )}
       </SidebarFooter>
 

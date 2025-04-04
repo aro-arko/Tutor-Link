@@ -137,11 +137,7 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2 group">
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                className="relative w-8 h-8"
-              >
+              <motion.div  className="relative w-8 h-8">
                 <Image
                   src={logo}
                   alt="TutorLink"
