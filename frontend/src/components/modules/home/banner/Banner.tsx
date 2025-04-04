@@ -34,7 +34,7 @@ const Banner = () => {
   };
 
   return (
-    <div className="min-h-[70vh] md:min-h-[80vh] w-full max-w-7xl mx-auto flex items-center justify-center bg-white py-8 px-4 sm:px-6 lg:px-8 pt-16 md:pt-12">
+    <div className="min-h-[70vh] md:min-h-[80vh] w-full max-w-7xl mx-auto flex items-center justify-center bg-white py-8 px-4 sm:px-6 lg:px-0 pt-16 md:pt-12">
       {/* Main Container */}
       <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 w-full">
         {/* Banner Image (Now visible on all screens) */}
@@ -68,7 +68,7 @@ const Banner = () => {
                     setSearchType(value)
                   }
                 >
-                  <SelectTrigger className="w-[90px] sm:w-[100px] h-8 bg-transparent border-none focus:ring-0 p-0">
+                  <SelectTrigger className="w-[90px] sm:w-[100px] h-8 bg-transparent border-none shadow-none focus:ring-0 p-0">
                     <SelectValue placeholder="Search by" />
                   </SelectTrigger>
                   <SelectContent>

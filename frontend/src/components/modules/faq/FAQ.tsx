@@ -56,7 +56,7 @@ const FAQ = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="max-w-4xl mx-auto px-6 py-16"
+      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-16"
     >
       {/* Section Title */}
       <motion.h1

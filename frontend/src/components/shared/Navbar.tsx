@@ -23,7 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import Link from "next/link";
-import { FaUserCircle } from "react-icons/fa";
+import { FaRegUserCircle, FaUserCircle } from "react-icons/fa";
 import { protectedRoutes } from "@/constants";
 import Image from "next/image";
 import logo from "@/app/favicon.ico";
@@ -134,10 +134,9 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0">
         <div className="flex justify-between h-16 items-center">
-          {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2 group">
-              <motion.div  className="relative w-8 h-8">
+              <motion.div className="relative w-8 h-8">
                 <Image
                   src={logo}
                   alt="TutorLink"
@@ -150,9 +149,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-1">
-            {/* Home Link */}
             <Link
               href="/"
               className={cn(
@@ -165,7 +162,6 @@ export default function Navbar() {
               <span>Home</span>
             </Link>
 
-            {/* Browse Tutors Dropdown (right after Home) */}
             <DropdownMenu
               open={isBrowseTutorsOpen}
               onOpenChange={setIsBrowseTutorsOpen}
@@ -198,7 +194,6 @@ export default function Navbar() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Other Navigation Links */}
             {navLinks.slice(1).map((link) => (
               <Link
                 key={link.name}
@@ -216,7 +211,6 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* User/Log In Button */}
           <div className="hidden md:flex items-center space-x-3">
             {user ? (
               <DropdownMenu>
@@ -306,8 +300,78 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile Menu Toggle Button */}
           <div className="md:hidden flex items-center">
+            {user && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    size="icon"
+                    className="rounded-full bg-transparent  mr-2"
+                  >
+                    <FaRegUserCircle className="h-6 w-6 text-gray-800" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-56 shadow-lg rounded-md border border-border"
+                  align="end"
+                  sideOffset={10}
+                >
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={
+                          role === "tutor"
+                            ? "/tutor-profile"
+                            : "/student-profile"
+                        }
+                        className="w-full flex items-center"
+                      >
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/${role}/dashboard`}
+                        className="w-full flex items-center"
+                      >
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={
+                          role === "student"
+                            ? "/booking/lists"
+                            : "/tutor/bookings"
+                        }
+                        className="w-full flex items-center"
+                      >
+                        <Calendar className="mr-2 h-4 w-4" />
+                        <span>Bookings</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
             <Button
               variant="ghost"
               size="icon"
@@ -325,7 +389,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu (Dropdown) */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -376,46 +439,7 @@ export default function Navbar() {
                 </Link>
               ))}
 
-              {user ? (
-                <>
-                  <div className="pt-2 border-t border-border">
-                    <Link
-                      href={
-                        role === "tutor" ? "/tutor-profile" : "/student-profile"
-                      }
-                      onClick={toggleMobileMenu}
-                      className="block px-3 py-2 rounded-md text-base font-medium text-foreground/80 hover:bg-primary/5 hover:text-primary"
-                    >
-                      Profile
-                    </Link>
-                    <Link
-                      href={`/${role}/dashboard`}
-                      onClick={toggleMobileMenu}
-                      className="block px-3 py-2 rounded-md text-base font-medium text-foreground/80 hover:bg-primary/5 hover:text-primary"
-                    >
-                      Dashboard
-                    </Link>
-                    <Link
-                      href={
-                        role === "student"
-                          ? "/booking/lists"
-                          : "/tutor/bookings"
-                      }
-                      onClick={toggleMobileMenu}
-                      className="block px-3 py-2 rounded-md text-base font-medium text-foreground/80 hover:bg-primary/5 hover:text-primary"
-                    >
-                      Bookings
-                    </Link>
-                  </div>
-                  <Button
-                    onClick={handleLogout}
-                    variant="ghost"
-                    className="w-full justify-start px-3 py-2 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                  >
-                    Logout
-                  </Button>
-                </>
-              ) : (
+              {!user && (
                 <div className="pt-2 border-t border-border space-y-2">
                   <Button asChild variant="outline" className="w-full">
                     <Link href="/register-student" onClick={toggleMobileMenu}>

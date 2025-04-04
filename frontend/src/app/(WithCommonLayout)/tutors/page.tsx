@@ -5,9 +5,7 @@ const TutorsPage = () => {
   return (
     <Suspense
       fallback={
-        <div className="flex justify-center items-center min-h-screen">
-          <p>Loading...</p>
-        </div>
+        <div className="flex justify-center items-center min-h-screen"> </div>
       }
     >
       <AllTutors />

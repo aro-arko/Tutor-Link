@@ -25,7 +25,7 @@ const Sponsors = () => {
 
   return (
     <div className="bg-gray-50 py-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0">
         {/* Desktop Grid (hidden on mobile) */}
         <div className="hidden md:grid grid-cols-3 lg:grid-cols-6 gap-8">
           {sponsors.map((sponsor, index) => (

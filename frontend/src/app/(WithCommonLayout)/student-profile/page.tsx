@@ -2,8 +2,8 @@ import StudentProfile from "@/components/modules/student-profile/StudentProfile"
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Payment",
-  description: "Payment page for TutorLink",
+  title: "Profile",
+  description: "Student Profile",
 };
 
 const studentProfilePage = () => {

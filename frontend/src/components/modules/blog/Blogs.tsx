@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import BlogCard from "./BlogCard";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 interface BlogPost {
   id: number;
@@ -21,6 +22,7 @@ interface BlogPost {
 const Blogs = () => {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -32,6 +34,8 @@ const Blogs = () => {
         setBlogs(data);
       } catch (error) {
         console.error("Error fetching blogs:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -42,8 +46,12 @@ const Blogs = () => {
     blog.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
   return (
-    <div className="max-w-7xl mx-auto px-6 py-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-16">
       <h1 className="text-4xl font-extrabold text-gray-900 text-center mb-8">
         Blogs & Resources
       </h1>

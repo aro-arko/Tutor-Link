@@ -51,18 +51,25 @@ const SuccessStories = () => {
 
   return (
     <section className="py-16">
-      <div className="max-w-7xl mx-auto px-6 text-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 text-center">
         {/* Section Title */}
         <h2 className="text-3xl font-extrabold text-gray-900 mb-12">
           Success Stories
         </h2>
 
         <Swiper
-          slidesPerView={2}
           spaceBetween={30}
           autoplay={{
             delay: 3000,
             disableOnInteraction: false,
+          }}
+          breakpoints={{
+            0: {
+              slidesPerView: 1,
+            },
+            768: {
+              slidesPerView: 2,
+            },
           }}
           modules={[Autoplay]}
           className="w-full"

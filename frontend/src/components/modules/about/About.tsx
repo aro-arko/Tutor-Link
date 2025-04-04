@@ -75,7 +75,7 @@ const About = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-16">
       {/* Overview Section */}
       <section className="text-center mb-16">
         <h1 className="text-3xl font-extrabold text-gray-900 mb-4">About Us</h1>
