@@ -119,7 +119,7 @@ const Booking = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-16">
+    <div className="max-w-7xl mx-auto px-1 md:px-0 lg:px-0 py-16">
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Booking</h1>
       <Card className="bg-white rounded-lg shadow-sm border border-gray-200">
         <CardHeader>

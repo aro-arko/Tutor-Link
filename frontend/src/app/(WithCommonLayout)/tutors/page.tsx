@@ -1,4 +1,10 @@
 import AllTutors from "@/components/modules/tutors/AllTutors";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Tutors",
+  description: "Find the best tutors for your learning needs.",
+};
 import { Suspense } from "react";
 
 const TutorsPage = () => {

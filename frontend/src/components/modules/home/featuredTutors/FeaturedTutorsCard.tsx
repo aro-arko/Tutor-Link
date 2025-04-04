@@ -11,6 +11,7 @@ import Image from "next/image";
 import clsx from "clsx";
 import { toast } from "sonner";
 import { TCart } from "@/types/cart.type";
+import { useUser } from "@/context/UserContext";
 
 interface Tutor {
   _id: string;
@@ -31,7 +32,8 @@ interface Tutor {
 const FeaturedTutorsCard = ({ tutor }: { tutor: Tutor }) => {
   const [subjectNames, setSubjectNames] = useState<string[]>([]);
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const [cartId, setCartId] = useState<string | null>(null); // needed for removal
+  const [cartId, setCartId] = useState<string | null>(null);
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -48,39 +50,47 @@ const FeaturedTutorsCard = ({ tutor }: { tutor: Tutor }) => {
       }
     };
 
-    const checkIfInCart = async () => {
-      try {
-        const res = await getCart();
-        if (res?.success) {
-          const cart = res.data;
-          const matched = cart.find(
-            (item: TCart) => item.tutorId._id === tutor._id
-          );
-          if (matched) {
-            setIsWishlisted(true);
-            setCartId(matched._id); // Save cart ID for removal
+    if (user?.role === "student") {
+      const checkIfInCart = async () => {
+        try {
+          const res = await getCart();
+          if (res?.success) {
+            const cart = res.data;
+            const matched = cart.find(
+              (item: TCart) => item.tutorId._id === tutor._id
+            );
+            if (matched) {
+              setIsWishlisted(true);
+              setCartId(matched._id);
+            }
           }
+        } catch (error) {
+          console.error("Error checking cart:", error);
         }
-      } catch (error) {
-        console.error("Error checking cart:", error);
-      }
-    };
+      };
+      checkIfInCart();
+    }
 
     fetchSubjects();
-    checkIfInCart();
-  }, [tutor._id, tutor.subject]);
+  }, [tutor._id, tutor.subject, user?.role]);
 
   const toggleWishlist = async () => {
+    if (user?.role !== "student") {
+      toast.error("Please log in to add to wishlist.");
+      return;
+    }
     try {
       if (isWishlisted && cartId) {
         await removeFromCart(cartId);
         setIsWishlisted(false);
         setCartId(null);
+        window.dispatchEvent(new Event("cart-updated"));
         toast.success("Removed from wishlist.");
       } else {
         const res = await addToCart(tutor._id);
         setIsWishlisted(true);
-        setCartId(res.data._id); // Update cartId after adding
+        setCartId(res.data._id);
+        window.dispatchEvent(new Event("cart-updated"));
         toast.success("Added to wishlist!");
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -114,20 +124,22 @@ const FeaturedTutorsCard = ({ tutor }: { tutor: Tutor }) => {
               <h2 className="text-xl font-semibold text-gray-800">
                 {tutor.name}
               </h2>
-              <button
-                onClick={toggleWishlist}
-                className="text-red-500 hover:scale-110 transition"
-                title={
-                  isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"
-                }
-              >
-                <Heart
-                  className={clsx("w-5 h-5", {
-                    "fill-red-500": isWishlisted,
-                    "fill-transparent": !isWishlisted,
-                  })}
-                />
-              </button>
+              {user?.role === "student" && (
+                <button
+                  onClick={toggleWishlist}
+                  className="text-red-500 hover:scale-110 transition"
+                  title={
+                    isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"
+                  }
+                >
+                  <Heart
+                    className={clsx("w-5 h-5", {
+                      "fill-red-500": isWishlisted,
+                      "fill-transparent": !isWishlisted,
+                    })}
+                  />
+                </button>
+              )}
             </div>
             <p className="text-gray-600 text-sm">{tutor.address}</p>
           </div>

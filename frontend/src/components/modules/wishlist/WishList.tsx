@@ -66,7 +66,7 @@ const WishList = () => {
 
   return (
     <div className="py-4 px-4 sm:px-6 lg:px-0 max-w-7xl mx-auto md:p-8">
-      <h1 className="text-3xl font-bold text-center mb-6">Your Wishlist</h1>
+      <h1 className="text-3xl font-bold text-center mb-6">Wishlist</h1>
 
       {cartData.length === 0 ? (
         <p className="text-center text-gray-500">No tutors in wishlist.</p>

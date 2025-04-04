@@ -11,6 +11,7 @@ const roleBasedPrivateRoutes = {
     /^\/booking/,
     /^\student-profile/,
     /^\/change-password/,
+    /^\/wishlist/,
   ],
 };
 
@@ -51,5 +52,6 @@ export const config = {
     "/tutor-profile",
     "/student-profile",
     "/change-password",
+    "/wishlist",
   ],
 };

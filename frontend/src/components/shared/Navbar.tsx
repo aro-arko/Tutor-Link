@@ -32,7 +32,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAllSubjects } from "@/services/Subjects";
 import NavTutorFilters from "./NavTutorFilters";
-import { Badge } from "../ui/badge"; // Added Badge component
+import { Badge } from "../ui/badge";
 import { getCart } from "@/services/CartService";
 
 interface Filters {
@@ -126,8 +126,7 @@ export default function Navbar() {
         const res = await getCart();
         if (res?.success) {
           const cartItems = res.data;
-          const count = cartItems.length;
-          setWishlistCount(count);
+          setWishlistCount(cartItems.length);
         }
       } catch (error) {
         console.error("Error fetching wishlist count:", error);
@@ -135,7 +134,17 @@ export default function Navbar() {
     };
 
     fetchWishlistCount();
-  }, [wishlistCount]);
+
+    const handleCartUpdate = () => {
+      fetchWishlistCount();
+    };
+
+    window.addEventListener("cart-updated", handleCartUpdate);
+
+    return () => {
+      window.removeEventListener("cart-updated", handleCartUpdate);
+    };
+  }, []);
 
   const navLinks = [
     { name: "Home", href: "/", icon: null },
@@ -236,23 +245,25 @@ export default function Navbar() {
             {user ? (
               <>
                 {/* Wishlist Button with Badge */}
-                <Link href="/wishlist">
-                  <div
-                    className="relative rounded-full hover:bg-primary/5  cursor-pointer"
-                    onClick={() => router.push("/wishlist")}
-                    aria-label="Wishlist"
-                  >
-                    <Heart className="h-5 w-5" />
-                    {wishlistCount > 0 && (
-                      <Badge
-                        variant="destructive"
-                        className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0"
-                      >
-                        {wishlistCount > 9 ? "9+" : wishlistCount}
-                      </Badge>
-                    )}
-                  </div>
-                </Link>
+                {user.role === "student" && (
+                  <Link href="/wishlist">
+                    <div
+                      className="relative rounded-full hover:bg-primary/5  cursor-pointer"
+                      onClick={() => router.push("/wishlist")}
+                      aria-label="Wishlist"
+                    >
+                      <Heart className="h-5 w-5" />
+                      {wishlistCount > 0 && (
+                        <Badge
+                          variant="destructive"
+                          className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0"
+                        >
+                          {wishlistCount > 9 ? "9+" : wishlistCount}
+                        </Badge>
+                      )}
+                    </div>
+                  </Link>
+                )}
 
                 {/* Account Dropdown */}
                 <DropdownMenu>
@@ -317,20 +328,22 @@ export default function Navbar() {
                         </Link>
                       </DropdownMenuItem>
                       {/* Added Wishlist to Dropdown */}
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href="/wishlist"
-                          className="w-full flex items-center"
-                        >
-                          <Heart className="mr-2 h-4 w-4" />
-                          <span>Wishlist</span>
-                          {wishlistCount > 0 && (
-                            <span className="ml-auto bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs">
-                              {wishlistCount > 9 ? "9+" : wishlistCount}
-                            </span>
-                          )}
-                        </Link>
-                      </DropdownMenuItem>
+                      {user.role === "student" && (
+                        <DropdownMenuItem asChild>
+                          <Link
+                            href="/wishlist"
+                            className="w-full flex items-center"
+                          >
+                            <Heart className="mr-2 h-4 w-4" />
+                            <span>Wishlist</span>
+                            {wishlistCount > 0 && (
+                              <span className="ml-auto bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs">
+                                {wishlistCount > 9 ? "9+" : wishlistCount}
+                              </span>
+                            )}
+                          </Link>
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem

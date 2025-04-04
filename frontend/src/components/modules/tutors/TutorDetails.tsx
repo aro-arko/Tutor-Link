@@ -21,12 +21,16 @@ import { ITutor } from "@/types";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { useUser } from "@/context/UserContext";
 import Cookies from "js-cookie";
+import { addToCart, getCart, removeFromCart } from "@/services/CartService";
+import { toast } from "sonner";
 
 const TutorDetails = () => {
   const { id } = useParams() as { id: string };
   const [tutor, setTutor] = useState<ITutor | null>(null);
   const [subjectNames, setSubjectNames] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [cartId, setCartId] = useState<string | null>(null);
   const { user } = useUser();
 
   useEffect(() => {
@@ -67,6 +71,54 @@ const TutorDetails = () => {
 
     fetchSubjects();
   }, [tutor]);
+
+  useEffect(() => {
+    const checkWishlistStatus = async () => {
+      if (!user || !tutor?._id) return;
+
+      try {
+        const res = await getCart();
+        if (res?.success) {
+          const found = res.data.find(
+            (item: any) => item.tutorId._id === tutor._id
+          );
+          if (found) {
+            setIsWishlisted(true);
+            setCartId(found._id);
+          }
+        }
+      } catch (error) {
+        console.error("Wishlist check failed", error);
+      }
+    };
+
+    checkWishlistStatus();
+  }, [user, tutor?._id]);
+
+  const toggleWishlist = async () => {
+    try {
+      if (!user?.role || user.role !== "student") {
+        toast.error("Please login as student to manage wishlist.");
+        return;
+      }
+
+      if (isWishlisted && cartId) {
+        await removeFromCart(cartId);
+        setIsWishlisted(false);
+        setCartId(null);
+        window.dispatchEvent(new Event("cart-updated"));
+        toast.success("Removed from wishlist.");
+      } else {
+        const res = await addToCart(tutor!._id);
+        setIsWishlisted(true);
+        setCartId(res.data._id);
+        window.dispatchEvent(new Event("cart-updated"));
+        toast.success("Added to wishlist.");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Action failed.");
+    }
+  };
 
   if (loading) {
     return <LoadingSpinner />;
@@ -203,14 +255,25 @@ const TutorDetails = () => {
           </div>
 
           {/* Booking Button */}
-          {user?.role !== "tutor" && (
-            <div className=" mt-4">
-              <Link href={`/booking?tutorId=${tutor._id}`}>
-                <Button className="w-full cursor-pointer bg-red-600 hover:bg-red-700 text-white py-4 text-lg shadow-lg transition-all hover:shadow-xl flex items-center justify-center gap-2">
-                  <Calendar className="h-5 w-5" />
-                  Book a Session
+          {user?.role === "student" && (
+            <div className="mt-4 space-y-2">
+              <div>
+                <Link href={`/booking?tutorId=${tutor._id}`}>
+                  <Button className="w-full bg-red-600 hover:bg-red-700 text-white py-4 text-lg shadow-lg transition-all hover:shadow-xl flex items-center justify-center gap-2">
+                    <Calendar className="h-5 w-5" />
+                    Book a Session
+                  </Button>
+                </Link>
+              </div>
+              <div>
+                <Button
+                  variant="outline"
+                  onClick={toggleWishlist}
+                  className="w-full text-red-600 border-red-600 hover:text-red-700"
+                >
+                  {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
                 </Button>
-              </Link>
+              </div>
             </div>
           )}
         </div>
