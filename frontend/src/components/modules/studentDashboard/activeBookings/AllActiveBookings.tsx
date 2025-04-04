@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { TBooking } from "@/types/booking";
 
-const MyBookings = () => {
+const AllActiveBookings = () => {
   const [bookings, setBookings] = useState<TBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,16 +23,19 @@ const MyBookings = () => {
       try {
         const res = await studentBookings();
         if (res.success) {
-          const sorted = res.data.sort(
-            (a: TBooking, b: TBooking) =>
-              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
-          setBookings(sorted);
+          const confirmed = res.data
+            .filter((b: TBooking) => b.approvalStatus === "confirmed")
+            .sort(
+              (a: TBooking, b: TBooking) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            );
+          setBookings(confirmed);
         } else {
           setError("Failed to fetch bookings");
         }
-      } catch (error) {
-        console.error("Error fetching bookings:", error);
+      } catch (err) {
+        console.error(err);
         setError("Something went wrong");
       } finally {
         setLoading(false);
@@ -63,17 +66,19 @@ const MyBookings = () => {
 
   return (
     <div className="p-2 md:p-6 mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">My Bookings</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">
+        All Active Bookings
+      </h1>
 
       <div className="flex justify-center mb-6">
         <div className="inline-flex items-center space-x-2 px-3 py-2 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-medium transition">
           <Calendar className="w-4 h-4" />
-          <span>Total Bookings: {bookings.length}</span>
+          <span>Total Approved Bookings: {bookings.length}</span>
         </div>
       </div>
 
       {bookings.length === 0 ? (
-        <p className="text-gray-600 text-center">No bookings found.</p>
+        <p className="text-gray-600 text-center">No active bookings found.</p>
       ) : (
         <ul className="space-y-4">
           {bookings.map((booking) => (
@@ -136,22 +141,12 @@ const MyBookings = () => {
 
                 {/* Status */}
                 <div className="flex items-start space-x-3 flex-1 min-w-0">
-                  <div className="p-2 bg-gray-100 rounded-full">
-                    <CheckCircle className="w-5 h-5 text-gray-600" />
+                  <div className="p-2 bg-green-50 rounded-full">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Status</p>
-                    <p
-                      className={`text-base font-semibold capitalize ${
-                        booking.approvalStatus === "confirmed"
-                          ? "text-green-600"
-                          : booking.approvalStatus === "pending"
-                          ? "text-yellow-600"
-                          : booking.approvalStatus === "canceled"
-                          ? "text-red-600"
-                          : "text-gray-600"
-                      }`}
-                    >
+                    <p className="text-sm text-gray-500">Approval Status</p>
+                    <p className="text-base font-semibold text-green-600 capitalize">
                       {booking.approvalStatus}
                     </p>
                   </div>
@@ -165,4 +160,4 @@ const MyBookings = () => {
   );
 };
 
-export default MyBookings;
+export default AllActiveBookings;

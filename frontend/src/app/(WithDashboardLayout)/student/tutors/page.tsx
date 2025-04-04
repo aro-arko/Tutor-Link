@@ -1,9 +1,9 @@
-import StudentTutors from "@/components/modules/studentDashboard/studentTutors/StudentTutors";
+import AllStudentTutors from "@/components/modules/studentDashboard/studentTutors/AllStudentTutors";
 
 const StudentTutorsPage = () => {
   return (
     <div>
-      <StudentTutors />
+      <AllStudentTutors />
     </div>
   );
 };

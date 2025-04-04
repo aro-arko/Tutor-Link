@@ -9,6 +9,7 @@ import { getMe } from "@/services/StudentService";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import TotalBookings from "./totalBookings/TotalBookings";
 import PendingBookings from "./pendingBookings/PendingBookings";
+import StudentTutors from "./studentTutors/StudentTutors";
 
 const StudentDashboard = () => {
   const { user } = useUser();
@@ -67,9 +68,8 @@ const StudentDashboard = () => {
       </div>
 
       <div className="grid auto-rows-min gap-4 md:grid-cols-2 mt-8">
-        {/* Active Sessions Card */}
         <div className="rounded-xl bg-red-50 border border-red-100 h-auto md:h-[450px] overflow-y-auto">
-          {/* <ActiveBookings /> */}
+          <StudentTutors />
         </div>
 
         {/* Earnings */}

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { User, Mail, Phone, Edit } from "lucide-react"; // Import icons
+import { Separator } from "@/components/ui/separator";
 
 const EditProfile = () => {
   const [studentData, setStudentData] = useState<any>(null);
@@ -70,7 +71,8 @@ const EditProfile = () => {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-6">Profile</h1>
-      <div className="space-y-6">
+      <div className="space-y-4">
+        <Separator />
         {/* Name Card */}
         <div className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center space-x-3">
@@ -114,8 +116,9 @@ const EditProfile = () => {
 
         {/* Edit Profile Button */}
         <Button
+          variant="outline"
           onClick={() => router.push("/student/profile")}
-          className="w-full bg-red-600 hover:bg-red-700 flex items-center justify-center space-x-2"
+          className=" mx-auto  flex cursor-pointer items-center justify-center space-x-2"
         >
           <Edit className="w-5 h-5" />
           <span>Edit Profile</span>
