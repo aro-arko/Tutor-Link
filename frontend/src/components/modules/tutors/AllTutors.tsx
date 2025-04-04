@@ -16,6 +16,7 @@ import TutorFilter from "./TutorFilter";
 import { useRouter, useSearchParams } from "next/navigation";
 import { searchTutors } from "@/services/StudentService";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import { ITutor } from "@/types";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -65,7 +66,18 @@ const AllTutors = () => {
         console.log(response);
 
         if (response.success) {
-          setTutorData(response.data);
+          const sortedTutors = response.data.sort((a: ITutor, b: ITutor) => {
+            const reviewsA = a.reviews?.length || 0;
+            const reviewsB = b.reviews?.length || 0;
+
+            if (reviewsB !== reviewsA) {
+              return reviewsB - reviewsA;
+            }
+
+            return b.rating - a.rating;
+          });
+
+          setTutorData(sortedTutors);
         } else {
           console.error("Failed to fetch tutors:", response.message);
           setTutorData([]);

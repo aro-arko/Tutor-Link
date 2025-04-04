@@ -33,6 +33,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getAllSubjects } from "@/services/Subjects";
 import NavTutorFilters from "./NavTutorFilters";
 import { Badge } from "../ui/badge"; // Added Badge component
+import { getCart } from "@/services/CartService";
 
 interface Filters {
   search: string;
@@ -120,11 +121,21 @@ export default function Navbar() {
   }, [pathname, setIsLoading]);
 
   useEffect(() => {
-    // Mock wishlist count - replace with actual API call
-    if (user) {
-      setWishlistCount(5); // Example count
-    }
-  }, [user]);
+    const fetchWishlistCount = async () => {
+      try {
+        const res = await getCart();
+        if (res?.success) {
+          const cartItems = res.data;
+          const count = cartItems.length;
+          setWishlistCount(count);
+        }
+      } catch (error) {
+        console.error("Error fetching wishlist count:", error);
+      }
+    };
+
+    fetchWishlistCount();
+  }, [wishlistCount]);
 
   const navLinks = [
     { name: "Home", href: "/", icon: null },
