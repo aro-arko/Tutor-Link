@@ -84,12 +84,6 @@ const getStudent = async (user: JwtPayload, id: string) => {
   if (!tutor || !tutor.bookedStudents) {
     throw new Error('Tutor or booked students not found');
   }
-  const studentIdExists = tutor.bookedStudents.includes(
-    new mongoose.Types.ObjectId(id),
-  );
-  if (!studentIdExists) {
-    throw new Error('Student not found');
-  }
   const student = await Student.findById(id);
   return student;
 };

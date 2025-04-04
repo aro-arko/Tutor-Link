@@ -40,7 +40,26 @@ const loginValidation = z.object({
   }),
 });
 
+const changePasswordValidation = z.object({
+  body: z.object({
+    oldPassword: z
+      .string({
+        invalid_type_error: 'Old password must be a string',
+      })
+      .min(8, 'Old password must be at least 8 characters')
+      .max(100, 'Old password is too long'),
+
+    newPassword: z
+      .string({
+        invalid_type_error: 'New password must be a string',
+      })
+      .min(8, 'New password must be at least 8 characters')
+      .max(100, 'New password is too long'),
+  }),
+});
+
 export const authValidation = {
   registerValidation,
   loginValidation,
+  changePasswordValidation,
 };

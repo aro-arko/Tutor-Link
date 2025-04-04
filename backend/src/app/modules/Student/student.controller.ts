@@ -77,6 +77,19 @@ const getStudentByEmail = catchAsync(async (req, res) => {
   });
 });
 
+const getBookingById = catchAsync(async (req, res) => {
+  const user = req.user;
+  const { bookingId } = req.params;
+  const result = await studentService.getBookingById(user, bookingId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Booking fetched successfully',
+    data: result,
+  });
+});
+
 export const studentController = {
   getMe,
   updateMe,
@@ -84,4 +97,5 @@ export const studentController = {
   // updateReview,
   searchTutors,
   getStudentByEmail,
+  getBookingById,
 };

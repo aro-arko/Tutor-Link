@@ -28,28 +28,46 @@ class QueryBuilder {
             'fields',
         ];
         excludeFields.forEach((field) => delete queryObj[field]);
-        // Handle filter for authorId
-        if (queryObj.filter) {
-            queryObj.author = queryObj.filter; // Assign filter to `author` field
-            delete queryObj.filter; // Remove original filter field
+        // Handle filtering for specific fields
+        const filterQuery = {};
+        // Filter by multiple subjects
+        if (queryObj.subjects) {
+            const subjectIds = queryObj.subjects
+                .split(',')
+                .map((id) => new mongoose_1.Types.ObjectId(id));
+            filterQuery['subject'] = { $in: subjectIds };
         }
-        // Parse ObjectId fields if present
-        if (queryObj.author) {
-            queryObj.author = new mongoose_1.Types.ObjectId(queryObj.author);
+        // Filter by minimum rating
+        if (queryObj.rating) {
+            filterQuery['rating'] = {
+                $gte: Number(queryObj.rating),
+            };
         }
-        this.modelQuery = this.modelQuery.find(queryObj);
+        // Filter by maximum hourly rate
+        if (queryObj.maxRate) {
+            filterQuery['hourlyRate'] = {
+                $lte: Number(queryObj.maxRate),
+            };
+        }
+        // Filter by availability (day of the week)
+        if (queryObj.availability) {
+            filterQuery['availability.day'] =
+                queryObj.availability;
+        }
+        // Merge the filterQuery with the existing query
+        this.modelQuery = this.modelQuery.find(filterQuery);
         return this;
     }
     sort() {
-        const sortBy = this.query.sortBy || 'createdAt';
-        const sortOrder = this.query.sortOrder === 'asc' ? '' : '-';
+        const sortBy = this.query.sortBy || 'rating'; // Default to 'rating'
+        const sortOrder = this.query.sortOrder === 'asc' ? '' : '-'; // Default to descending order
         const sortString = `${sortOrder}${sortBy}`;
         this.modelQuery = this.modelQuery.sort(sortString);
         return this;
     }
     paginate() {
         const page = Number(this.query.page) || 1;
-        const limit = Number(this.query.limit) || 10;
+        const limit = Number(this.query.limit) || 9;
         const skip = (page - 1) * limit;
         this.modelQuery = this.modelQuery.skip(skip).limit(limit);
         return this;

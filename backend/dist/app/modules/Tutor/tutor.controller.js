@@ -29,7 +29,7 @@ const getMe = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, 
 }));
 const updateTutor = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
-    console.log(user);
+    // console.log(user);
     const result = yield tutor_service_1.tutorService.updateTutor(user, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,

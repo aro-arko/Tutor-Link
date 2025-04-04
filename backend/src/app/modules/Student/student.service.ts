@@ -8,6 +8,9 @@ import Tutor from '../Tutor/tutor.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { Subject } from '../Subject/subject.model';
 import { TQuery } from '../../types/query.type';
+import { Booking } from '../Booking/booking.model';
+import AppError from '../../errors/AppError';
+import httpStatus from 'http-status';
 
 const getMe = async (user: JwtPayload) => {
   const userData = await User.findOne({ email: user.email });
@@ -110,9 +113,23 @@ const getStudentByEmail = async (user: JwtPayload, email: string) => {
   return studentData;
 };
 
+const getBookingById = async (user: JwtPayload, bookingId: string) => {
+  const booking = await Booking.findOne({
+    _id: bookingId,
+    student: user!._id,
+  });
+
+  if (!booking) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
+  }
+
+  return booking;
+};
+
 export const studentService = {
   getMe,
   updateMe,
   searchTutors,
   getStudentByEmail,
+  getBookingById,
 };

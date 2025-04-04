@@ -43,137 +43,46 @@ const updateMe = (user, body) => __awaiter(void 0, void 0, void 0, function* () 
         throw error;
     }
 });
-// const reviewTutor = async (
-//   user: JwtPayload,
-//   tutorId: string,
-//   body: { rating: number; review: string },
-// ) => {
-//   const student = await Student.findOne({ email: user.email });
-//   if (!student) {
-//     throw new Error('Student not found');
-//   }
-//   const completedBooking = await Booking.findOne({
-//     studentId: student._id,
-//     tutorId: tutorId,
-//     approvalStatus: { $in: ['confirmed', 'completed'] },
-//   });
-//   if (!completedBooking) {
-//     throw new Error(
-//       'You can only review tutors with whom you have confirmed a booking',
-//     );
-//   }
-//   const tutor = await Tutor.findById(tutorId);
-//   if (!tutor) {
-//     throw new Error('Tutor not found');
-//   }
-//   // Check if the student has already given a review
-//   const existingReview = tutor.reviews.find(
-//     (review) => review.studentId.toString() === student._id.toString(),
-//   );
-//   if (existingReview) {
-//     throw new Error('You have already reviewed this tutor');
-//   }
-//   // Clean up the reviews array to ensure it only contains valid objects
-//   tutor.reviews = tutor.reviews.filter(
-//     (review) => typeof review === 'object' && review.rating,
-//   );
-//   // Update the tutor's reviews and rating
-//   tutor.reviews.push({
-//     _id: new ObjectId(),
-//     studentId: student._id,
-//     review: body.review,
-//     rating: body.rating,
-//   });
-//   // Calculate the new average rating
-//   const totalRatings = tutor.reviews.reduce(
-//     (sum, review) =>
-//       sum + (typeof review.rating === 'number' ? review.rating : 0),
-//     0,
-//   );
-//   tutor.rating = totalRatings / tutor.reviews.length;
-//   await tutor.save();
-//   return tutor;
-// };
-// const updateReview = async (
-//   user: JwtPayload,
-//   reviewId: string,
-//   body: { rating: number; review: string },
-// ) => {
-//   const student = await Student.findOne({ email: user.email });
-//   if (!student) {
-//     throw new Error('Student not found');
-//   }
-//   const tutor = await Tutor.findOne({ 'reviews._id': reviewId });
-//   if (!tutor) {
-//     throw new Error('Review not found');
-//   }
-//   const review = tutor.reviews.find(
-//     (review) => review._id.toString() === reviewId,
-//   );
-//   if (!review) {
-//     throw new Error('Review not found');
-//   }
-//   if (review.studentId.toString() !== student._id.toString()) {
-//     throw new Error('You can only update your own reviews');
-//   }
-//   // Ensure studentId is correctly cast to ObjectId
-//   review.studentId = new ObjectId(review.studentId);
-//   // Update the review with valid data
-//   review.rating = body.rating;
-//   review.review = body.review;
-//   // Recalculate the average rating
-//   const totalRatings = tutor.reviews.reduce(
-//     (sum, review) =>
-//       sum + (typeof review.rating === 'number' ? review.rating : 0),
-//     0,
-//   );
-//   tutor.rating = totalRatings / tutor.reviews.length;
-//   await tutor.save();
-//   return tutor;
-// };
 const searchTutors = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, subject } = query;
+    const { name, subject, subjects, rating, maxRate, availability } = query;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, prefer-const
     let searchQuery = {};
-    if (name && subject) {
+    // Filter by name
+    if (name) {
+        searchQuery.name = { $regex: name, $options: 'i' };
+    }
+    // Filter by a single subject name
+    if (subject) {
         const subjectDetails = yield subject_model_1.Subject.findOne({
-            name: subject,
+            name: { $regex: subject, $options: 'i' },
         });
         if (subjectDetails) {
-            searchQuery = {
-                name: name,
-                subject: { $in: [subjectDetails._id] },
-            };
+            searchQuery.subject = { $in: [subjectDetails._id] };
         }
         else {
             return [];
         }
     }
-    else if (name) {
-        searchQuery = {
-            name: name,
-        };
+    // Filter by multiple subject IDs
+    if (subjects) {
+        const subjectIds = typeof subjects === 'string'
+            ? subjects.split(',').map((id) => new mongoose_1.default.Types.ObjectId(id))
+            : subjects.map((id) => new mongoose_1.default.Types.ObjectId(id));
+        searchQuery.subject = { $in: subjectIds };
     }
-    else if (subject) {
-        const subjectDetails = yield subject_model_1.Subject.findOne({
-            name: subject,
-        });
-        if (subjectDetails) {
-            searchQuery = {
-                subject: { $in: [subjectDetails._id] },
-            };
-        }
-        else {
-            return [];
-        }
+    // Filter by minimum rating
+    if (rating) {
+        searchQuery.rating = { $gte: Number(rating) };
     }
-    else {
-        searchQuery = {};
+    // Filter by maximum hourly rate
+    if (maxRate) {
+        searchQuery.hourlyRate = { $lte: Number(maxRate) };
     }
-    const queryBuilder = new QueryBuilder_1.default(tutor_model_1.default.find(), query)
-        .filter()
-        .sort()
-        .paginate()
-        .fields();
+    // Filter by availability (day of the week)
+    if (availability) {
+        searchQuery['availability.day'] = availability;
+    }
+    const queryBuilder = new QueryBuilder_1.default(tutor_model_1.default.find(), query).filter().sort();
     // Merge the searchQuery with the QueryBuilder's query
     queryBuilder.modelQuery = queryBuilder.modelQuery.find(searchQuery);
     const tutors = yield queryBuilder.modelQuery;
@@ -189,8 +98,6 @@ const getStudentByEmail = (user, email) => __awaiter(void 0, void 0, void 0, fun
 exports.studentService = {
     getMe,
     updateMe,
-    // reviewTutor,
-    // updateReview,
     searchTutors,
     getStudentByEmail,
 };

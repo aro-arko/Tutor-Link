@@ -7,6 +7,9 @@ import httpStatus from 'http-status';
 import Tutor from '../Tutor/tutor.model';
 import { createToken } from './auth.utils';
 import config from '../../config';
+import bcrypt from 'bcrypt';
+import { JwtPayload } from 'jsonwebtoken';
+import { TChangePassword } from '../../types/password.type';
 
 const createStudentIntoDB = async (payLoad: TUser) => {
   const userData = { ...payLoad };
@@ -113,8 +116,52 @@ const loginUser = async (payLoad: Partial<TUser>) => {
   return { accessToken: accessToken };
 };
 
+const changePassword = async (
+  payLoad: TChangePassword,
+  userData: JwtPayload,
+) => {
+  if (userData.email == 'arko@tutorlink.com') {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'Demo account password cannot be changed',
+    );
+  } else if (userData.email == 'sukhminder@tutorlink.com') {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'Demo account password cannot be changed',
+    );
+  }
+
+  const user = await User.isUserExistsByEmail(userData.email);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
+  }
+
+  if (!(await User.isPasswordMatched(payLoad.oldPassword, user?.password)))
+    throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched');
+
+  // hased new password
+  const newHashedPassword = await bcrypt.hash(
+    payLoad.newPassword,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  await User.findOneAndUpdate(
+    {
+      email: userData.email,
+      role: userData.role,
+    },
+    {
+      password: newHashedPassword,
+    },
+  );
+
+  return null;
+};
+
 export const authServices = {
   createStudentIntoDB,
   createTutorIntoDB,
   loginUser,
+  changePassword,
 };

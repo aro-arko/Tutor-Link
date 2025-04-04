@@ -17,4 +17,10 @@ router.get(
   studentController.getStudentByEmail,
 );
 
+router.get(
+  '/booking/:bookingId',
+  auth(USER_ROLE.student),
+  studentController.getBookingById,
+);
+
 export const StudentRoutes = router;

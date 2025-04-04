@@ -18,7 +18,7 @@ const getMe = catchAsync(async (req, res) => {
 
 const updateTutor = catchAsync(async (req, res) => {
   const user = req.user;
-  console.log(user);
+  // console.log(user);
   const result = await tutorService.updateTutor(user, req.body);
 
   sendResponse(res, {

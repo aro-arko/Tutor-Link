@@ -83,7 +83,7 @@ const getStudent = (user, id) => __awaiter(void 0, void 0, void 0, function* () 
     return student;
 });
 const getAllTutors = () => __awaiter(void 0, void 0, void 0, function* () {
-    const tutors = yield tutor_model_1.default.find();
+    const tutors = yield tutor_model_1.default.find().sort({ rating: -1 });
     return tutors;
 });
 const getTutorById = (id) => __awaiter(void 0, void 0, void 0, function* () {
