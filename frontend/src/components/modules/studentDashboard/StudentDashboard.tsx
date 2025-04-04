@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { getMe } from "@/services/StudentService";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import TotalBookings from "./totalBookings/TotalBookings";
+import PendingBookings from "./pendingBookings/PendingBookings";
 
 const StudentDashboard = () => {
   const { user } = useUser();
@@ -61,7 +62,7 @@ const StudentDashboard = () => {
         </div>
 
         <div className="rounded-xl bg-red-50 border border-red-100 h-auto md:h-[400px] overflow-y-auto">
-          {/* <BookingApproval /> */}
+          <PendingBookings />
         </div>
       </div>
 
