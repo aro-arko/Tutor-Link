@@ -1,12 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { getMe, updateStudentProfile } from "@/services/StudentService";
 import { useEffect, useState } from "react";
+import { getMe, updateStudentProfile } from "@/services/StudentService";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Pencil } from "lucide-react";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const StudentProfile = () => {
   const [studentData, setStudentData] = useState<any>(null);
@@ -14,25 +16,23 @@ const StudentProfile = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchStudentProfile = async () => {
+    const fetchProfile = async () => {
       try {
-        setLoading(true);
         const res = await getMe();
         if (res.success) {
           setStudentData(res.data);
         } else {
-          setError("Failed to fetch student profile");
-          console.error("Failed to fetch student profile:", res.message);
+          setError("Failed to fetch student profile.");
         }
-      } catch (error) {
-        setError("Error fetching student profile");
-        console.error("Error fetching student profile:", error);
+      } catch (err) {
+        console.error("Error fetching student profile:", err);
+        setError("Something went wrong.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStudentProfile();
+    fetchProfile();
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +43,6 @@ const StudentProfile = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      console.log(studentData);
       const response = await updateStudentProfile(studentData);
       if (response.success) {
         setStudentData(response.data);
@@ -57,43 +56,42 @@ const StudentProfile = () => {
     }
   };
 
-  if (loading) {
+  if (loading) return <LoadingSpinner />;
+  if (error)
     return (
-      <div className="flex items-center justify-center h-40 bg-red-50">
-        <div className="animate-pulse flex space-x-4">
-          <div className="rounded-full bg-gray-200 h-8 w-8"></div>
-          <div className="flex-1 space-y-3">
-            <div className="h-3 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-          </div>
-        </div>
+      <div className="p-4 bg-red-50 text-center rounded-lg max-w-md mx-auto mt-10">
+        <p className="text-red-600 font-medium">{error}</p>
       </div>
     );
-  }
-
-  if (error) {
-    return (
-      <div className="p-4 bg-red-50">
-        <div className="text-red-600">{error}</div>
-      </div>
-    );
-  }
-
-  if (!studentData) {
-    return <p>No student profile found.</p>;
-  }
 
   return (
-    <div className="min-h-screen py-8 rounded-2xl bg-red-50">
-      <div className="flex justify-center p-6">
-        <Card className="w-full max-w-4xl">
+    <div className="min-h-screen bg-gray-50 py-12 p-1 md:px-4">
+      <div className=" mx-auto space-y-10">
+        {/* Profile Header */}
+        <div className="flex flex-col items-center text-center">
+          <div className="relative h-32 w-32 border-4 border-white rounded-full shadow-md">
+            <Avatar className="h-full w-full">
+              <AvatarImage src="https://bookshop-frontend-six.vercel.app/assets/admin-BDCeUw0Y.webp" />
+              <AvatarFallback className="bg-blue-100 text-blue-800 text-4xl">
+                {studentData?.name?.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </div>
+          <h1 className="text-3xl font-bold mt-4 text-gray-800">
+            {studentData?.name}
+          </h1>
+        </div>
+
+        {/* Form Card */}
+        <Card>
           <CardHeader>
-            <CardTitle className="text-2xl font-bold">
-              Student Profile
+            <CardTitle className="flex items-center justify-between text-xl font-bold">
+              Edit Student Profile
+              <Pencil className="h-5 w-5 text-gray-500" />
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-8">
               {/* Name and Email */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -153,7 +151,7 @@ const StudentProfile = () => {
                 </div>
               </div>
 
-              {/* Phone Number and Address */}
+              {/* Phone and Address */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -183,13 +181,15 @@ const StudentProfile = () => {
                 </div>
               </div>
 
-              {/* Update Button */}
-              <Button
-                type="submit"
-                className="w-full bg-red-600 hover:bg-red-700"
-              >
-                Update Profile
-              </Button>
+              {/* Submit Button */}
+              <div className="flex justify-center">
+                <Button
+                  type="submit"
+                  className="bg-red-600 hover:bg-red-700 py-5 font-medium cursor-pointer "
+                >
+                  Update
+                </Button>
+              </div>
             </form>
           </CardContent>
         </Card>

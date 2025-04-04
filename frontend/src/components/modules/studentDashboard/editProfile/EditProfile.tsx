@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { User, Mail, Phone, Edit } from "lucide-react"; // Import icons
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const EditProfile = () => {
   const [studentData, setStudentData] = useState<any>(null);
@@ -38,14 +39,11 @@ const EditProfile = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-40">
-        <div className="animate-pulse flex space-x-4">
-          <div className="rounded-full bg-gray-200 h-8 w-8"></div>
-          <div className="flex-1 space-y-3">
-            <div className="h-3 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-          </div>
-        </div>
+      <div className="p-4 space-y-4">
+        <Skeleton className="h-32 w-full rounded-lg" />
+        {[...Array(3)].map((_, i) => (
+          <Skeleton key={i} className="h-20 rounded-lg" />
+        ))}
       </div>
     );
   }

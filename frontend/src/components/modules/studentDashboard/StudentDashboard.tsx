@@ -54,7 +54,7 @@ const StudentDashboard = () => {
       </div>
 
       <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-        <div className="rounded-xl bg-red-50 border border-red-100 h-[400px] overflow-y-auto">
+        <div className="rounded-xl bg-red-50 border border-red-100 h-auto md:h-[400px] overflow-y-auto">
           <TotalBookings />
         </div>
 

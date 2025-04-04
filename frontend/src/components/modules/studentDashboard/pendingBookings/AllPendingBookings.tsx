@@ -41,7 +41,7 @@ const AllPendingBookings = () => {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-4">
+      <div className="p-1 md:p-4 space-y-4">
         <Skeleton className="h-10 w-1/3 rounded-lg mx-auto" />
         {[...Array(5)].map((_, i) => (
           <Skeleton key={i} className="h-24 w-full rounded-lg" />
@@ -59,15 +59,13 @@ const AllPendingBookings = () => {
   }
 
   return (
-    <div className="p-2 md:p-6 mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        All Pending Bookings
-      </h1>
+    <div className="p-1 md:p-4 mx-auto">
+      <h1 className="text-3xl font-bold mb-6 text-center">Pending Bookings</h1>
 
       <div className="flex justify-center mb-6">
         <div className="inline-flex items-center space-x-2 px-3 py-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-700 text-sm font-medium transition">
           <Calendar className="w-4 h-4" />
-          <span>Total Pending Bookings: {bookings.length}</span>
+          <span>All Pending Bookings: {bookings.length}</span>
         </div>
       </div>
 

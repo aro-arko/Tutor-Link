@@ -48,7 +48,7 @@ const AllActiveBookings = () => {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-4">
+      <div className="p-1 md:p-4 space-y-4">
         <Skeleton className="h-10 w-1/3 rounded-lg mx-auto" />
         {[...Array(5)].map((_, i) => (
           <Skeleton key={i} className="h-24 w-full rounded-lg" />
@@ -66,10 +66,8 @@ const AllActiveBookings = () => {
   }
 
   return (
-    <div className="p-2 md:p-6 mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        All Active Bookings
-      </h1>
+    <div className="p-1 md:p-4 mx-auto">
+      <h1 className="text-3xl font-bold mb-6 text-center">Approved Bookings</h1>
 
       <div className="flex justify-center mb-6">
         <div className="inline-flex items-center space-x-2 px-3 py-2 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-medium transition">

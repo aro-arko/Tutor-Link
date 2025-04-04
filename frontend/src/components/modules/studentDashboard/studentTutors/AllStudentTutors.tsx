@@ -90,7 +90,7 @@ const AllStudentTutors = () => {
 
   if (error) {
     return (
-      <div className="p-4">
+      <div className="p-1 md:p-4">
         <div className="bg-red-50 p-4 rounded-lg text-red-600 border border-red-100">
           {error}
         </div>
@@ -99,7 +99,7 @@ const AllStudentTutors = () => {
   }
 
   return (
-    <div className="p-6 w-full">
+    <div className="p-1 md:p-4 w-full">
       <h1 className="text-3xl font-bold text-black mb-6 text-center">
         My Tutors
       </h1>
