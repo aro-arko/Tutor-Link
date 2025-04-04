@@ -1,14 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { studentBookings } from "@/services/BookingService";
 import { getTutorById } from "@/services/TutorService";
 import { useEffect, useState } from "react";
+import { User, Mail, Calendar } from "lucide-react";
 import Link from "next/link";
+import { TBooking } from "@/types/booking";
+import { ITutor } from "@/types";
 
 const AllStudentTutors = () => {
-  const [bookings, setBookings] = useState<any[]>([]);
-  const [tutors, setTutors] = useState<{ [key: string]: any }>({});
+  const [bookings, setBookings] = useState<TBooking[]>([]);
+  const [tutors, setTutors] = useState<{ [key: string]: ITutor }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,39 +22,37 @@ const AllStudentTutors = () => {
         if (res.success) {
           const filteredBookings = res.data
             .filter(
-              (booking: any) =>
+              (booking: TBooking) =>
                 booking.approvalStatus === "confirmed" ||
                 booking.approvalStatus === "completed"
             )
             .sort(
-              (a: any, b: any) =>
+              (a: TBooking, b: TBooking) =>
                 new Date(b.createdAt).getTime() -
                 new Date(a.createdAt).getTime()
             );
           setBookings(filteredBookings);
 
-          // Fetch tutor details for each booking
           const tutorDetails = await Promise.all(
-            filteredBookings.map((booking: any) =>
+            filteredBookings.map((booking: TBooking) =>
               getTutorById(booking.tutorId)
             )
           );
 
-          const tutorMap: { [key: string]: any } = {};
-          tutorDetails.forEach((tutorRes, index) => {
-            if (tutorRes.success) {
-              tutorMap[filteredBookings[index].tutorId] = tutorRes.data;
+          const tutorMap: { [key: string]: ITutor } = {};
+          tutorDetails.forEach((res, i) => {
+            if (res.success) {
+              tutorMap[filteredBookings[i].tutorId] = res.data;
             }
           });
 
           setTutors(tutorMap);
         } else {
           setError("Failed to fetch bookings");
-          console.error("Failed to fetch bookings:", res.message);
         }
       } catch (error) {
-        setError("Error fetching bookings");
         console.error("Error fetching bookings:", error);
+        setError("Error fetching data");
       } finally {
         setLoading(false);
       }
@@ -65,7 +65,8 @@ const AllStudentTutors = () => {
     const tutor = tutors[tutorId];
     if (tutor) {
       const availability = tutor.availability.find(
-        (slot: any) => slot._id === timeSlotId
+        (slot: { _id: string; day: string; timeSlots: string }) =>
+          slot._id === timeSlotId
       );
       if (availability) {
         return `${availability.day} ${availability.timeSlots}`;
@@ -76,14 +77,13 @@ const AllStudentTutors = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-40">
-        <div className="animate-pulse flex space-x-4">
-          <div className="rounded-full bg-red-100 h-8 w-8"></div>
-          <div className="flex-1 space-y-3">
-            <div className="h-3 bg-red-100 rounded w-3/4"></div>
-            <div className="h-3 bg-red-100 rounded w-1/2"></div>
-          </div>
-        </div>
+      <div className="p-6 space-y-4">
+        {[...Array(3)].map((_, i) => (
+          <div
+            key={i}
+            className="h-24 w-full bg-red-100 animate-pulse rounded-lg"
+          />
+        ))}
       </div>
     );
   }
@@ -99,68 +99,79 @@ const AllStudentTutors = () => {
   }
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-sm">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">My Tutors</h1>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-red-100 rounded-lg overflow-hidden">
-          <thead className="bg-red-50">
-            <tr>
-              <th className="py-3 px-4 text-left text-gray-900 font-semibold">
-                Tutor Name
-              </th>
-              <th className="py-3 px-4 text-left text-gray-900 font-semibold">
-                Booking ID
-              </th>
-              <th className="py-3 px-4 text-left text-gray-900 font-semibold">
-                Time Slot
-              </th>
-              <th className="py-3 px-4 text-left text-gray-900 font-semibold">
-                Approval Status
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.map((booking) => (
-              <tr
-                key={booking._id}
-                className="hover:bg-red-50 transition-colors"
-              >
-                <td className="py-3 px-4 border-b border-red-100 text-gray-700">
-                  {tutors[booking.tutorId] ? (
-                    <Link
-                      href={`/student/tutors/${booking.tutorId}`}
-                      className="text-blue-600 hover:underline"
-                    >
-                      {tutors[booking.tutorId].name}
-                    </Link>
-                  ) : (
-                    "Loading..."
-                  )}
-                </td>
-                <td className="py-3 px-4 border-b border-red-100 text-gray-700">
-                  {booking._id}
-                </td>
-                <td className="py-3 px-4 border-b border-red-100 text-gray-700">
-                  {getTimeSlot(booking.tutorId, booking.timeSlotId)}
-                </td>
-                <td className="py-3 px-4 border-b border-red-100 text-gray-700">
-                  <span
-                    className={`px-2 py-1 rounded-full text-sm ${
-                      booking.approvalStatus === "confirmed"
-                        ? "bg-green-100 text-green-600"
-                        : booking.approvalStatus === "completed"
-                        ? "bg-blue-100 text-blue-600"
-                        : "bg-red-100 text-red-600"
-                    }`}
-                  >
-                    {booking.approvalStatus}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="p-6 w-full">
+      <h1 className="text-3xl font-bold text-black mb-6 text-center">
+        My Tutors
+      </h1>
+
+      <div className="flex justify-center mb-8">
+        <div className="inline-flex items-center space-x-2 px-3 py-2 rounded-full bg-green-100 hover:bg-green-200 text-green-700 text-sm font-medium transition">
+          <User className="w-4 h-4" />
+          <span>Total Tutors: {Object.keys(tutors).length}</span>
+        </div>
       </div>
+
+      {bookings.length !== 0 ? (
+        <ul className="space-y-4">
+          {bookings.map((booking) => {
+            const tutor = tutors[booking.tutorId];
+            if (!tutor) return null;
+
+            return (
+              <li
+                key={`${booking._id}-${booking.tutorId}`}
+                className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow w-full"
+              >
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between md:gap-4 space-y-4 md:space-y-0">
+                  {/* Tutor Name */}
+                  <div className="flex items-center space-x-3 w-full md:w-1/3">
+                    <div className="p-2 bg-blue-50 rounded-full">
+                      <User className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Tutor</p>
+                      <Link
+                        href={`/student/tutors/${booking.tutorId}`}
+                        className="text-base font-semibold text-blue-600 hover:underline truncate block"
+                      >
+                        {tutor.name}
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div className="flex items-center space-x-3 w-full md:w-1/3">
+                    <div className="p-2 bg-red-50 rounded-full">
+                      <Mail className="w-5 h-5 text-red-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Email</p>
+                      <p className="text-base font-semibold truncate">
+                        {tutor.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Time Slot */}
+                  <div className="flex items-center space-x-3 w-full md:w-1/3">
+                    <div className="p-2 bg-green-50 rounded-full">
+                      <Calendar className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Time Slot</p>
+                      <p className="text-base font-semibold truncate">
+                        {getTimeSlot(booking.tutorId, booking.timeSlotId)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="text-gray-600 text-center">No tutors found.</p>
+      )}
     </div>
   );
 };

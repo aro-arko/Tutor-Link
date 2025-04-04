@@ -12,6 +12,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { TBooking } from "@/types/booking";
+import Link from "next/link";
 
 const AllActiveBookings = () => {
   const [bookings, setBookings] = useState<TBooking[]>([]);
@@ -107,9 +108,11 @@ const AllActiveBookings = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Tutor ID</p>
-                    <p className="text-base font-semibold break-all">
-                      {booking.tutorId}
-                    </p>
+                    <Link href={`/student/tutors/${booking.tutorId}`}>
+                      <p className="text-base font-semibold break-all hover:underline ">
+                        {booking.tutorId}
+                      </p>
+                    </Link>
                   </div>
                 </div>
 

@@ -6,23 +6,30 @@ export interface IUser {
 }
 
 export interface ITutor {
-  _id: string;
-  email: string;
-  tutorImage: string;
-  backgroundImage: string;
+  user: string;
   name: string;
+  email: string;
   bio: string;
   address: string;
-  hourlyRate: string;
+  hourlyRate: number;
+  tutorImage: string;
+  backgroundImage: string;
   phone: string;
-  qualification: string;
-  rating: number;
-  reviews: number;
-  coverImage: string;
   subject: string[];
+  qualification?: string;
+  rating: number;
+  reviews: {
+    _id: string;
+    studentId: string;
+    review: string;
+    rating: number;
+  }[];
+  experience: number;
+  age: number;
+  bookedStudents?: string[];
   availability: {
     _id: string;
     day: string;
-    timeSlots: string[];
+    timeSlots: string;
   }[];
 }
