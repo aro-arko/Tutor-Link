@@ -122,7 +122,7 @@ const StudentTutors = () => {
                       {tutors[booking.tutorId] ? (
                         <Link
                           href={`/student/tutors/${booking.tutorId}`}
-                          className="text-blue-600 hover:underline"
+                          className="text-gray-800 hover:underline"
                         >
                           {tutors[booking.tutorId].name}
                         </Link>
@@ -140,9 +140,11 @@ const StudentTutors = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm text-gray-500">Booking ID</p>
-                    <p className="text-base font-semibold truncate">
-                      {booking._id}
-                    </p>
+                    <Link href={`/student/bookings/${booking._id}`}>
+                      <p className="text-base font-semibold truncate hover:underline">
+                        {booking._id}
+                      </p>
+                    </Link>
                   </div>
                 </div>
 

@@ -9,9 +9,10 @@ import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Pencil } from "lucide-react";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
+import { TStudent } from "@/types/student";
 
 const StudentProfile = () => {
-  const [studentData, setStudentData] = useState<any>(null);
+  const [studentData, setStudentData] = useState<TStudent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,6 +38,7 @@ const StudentProfile = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setStudentData((prev: any) => ({ ...prev, [name]: value }));
   };
 
@@ -65,7 +67,7 @@ const StudentProfile = () => {
     );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 p-1 md:px-4">
+    <div className="min-h-screen md:bg-gray-50 rounded-lg py-12 px-1 md:px-4">
       <div className=" mx-auto space-y-10">
         {/* Profile Header */}
         <div className="flex flex-col items-center text-center">
@@ -101,7 +103,7 @@ const StudentProfile = () => {
                   <Input
                     type="text"
                     name="name"
-                    value={studentData.name}
+                    value={studentData?.name}
                     onChange={handleChange}
                     placeholder="Enter your name"
                     required
@@ -114,7 +116,7 @@ const StudentProfile = () => {
                   <Input
                     type="email"
                     name="email"
-                    value={studentData.email}
+                    value={studentData?.email}
                     readOnly
                     className="bg-gray-100 cursor-not-allowed"
                   />
@@ -130,7 +132,7 @@ const StudentProfile = () => {
                   <Input
                     type="text"
                     name="educationLevel"
-                    value={studentData.educationLevel}
+                    value={studentData?.educationLevel}
                     onChange={handleChange}
                     placeholder="Enter your education level"
                     required
@@ -143,7 +145,7 @@ const StudentProfile = () => {
                   <Input
                     type="number"
                     name="age"
-                    value={studentData.age}
+                    value={studentData?.age}
                     onChange={handleChange}
                     placeholder="Enter your age"
                     required
@@ -160,7 +162,7 @@ const StudentProfile = () => {
                   <Input
                     type="text"
                     name="phoneNumber"
-                    value={studentData.phoneNumber}
+                    value={studentData?.phoneNumber}
                     onChange={handleChange}
                     placeholder="Enter your phone number"
                     required
@@ -173,7 +175,7 @@ const StudentProfile = () => {
                   <Input
                     type="text"
                     name="address"
-                    value={studentData.address}
+                    value={studentData?.address}
                     onChange={handleChange}
                     placeholder="Enter your address"
                     required

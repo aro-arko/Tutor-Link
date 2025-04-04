@@ -147,3 +147,30 @@ export const updateReview = async (reviewId: string, reviewData: any) => {
     throw error;
   }
 };
+
+export const getBookingById = async (bookingId: string) => {
+  const token = (await cookies()).get("accessToken")!.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/student/booking/${bookingId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch booking by ID:", error);
+    throw error;
+  }
+};

@@ -97,9 +97,11 @@ const PendingBookings = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm text-gray-500">Booking ID</p>
-                    <p className="text-base font-semibold truncate">
-                      {booking._id || "N/A"}
-                    </p>
+                    <Link href={`/student/bookings/${booking._id}`}>
+                      <p className="text-base font-semibold truncate hover:underline">
+                        {booking._id}
+                      </p>
+                    </Link>
                   </div>
                 </div>
 
