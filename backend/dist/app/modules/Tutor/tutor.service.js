@@ -75,15 +75,23 @@ const getStudent = (user, id) => __awaiter(void 0, void 0, void 0, function* () 
     if (!tutor || !tutor.bookedStudents) {
         throw new Error('Tutor or booked students not found');
     }
-    const studentIdExists = tutor.bookedStudents.includes(new mongoose_1.default.Types.ObjectId(id));
-    if (!studentIdExists) {
-        throw new Error('Student not found');
-    }
     const student = yield student_model_1.default.findById(id);
     return student;
 });
 const getAllTutors = () => __awaiter(void 0, void 0, void 0, function* () {
-    const tutors = yield tutor_model_1.default.find().sort({ rating: -1 });
+    const tutors = yield tutor_model_1.default.aggregate([
+        {
+            $addFields: {
+                reviewCount: { $size: '$reviews' },
+            },
+        },
+        {
+            $sort: {
+                reviewCount: -1,
+                rating: -1,
+            },
+        },
+    ]);
     return tutors;
 });
 const getTutorById = (id) => __awaiter(void 0, void 0, void 0, function* () {

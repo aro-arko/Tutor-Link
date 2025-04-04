@@ -20,6 +20,9 @@ const tutor_model_1 = __importDefault(require("../Tutor/tutor.model"));
 // import { Booking } from '../Booking/booking.model';
 const QueryBuilder_1 = __importDefault(require("../../builder/QueryBuilder"));
 const subject_model_1 = require("../Subject/subject.model");
+const booking_model_1 = require("../Booking/booking.model");
+const AppError_1 = __importDefault(require("../../errors/AppError"));
+const http_status_1 = __importDefault(require("http-status"));
 const getMe = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield user_model_1.default.findOne({ email: user.email });
     const studentInfo = yield student_model_1.default.findOne({ user: userData._id });
@@ -95,9 +98,20 @@ const getStudentByEmail = (user, email) => __awaiter(void 0, void 0, void 0, fun
     const studentData = yield student_model_1.default.findOne({ email: email });
     return studentData;
 });
+const getBookingById = (user, bookingId) => __awaiter(void 0, void 0, void 0, function* () {
+    const booking = yield booking_model_1.Booking.findOne({
+        _id: bookingId,
+        student: user._id,
+    });
+    if (!booking) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'Booking not found');
+    }
+    return booking;
+});
 exports.studentService = {
     getMe,
     updateMe,
     searchTutors,
     getStudentByEmail,
+    getBookingById,
 };

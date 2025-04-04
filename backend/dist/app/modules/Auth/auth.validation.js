@@ -37,7 +37,24 @@ const loginValidation = zod_1.z.object({
             .max(100, 'Password is too long'),
     }),
 });
+const changePasswordValidation = zod_1.z.object({
+    body: zod_1.z.object({
+        oldPassword: zod_1.z
+            .string({
+            invalid_type_error: 'Old password must be a string',
+        })
+            .min(8, 'Old password must be at least 8 characters')
+            .max(100, 'Old password is too long'),
+        newPassword: zod_1.z
+            .string({
+            invalid_type_error: 'New password must be a string',
+        })
+            .min(8, 'New password must be at least 8 characters')
+            .max(100, 'New password is too long'),
+    }),
+});
 exports.authValidation = {
     registerValidation,
     loginValidation,
+    changePasswordValidation,
 };

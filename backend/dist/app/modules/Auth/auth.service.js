@@ -21,6 +21,7 @@ const http_status_1 = __importDefault(require("http-status"));
 const tutor_model_1 = __importDefault(require("../Tutor/tutor.model"));
 const auth_utils_1 = require("./auth.utils");
 const config_1 = __importDefault(require("../../config"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const createStudentIntoDB = (payLoad) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = Object.assign({}, payLoad);
     userData.role = 'student';
@@ -96,8 +97,32 @@ const loginUser = (payLoad) => __awaiter(void 0, void 0, void 0, function* () {
     const accessToken = (0, auth_utils_1.createToken)(jwtPayload, config_1.default.jwt_access_secret, config_1.default.jwt_access_expires_in);
     return { accessToken: accessToken };
 });
+const changePassword = (payLoad, userData) => __awaiter(void 0, void 0, void 0, function* () {
+    if (userData.email == 'arko@tutorlink.com') {
+        throw new AppError_1.default(http_status_1.default.FORBIDDEN, 'Demo account password cannot be changed');
+    }
+    else if (userData.email == 'sukhminder@tutorlink.com') {
+        throw new AppError_1.default(http_status_1.default.FORBIDDEN, 'Demo account password cannot be changed');
+    }
+    const user = yield user_model_1.default.isUserExistsByEmail(userData.email);
+    if (!user) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'This user is not found !');
+    }
+    if (!(yield user_model_1.default.isPasswordMatched(payLoad.oldPassword, user === null || user === void 0 ? void 0 : user.password)))
+        throw new AppError_1.default(http_status_1.default.FORBIDDEN, 'Password do not matched');
+    // hased new password
+    const newHashedPassword = yield bcrypt_1.default.hash(payLoad.newPassword, Number(config_1.default.bcrypt_salt_rounds));
+    yield user_model_1.default.findOneAndUpdate({
+        email: userData.email,
+        role: userData.role,
+    }, {
+        password: newHashedPassword,
+    });
+    return null;
+});
 exports.authServices = {
     createStudentIntoDB,
     createTutorIntoDB,
     loginUser,
+    changePassword,
 };

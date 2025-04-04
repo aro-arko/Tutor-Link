@@ -89,7 +89,20 @@ const getStudent = async (user: JwtPayload, id: string) => {
 };
 
 const getAllTutors = async () => {
-  const tutors = await Tutor.find().sort({ rating: -1 });
+  const tutors = await Tutor.aggregate([
+    {
+      $addFields: {
+        reviewCount: { $size: '$reviews' },
+      },
+    },
+    {
+      $sort: {
+        reviewCount: -1,
+        rating: -1,
+      },
+    },
+  ]);
+
   return tutors;
 };
 
