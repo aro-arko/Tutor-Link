@@ -10,7 +10,7 @@ const handleValidationError = (
 
   return {
     statusCode,
-    message: 'Validation error',
+    message: err instanceof ZodError ? err.issues[0]?.message : 'Zod error',
   };
 };
 

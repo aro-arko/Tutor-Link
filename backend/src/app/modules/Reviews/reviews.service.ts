@@ -120,7 +120,24 @@ const updateReview = async (
   return tutor;
 };
 
+export const totalReviews = async () => {
+  const total = await Tutor.aggregate([
+    {
+      $unwind: '$reviews',
+    },
+    {
+      $group: {
+        _id: null,
+        totalReviews: { $sum: 1 },
+      },
+    },
+  ]);
+
+  return total[0]?.totalReviews || 0;
+};
+
 export const reviewService = {
   reviewTutor,
   updateReview,
+  totalReviews,
 };

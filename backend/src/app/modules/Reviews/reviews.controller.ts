@@ -29,7 +29,19 @@ const updateReview = catchAsync(async (req, res) => {
   });
 });
 
+const totalReviews = catchAsync(async (req, res) => {
+  const result = await reviewService.totalReviews();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Total reviews retrieved successfully',
+    data: result,
+  });
+});
+
 export const reviewController = {
   reviewTutor,
   updateReview,
+  totalReviews,
 };

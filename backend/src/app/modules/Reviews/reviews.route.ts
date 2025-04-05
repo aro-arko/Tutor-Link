@@ -19,4 +19,7 @@ router.patch(
   reviewController.updateReview,
 );
 
+// get total reviews
+router.get('/total-review', reviewController.totalReviews);
+
 export const ReviewsRoutes = router;

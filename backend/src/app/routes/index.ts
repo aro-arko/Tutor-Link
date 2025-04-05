@@ -7,6 +7,7 @@ import { StudentRoutes } from '../modules/Student/student.route';
 import { userRoutes } from '../modules/User/user.route';
 import { ReviewsRoutes } from '../modules/Reviews/reviews.route';
 import { CartRoutes } from '../modules/Cart/cart.route';
+import { TipsRoute } from '../modules/Tips/tips.route';
 
 const router = Router();
 
@@ -42,6 +43,10 @@ const moduleRoutes = [
   {
     path: '/cart',
     route: CartRoutes,
+  },
+  {
+    path: '/tips',
+    route: TipsRoute,
   },
 ];
 
