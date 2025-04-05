@@ -3,6 +3,7 @@ import FeaturedTutors from "@/components/modules/home/featuredTutors/FeaturedTut
 import Features from "@/components/modules/home/features/Features";
 import Sponsors from "@/components/modules/home/sponsors/Sponsors";
 import SuccessStories from "@/components/modules/home/successStories/SuccessStories";
+import TipsOfTheDay from "@/components/modules/home/tips/TipsOfTheDay";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -18,6 +19,7 @@ const HomePage = () => {
       <FeaturedTutors />
       <Features />
       <SuccessStories />
+      <TipsOfTheDay />
     </div>
   );
 };

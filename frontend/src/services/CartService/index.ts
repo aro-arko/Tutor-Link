@@ -20,12 +20,8 @@ export const getCart = async () => {
         tags: [CART_TAG],
       },
     });
-
-    if (!res.ok) {
-      throw new Error(`Error: ${res.status} ${res.statusText}`);
-    }
-
     const cart = await res.json();
+
     return cart;
   } catch (error) {
     console.error("Failed to get cart", error);

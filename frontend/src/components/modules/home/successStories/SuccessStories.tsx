@@ -50,7 +50,7 @@ const SuccessStories = () => {
   }, []);
 
   return (
-    <section className="py-16">
+    <section className="pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 text-center">
         {/* Section Title */}
         <h2 className="text-3xl font-extrabold text-gray-900 mb-12">
@@ -76,7 +76,7 @@ const SuccessStories = () => {
         >
           {testimonials.map((story, index) => (
             <SwiperSlide key={index} className="flex justify-center">
-              <Card className="p-6 bg-white shadow-md rounded-lg h-full max-w-[600px]">
+              <Card className="p-6 bg-white shadow-md rounded-lg h-full max-w-[650px]">
                 <CardHeader className="flex flex-col items-center">
                   <Avatar className="h-20 w-20">
                     <AvatarImage src={story.avatar} alt={story.name} />
