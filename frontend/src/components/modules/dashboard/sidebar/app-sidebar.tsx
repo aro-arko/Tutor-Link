@@ -10,6 +10,7 @@ import {
   CalendarCheck,
   GraduationCap,
   LucideIcon,
+  Megaphone,
 } from "lucide-react";
 import {
   Sidebar,
@@ -74,6 +75,7 @@ const getSidebarItems = (role: "student" | "tutor"): SidebarItem[] => {
           { title: "Booking Requests", url: "/tutor/bookings/requests" },
         ],
       },
+      { title: "Campaigns", url: "/tutor/campaigns", icon: Megaphone },
     ],
   };
 
