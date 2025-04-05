@@ -41,13 +41,10 @@ const TipsOfTheDay = () => {
           <div className="relative bg-white p-8 rounded-xl shadow-md border border-gray-200 flex flex-col items-center text-center">
             <Quote className="absolute top-10 left-10 text-gray-300 w-6 h-6 rotate-180" />
 
-            {/* Image Skeleton */}
             <Skeleton className="w-24 h-24 rounded-full mb-4" />
 
-            {/* Name Skeleton */}
             <Skeleton className="h-5 w-40 mb-2 rounded" />
 
-            {/* Tip Skeleton */}
             <div className="mt-4 flex flex-col gap-2 max-w-xl mx-auto">
               <Skeleton className="h-4 w-full" />
               <Skeleton className="h-4 w-5/6" />

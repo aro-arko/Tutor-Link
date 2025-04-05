@@ -196,3 +196,23 @@ export const tutorEarnings = async () => {
     throw error;
   }
 };
+
+export const getAllBookings = async () => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/booking/all`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+    if (!data.success) {
+      throw new Error("Failed to fetch bookings");
+    }
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
