@@ -36,25 +36,25 @@ const Footer = () => {
           </p>
           <div className="flex space-x-4">
             <Link
-              href="#"
+              href="https://www.facebook.com/aroarko28/"
               className="text-gray-400 hover:text-white transition-colors"
             >
               <Facebook className="h-5 w-5" />
             </Link>
             <Link
-              href="#"
+              href="https://x.com/aroarko28"
               className="text-gray-400 hover:text-white transition-colors"
             >
               <Twitter className="h-5 w-5" />
             </Link>
             <Link
-              href="#"
+              href="https://www.instagram.com/aroarko"
               className="text-gray-400 hover:text-white transition-colors"
             >
               <Instagram className="h-5 w-5" />
             </Link>
             <Link
-              href="#"
+              href="https://www.linkedin.com/in/aroarko/"
               className="text-gray-400 hover:text-white transition-colors"
             >
               <Linkedin className="h-5 w-5" />
@@ -68,7 +68,7 @@ const Footer = () => {
           <ul className="space-y-2">
             <li>
               <Link
-                href="#"
+                href="/"
                 className="text-sm text-gray-400 hover:text-white transition-colors"
               >
                 Home
@@ -76,7 +76,7 @@ const Footer = () => {
             </li>
             <li>
               <Link
-                href="#"
+                href="/tutors"
                 className="text-sm text-gray-400 hover:text-white transition-colors"
               >
                 Browse Tutors
@@ -84,7 +84,7 @@ const Footer = () => {
             </li>
             <li>
               <Link
-                href="#"
+                href="/about"
                 className="text-sm text-gray-400 hover:text-white transition-colors"
               >
                 About Us
@@ -92,10 +92,10 @@ const Footer = () => {
             </li>
             <li>
               <Link
-                href="#"
+                href="/blogs"
                 className="text-sm text-gray-400 hover:text-white transition-colors"
               >
-                Contact Us
+                Blogs
               </Link>
             </li>
           </ul>

@@ -150,7 +150,7 @@ export default function Navbar() {
     { name: "Home", href: "/", icon: null },
     { name: "About", href: "/about", icon: null },
     { name: "FAQ", href: "/faq", icon: null },
-    { name: "Blog", href: "/blog", icon: null },
+    { name: "Blogs", href: "/blogs", icon: null },
   ];
 
   return (
