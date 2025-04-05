@@ -247,6 +247,15 @@ const tutorEarnings = async (user: JwtPayload) => {
   return earnings;
 };
 
+const allBookings = async () => {
+  const bookings = await Booking.find({
+    approvalStatus: {
+      $in: ['confirmed', 'completed'],
+    },
+  });
+  return bookings;
+};
+
 export const bookingService = {
   createBooking,
   tutorBookingList,
@@ -255,4 +264,5 @@ export const bookingService = {
   studentBookingList,
   verifyPayment,
   tutorEarnings,
+  allBookings,
 };

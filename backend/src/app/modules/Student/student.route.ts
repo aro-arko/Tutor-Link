@@ -11,6 +11,8 @@ router.get('/search', studentController.searchTutors);
 router.get('/me', auth(USER_ROLE.student), studentController.getMe);
 router.patch('/update', auth(USER_ROLE.student), studentController.updateMe);
 
+router.get('/', studentController.getAllStudents);
+
 router.get(
   '/:email',
   auth(USER_ROLE.student),

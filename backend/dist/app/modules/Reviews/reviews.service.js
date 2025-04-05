@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.reviewService = void 0;
+exports.reviewService = exports.totalReviews = void 0;
 const booking_model_1 = require("../Booking/booking.model");
 const student_model_1 = __importDefault(require("../Student/student.model"));
 const tutor_model_1 = __importDefault(require("../Tutor/tutor.model"));
@@ -82,7 +82,24 @@ const updateReview = (user, reviewId, body) => __awaiter(void 0, void 0, void 0,
     yield tutor.save();
     return tutor;
 });
+const totalReviews = () => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const total = yield tutor_model_1.default.aggregate([
+        {
+            $unwind: '$reviews',
+        },
+        {
+            $group: {
+                _id: null,
+                totalReviews: { $sum: 1 },
+            },
+        },
+    ]);
+    return ((_a = total[0]) === null || _a === void 0 ? void 0 : _a.totalReviews) || 0;
+});
+exports.totalReviews = totalReviews;
 exports.reviewService = {
     reviewTutor,
     updateReview,
+    totalReviews: exports.totalReviews,
 };

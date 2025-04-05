@@ -108,10 +108,15 @@ const getBookingById = (user, bookingId) => __awaiter(void 0, void 0, void 0, fu
     }
     return booking;
 });
+const getAllStudents = () => __awaiter(void 0, void 0, void 0, function* () {
+    const students = yield student_model_1.default.find();
+    return students;
+});
 exports.studentService = {
     getMe,
     updateMe,
     searchTutors,
     getStudentByEmail,
     getBookingById,
+    getAllStudents,
 };

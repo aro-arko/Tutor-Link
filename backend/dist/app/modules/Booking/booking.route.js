@@ -16,6 +16,8 @@ const router = express_1.default.Router();
 router.post('/', (0, auth_1.default)(user_constant_1.USER_ROLE.student), (0, validateRequest_1.default)(booking_validation_1.bookingValidation.bookingCreateValidationSchema), booking_controller_1.bookingController.createBooking);
 // student bookings
 router.get('/', (0, auth_1.default)(user_constant_1.USER_ROLE.student), booking_controller_1.bookingController.studentBookingList);
+// all bookings
+router.get('/all', booking_controller_1.bookingController.allBookings);
 router.put('/cancel/:bookingId', (0, auth_1.default)(user_constant_1.USER_ROLE.student), booking_controller_1.bookingController.cancelBooking);
 // tutor
 // tutor's booking list

@@ -90,6 +90,15 @@ const tutorEarnings = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         data: result,
     });
 }));
+const allBookings = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield booking_service_1.bookingService.allBookings();
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'All bookings fetched successfully',
+        data: result,
+    });
+}));
 exports.bookingController = {
     createBooking,
     studentBookingList,
@@ -98,4 +107,5 @@ exports.bookingController = {
     updateBookingStatus,
     verifyPayment,
     tutorEarnings,
+    allBookings,
 };

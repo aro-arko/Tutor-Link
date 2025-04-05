@@ -90,12 +90,22 @@ const getBookingById = catchAsync(async (req, res) => {
   });
 });
 
+const getAllStudents = catchAsync(async (req, res) => {
+  const result = await studentService.getAllStudents();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Students retrieved successfully',
+    data: result,
+  });
+});
+
 export const studentController = {
   getMe,
   updateMe,
-  // reviewTutor,
-  // updateReview,
   searchTutors,
   getStudentByEmail,
   getBookingById,
+  getAllStudents,
 };

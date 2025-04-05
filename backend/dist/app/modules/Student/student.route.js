@@ -13,6 +13,7 @@ const router = express_1.default.Router();
 router.get('/search', student_controller_1.studentController.searchTutors);
 router.get('/me', (0, auth_1.default)(user_constant_1.USER_ROLE.student), student_controller_1.studentController.getMe);
 router.patch('/update', (0, auth_1.default)(user_constant_1.USER_ROLE.student), student_controller_1.studentController.updateMe);
+router.get('/', student_controller_1.studentController.getAllStudents);
 router.get('/:email', (0, auth_1.default)(user_constant_1.USER_ROLE.student), student_controller_1.studentController.getStudentByEmail);
 router.get('/booking/:bookingId', (0, auth_1.default)(user_constant_1.USER_ROLE.student), student_controller_1.studentController.getBookingById);
 exports.StudentRoutes = router;

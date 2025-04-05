@@ -126,10 +126,16 @@ const getBookingById = async (user: JwtPayload, bookingId: string) => {
   return booking;
 };
 
+const getAllStudents = async () => {
+  const students = await Student.find();
+  return students;
+};
+
 export const studentService = {
   getMe,
   updateMe,
   searchTutors,
   getStudentByEmail,
   getBookingById,
+  getAllStudents,
 };

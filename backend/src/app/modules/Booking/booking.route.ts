@@ -18,6 +18,9 @@ router.post(
 // student bookings
 router.get('/', auth(USER_ROLE.student), bookingController.studentBookingList);
 
+// all bookings
+router.get('/all', bookingController.allBookings);
+
 router.put(
   '/cancel/:bookingId',
   auth(USER_ROLE.student),

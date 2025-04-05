@@ -12,44 +12,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.reviewController = void 0;
+exports.TipsController = void 0;
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
-const reviews_service_1 = require("./reviews.service");
+const tips_service_1 = require("./tips.service");
 const http_status_1 = __importDefault(require("http-status"));
-const reviewTutor = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = req.user;
-    const tutorId = req.params.tutorId;
-    const result = yield reviews_service_1.reviewService.reviewTutor(user, tutorId, req.body);
+const getTips = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield tips_service_1.TipsService.getTips();
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Review added successfully',
+        message: 'Tips retrieved successfully',
         data: result,
     });
 }));
-const updateReview = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = req.user;
-    const reviewId = req.params.reviewId;
-    const result = yield reviews_service_1.reviewService.updateReview(user, reviewId, req.body);
+const tutorTipsOfTheDay = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { user, body } = req;
+    const result = yield tips_service_1.TipsService.tutorTipsOfTheDay(user, body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Review updated successfully',
+        message: 'Tip posted successfully',
         data: result,
     });
 }));
-const totalReviews = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield reviews_service_1.reviewService.totalReviews();
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'Total reviews retrieved successfully',
-        data: result,
-    });
-}));
-exports.reviewController = {
-    reviewTutor,
-    updateReview,
-    totalReviews,
+exports.TipsController = {
+    getTips,
+    tutorTipsOfTheDay,
 };

@@ -186,6 +186,14 @@ const tutorEarnings = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const earnings = bookings.reduce((acc, booking) => acc + booking.price, 0);
     return earnings;
 });
+const allBookings = () => __awaiter(void 0, void 0, void 0, function* () {
+    const bookings = yield booking_model_1.Booking.find({
+        approvalStatus: {
+            $in: ['confirmed', 'completed'],
+        },
+    });
+    return bookings;
+});
 exports.bookingService = {
     createBooking,
     tutorBookingList,
@@ -194,4 +202,5 @@ exports.bookingService = {
     studentBookingList,
     verifyPayment,
     tutorEarnings,
+    allBookings,
 };
