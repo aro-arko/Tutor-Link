@@ -80,6 +80,7 @@ const TutorDetails = () => {
         const res = await getCart();
         if (res?.success) {
           const found = res.data.find(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (item: any) => item.tutorId._id === tutor._id
           );
           if (found) {
@@ -115,6 +116,7 @@ const TutorDetails = () => {
         window.dispatchEvent(new Event("cart-updated"));
         toast.success("Added to wishlist.");
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(error.message || "Action failed.");
     }
@@ -158,7 +160,7 @@ const TutorDetails = () => {
         {/* Right Side - Tutor Details */}
         <div className="lg:w-1/2 flex flex-col gap-6">
           {/* Tutor Profile Card */}
-          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 ">
             <div className="flex flex-col md:flex-row md:items-center gap-6">
               <div className="h-28 w-28 relative shrink-0">
                 <Image
