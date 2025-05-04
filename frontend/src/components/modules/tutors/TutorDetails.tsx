@@ -131,7 +131,7 @@ const TutorDetails = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-12">
       {/* Main Layout */}
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col-reverse lg:flex-row gap-8">
         {/* Left Side - Cover Image and Bio */}
         <div className="lg:w-1/2 flex flex-col gap-8">
           {/* Cover Image */}
