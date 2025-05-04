@@ -127,7 +127,7 @@ const TutorDetails = () => {
   }
 
   if (!tutor) {
-    return <p className="text-center text-gray-600">Tutor not found.</p>;
+    return <p className="text-center text-gray-600">Invalid Tutor Details!</p>;
   }
 
   return (
