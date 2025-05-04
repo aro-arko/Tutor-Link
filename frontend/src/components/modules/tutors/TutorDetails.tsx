@@ -127,7 +127,13 @@ const TutorDetails = () => {
   }
 
   if (!tutor) {
-    return <p className="text-center text-gray-600">Invalid Tutor Details!</p>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <h1 className="text-2xl font-bold text-gray-800">
+          Tutor not found. Please check the URL or try again later.
+        </h1>
+      </div>
+    );
   }
 
   return (
